@@ -1,0 +1,247 @@
+---
+title: "Wu_Kevin_Homework_1_HS650_Fall_2021.Rmd"
+subtitle: "<h2><u>Data Science and Predictive Analytics (HS650), Fall 2021</u></h2>"
+author: "<h3>Kevin Wu</h3>"
+date: "`r format(Sys.time(), '%B %Y')`"
+tags: [DSPA, SOCR, MIDAS, Big Data, Predictive Analytics] 
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: show
+    self_contained: yes
+---
+**Homework_1_HS650_Fall_2021.Rmd**.
+
+ * HW #1
+ * Fall 2021, DSPA (HS650)
+ * Name: Kevin Wu
+ * SID: ####0012 (last 4 digits only)
+ * UMich E-mail: kevinkwu@umich.edu
+ * I certify that the following paper represents my own independent work and conforms with the guidelines of academic honesty described in the UMich student handbook.
+ * Remember that students are allowed and encouraged to discuss, on a conceptual level, the problems with your class mates, however, this can not involve the exchange of actual code, printouts, solutions, e-mails or other explicit electronic or paper handouts.
+
+
+# HW Problem 1.1 
+Problem 1.1 (Long-to-Wide Data format translation):
+
+We demonstrated the wide-to-long conversion in lecture. Now, let’s explore long-to-wide. Load in the SOCR Pediatric Normal and Schizophrenia Neuroimaging Study Dataset (Links to an external site.). It's in a wide format where 56 different regional cortical and subcortical volumes contain information we want to represent in long format.
+
+```{r Problem 1.1, warning=F, message=F}
+library(XML)
+library(reshape)
+library(reshape2)
+```
+
+## HW Problem 1.1a
+```{r Problem 1.1.a, warning=F, message=F}
+SOCR_Data <- readHTMLTable("http://wiki.stat.ucla.edu/socr/index.php?title=SOCR_Data_Oct2009_ID_NI", header=TRUE, trim=TRUE, colClasses=rep("numeric",66)) 
+df <- data.frame(SOCR_Data[[2]])
+
+```
+
+
+## HW Problem 1.1b 
+Convert the original from wide-to-long
+```{r Problem 1.1.b, warning=F, message=F}
+dfLong <- melt(df, id.vars = c("X.Subject", "Age", "DX", "Sex"))
+
+```
+
+
+## HW Problem 1.1c
+Then back to wide format.
+```{r Problem 1.1.c, warning=F, message=F}
+dfWide <- cast(dfLong)
+
+```
+ 
+
+
+# HW Problem 1.2 
+Problem 1.2 (Data stratification):
+
+Use the same Schizophrenia Neuroimaging Study Dataset (Links to an external site.) and complete the following data-manipulation steps in R:
+```{r Problem2, warning=F, message=F}
+library(plotly)
+
+```
+
+## HW Problem 1.2.a
+Extract the first 10 subjects
+```{r Problem2a, warning=F, message=F}
+head(df,10)
+
+```
+
+## HW Problem 1.2.b
+Find the cases for which L_caudate < 160.
+```
+subset(df, df$L_caudate < 160)
+```
+
+## HW Problem 1.2.c
+Sort the subjects based on L_caudate values in descending.
+```{r Problem2c, warning=F, message=F}
+df[order(-df$L_caudate),]
+
+```
+
+
+## HW Problem 1.2.d
+...and ascending order.
+```{r Problem2d, warning=F, message=F}
+df[order(df$L_caudate),]
+```
+
+
+## HW Problem 1.2.e
+Generate frequency and probability tables for Age
+```{r Problem2e, warning=F, message=F}
+hist(df$Age, freq=F, breaks=max(df$Age) - min(df$Age), main="Density of Children's Ages Sampled", xlab="Age")
+hist(df$Age, freq=T, breaks=max(df$Age) - min(df$Age), main="Frequency of Children's Ages Sampled", xlab="Age")
+```
+
+
+## HW Problem 1.2.f
+Generate frequency and probability tables for IQ
+```{r Problem2f, warning=F, message=F}
+hist(df$FS_IQ, freq=F, breaks=max(df$FS_IQ) - min(df$FS_IQ), main="Density of Children's IQ's Sampled", xlab="IQ")
+hist(df$FS_IQ, freq=T, breaks=max(df$FS_IQ) - min(df$FS_IQ), main="Frequency of Children's IQ's Sampled", xlab="IQ")
+```
+
+## HW Problem 1.2.g
+Generate frequency and probability tables for Sex
+```{r Problem2g, warning=F, message=F}
+plot_ly(x=c("Male", "Female"), y=c(nrow(subset(df, df$Sex==1)), nrow(subset(df, df$Sex==2))))  %>%
+  layout(title="Frequency of Children's Sex Sampled",
+         xaxis=list(title="Sex", autotypenumbers="strict"),
+         yaxis=list(title="Frequency"))
+
+plot_ly(x=c("Male", "Female"), y=c(nrow(subset(df, df$Sex==1))/length(df), nrow(subset(df, df$Sex==2))/length(df))) %>%
+    layout(title="Density of Children's Sex Sampled",
+         xaxis=list(title="Sex", autotypenumbers="strict"),
+         yaxis=list(title="Density"))
+```
+
+## HW Problem 1.2.h
+Compute the mean Age and the correlation between Age and FS_IQ.
+```{r Problem2h, warning=F, message=F}
+mean(df$Age)
+cor(df$Age, df$FS_IQ)
+```
+
+
+## HW Problem 1.2.i
+Plot Histogram and density of R_fusiform_gyrus
+```{r Problem2i, warning=F, message=F}
+hist(df$R_fusiform_gyrus, main="Histogram of Right Fusiform Gyrus", xlab="Volumes in mm^3")
+```
+
+Draw scatterplot L_fusiform_gyrus and L_insular_cortex.
+## HW Problem 1.2.j
+```{r Problem2j, warning=F, message=F}
+ggplot(df, aes(x=L_insular_cortex, y=L_fusiform_gyrus, )) + geom_point()
+
+```
+ 
+# HW Problem 1.3 
+
+Problem 1.3 (Simulation)
+Generate 1,000 standard normal variables and another 1,200 student t distributed random variables with df=20.  Generate a quantile-quantile (Q-Q) probability plot of the two samples.  Then, compare it with qqnorm() or plot_ly()  of student t simulation and interpret the findings.
+
+
+## HW Problem 1.3a.
+Generate 1,000 standard normal variables 
+```{r name13a, warning=F, message=F}
+valuesNorm <- rnorm(1000)
+```
+
+## HW Problem 1.3b.
+and another 1,200 student t distributed random variables with df=20.
+```{r name13b, warning=F, message=F}
+valuesT <- rt(1200, 20)
+```
+
+## HW Problem 1.3c.
+Generate a quantile-quantile (Q-Q) probability plot of the two samples.
+```{r name13c, warning=F, message=F}
+qValuesNorm <- quantile(scale(valuesNorm), probs=seq(from=0.01, to=0.99, by=0.01))
+qValuesT <- quantile(scale(valuesT), probs=seq(from=0.01, to=0.99, by=0.01))
+qq.df.norm_norm <- data.frame(qValuesNorm, qValuesT)
+
+qq.df.norm_norm %>%
+  plot_ly(x=~qValuesNorm) %>%
+    add_markers(y=~qValuesT, name="Normally Distributed vs T-Distributed(df=20) Data") %>%
+    add_lines(x=~qValuesNorm, y=~qValuesNorm, mode="line", name="Theoretical Model", line=list(width=2)) %>%
+  layout(
+    title="Normal Q-Q Plot", legend=list(orientation='h'))
+```
+
+## HW Problem 1.3d.
+Then, compare it with qqnorm() or plot_ly()  of student t simulation and interpret the findings.
+```{r name13d, warning=F, message=F}
+qqnorm(valuesNorm)
+qqline(valuesT)
+```
+
+
+# HW Problem 1.4 
+
+Problem 1.4 (Define an R median function)
+Define a new function  myMedian() that computes a sample median and compare your function against the standard R median() function using the simulation data you generate in the last question (1.3). Did you cover all possible situations for the input data?
+
+<p>I believe I did cover all possible situations as I relied heavily upon R built in math functions.  Don't reinvent the wheel is my motto.
+Utilizing R's built in rules of coersion, it's easy to assume that using their built in functions will also handle different data types "correctly" when using them with mathematical functions</p>
+<p>
+The only questionable things I do are
+  <ol>
+    <li>numvalues %% 2: is a very specific test for integers.  Dividing any object by 2 to test whether an integer is odd or even is a risky operation that may have many failure states, or worse unintended side-effects.  However, based upon R's definition of length, it does return a <i>non-negative integer of length 1</i>.  So this operation, based upon R's implementation is safe.  By definition of parity, this test does test whether the number of values is odd or even</li>
+    <li>Setting the median index to round(numValues / 2): in the else case, numValues can be either 0, 1 or greater, but odd.  In the case for numValues is 0, then that is like doing a median of NA, which should return NA as it does.<br/>
+    Note: <i>for rounding off a 5, the IEC 60559 standard (see also ‘IEEE 754’) is expected to be used, ‘go to the even digit’. Therefore round(0.5) is 0 and round(-1.5) is -2.</i><br/>
+        &#x2022; In the case for numValues is 1, round returns the value of 0, which is desired.<br/>
+        &#x2022; In the case for numValues is odd, round returns the next higher even number, which is also desired.
+    </li>
+    <li>I use mean because object at given index may be a complex object / data structure.  Leveraging the mean from the R library, the only non-trivial case is if na_REAL is returned, which is tested for and treated as if doing a median of NA</li>
+  </ol>
+</p>
+
+```{r name4, warning=F, message=F}
+myMedian <- function(values) {
+  if(is.na(values))
+    return(NA)
+  else {
+    values <- sort(values, na.last=NA)
+    numValues <- length(values)
+    # if even
+    if((numValues %% 2) == 0) {
+      mIndex1 <- numValues / 2
+      mIndex2 <- mIndex1 + 1
+      mnAtIndex1 <- mean(values[mIndex1])
+      mnAtIndex2 <- mean(values[mIndex2])
+      if(!is.na(mnAtIndex1) && !is.na(mnAtIndex2))
+        return((mnAtIndex1+mnAtIndex2)/2)
+      else
+        return(NA)
+    }
+    else {
+      if(numValues==0)
+        return(NA)
+      else {
+        medianIndex <- round(numValues/2)
+        return(values[medianIndex])        
+      }
+    }
+  }
+}
+median(valuesNorm)
+median(valuesT)
+myMedian(valuesNorm)
+myMedian(valuesT)
+```

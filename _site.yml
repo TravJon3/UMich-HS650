@@ -1,11 +1,15 @@
-name: "MyLabJournal"
+name: "Kevin Wu's Homework Page for University of Michigan - HS650"
 navbar:
-  title: "MyLabJournal"
+  title: "Kevin Wu's Homework Page for University of Michigan - HS650"
   left:
     - text: "Home"
       href: index.html
-    - text: "Journal"
-      href: Journal.html
-    - text: "Links"
-      href: Links.html
+    - text: "Homework 1"
+      href: hw1.html
+    - text: "Homework 2"
+      href: hw2.html
+    - text: "Homework 3"
+      href: hw3.html
+    - text: "Final Project"
+      href: final_project.html
 output_dir: "docs"

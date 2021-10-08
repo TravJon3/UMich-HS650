@@ -1,0 +1,54 @@
+---
+title: "Homework 3"
+subtitle: "<h2><u>Data Science and Predictive Analytics (HS650), Fall 2021</u></h2>"
+author: "<h3>Kevin Wu</h3>"
+date: "`r format(Sys.time(), '%B %Y')`"
+tags: [DSPA, SOCR, MIDAS, Big Data, Predictive Analytics] 
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: show
+    self_contained: yes
+---
+**Homework_3_HS650_Fall_2021.Rmd**.
+
+ * HW #3
+ * Fall 2021, DSPA (HS650)
+ * Name: Kevin Wu
+ * SID: ####0012 (last 4 digits only)
+ * UMich E-mail: kevinkwu@umich.edu
+ * I certify that the following paper represents my own independent work and conforms with the guidelines of academic honesty described in the UMich student handbook.
+ * Remember that students are allowed and encouraged to discuss, on a conceptual level, the problems with your class mates, however, this can not involve the exchange of actual code, printouts, solutions, e-mails or other explicit electronic or paper handouts.
+
+
+# HW Problem 3.1 
+For each of the probability distributions: Weibull(1,5), Uniform(1,10), Student's T (df=1), Cauchy, Negative Binomial(10, 0.5), Chi-Square (df=10), Poisson (5), 
+
+1) Generate the following plots functions:
+  <ul>
+    <li>Density</li>
+    <li>CDF</li>
+    <li>quantile (inverse-CDF)</li>
+  </ul>
+2) Report the first 4 moments (mean, variance, skewness, kurtosis)
+3) Complete the discrete probability distributions table below. The cell values in the table represent the values of the quantile function for the corresponding p-value (column) and distribution (row).
+
+```{r Problem 3.1, warning=F, message=F}
+library(reshape)
+library(reshape2)
+library(DT)
+library(plotly)
+library(rvest)
+```
+
+## 
+```{r Load ALS Data, warning=F, message=F}
+
+```
