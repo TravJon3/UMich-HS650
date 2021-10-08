@@ -28,8 +28,15 @@ output:
  * Remember that students are allowed and encouraged to discuss, on a conceptual level, the problems with your class mates, however, this can not involve the exchange of actual code, printouts, solutions, e-mails or other explicit electronic or paper handouts.
 
 
+```{r Problem 3.1, warning=F, message=F}
+library(reshape)
+library(reshape2)
+library(DT)
+library(plotly)
+library(rvest)
+```
 # HW Problem 3.1 
-For each of the probability distributions: Weibull(1,5), Uniform(1,10), Student's T (df=1), Cauchy, Negative Binomial(10, 0.5), Chi-Square (df=10), Poisson (5), 
+For each of the probability distributions: , Uniform(1,10), Student's T (df=1), Cauchy, Negative Binomial(10, 0.5), Chi-Square (df=10), Poisson (5), 
 
 1) Generate the following plots functions:
   <ul>
@@ -40,15 +47,43 @@ For each of the probability distributions: Weibull(1,5), Uniform(1,10), Student'
 2) Report the first 4 moments (mean, variance, skewness, kurtosis)
 3) Complete the discrete probability distributions table below. The cell values in the table represent the values of the quantile function for the corresponding p-value (column) and distribution (row).
 
-```{r Problem 3.1, warning=F, message=F}
-library(reshape)
-library(reshape2)
-library(DT)
-library(plotly)
-library(rvest)
+## Weibull (1,5) Distribution
+```{r Weibull, warning=F, message=F}
+i <- seq(0, 10, 0.1)
+p <- seq(0.001, 0.999, 0.001)
+dfWeib <- data.frame(x=i, density=dweibull(i, 1, 5), distribution=pweibull(i, 1, 5))
+qWeib <- data.frame(x=p, quantile=qweibull(p, 1, 5))
+
+plot_ly(x= ~dfWeib$x, y= ~dfWeib$density, type="scatter", mode="lines", name="Density") %>%
+  add_lines(x= ~dfWeib$x, y= ~dfWeib$distribution, name="Distribution") %>%
+  layout(title="Weibull Curve", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~qWeib$x, y= ~qWeib$quantile, type="scatter", mode="lines", name="Quant") %>%
+  layout(title="Weibull Quantile", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
 ```
 
-## 
-```{r Load ALS Data, warning=F, message=F}
+## Uniform (1,10) Distribution
+```{r Uniform, warning=F, message=F}
+i <- seq(-5, 5, 0.1)
+p <- seq(0.001, 0.999, 0.001)
+dfNorm <- data.frame(x=i, density=dnorm(i, 0, 1), distribution=pnorm(i, 0, 1))
+qNorm <- data.frame(x=p, quantile=qnorm(p, 0, 1))
 
+plot_ly(x= ~dfNorm$x, y= ~dfNorm$density, type="scatter", mode="lines", name="Density") %>%
+  add_lines(x= ~dfNorm$x, y= ~dfNorm$distribution, name="Distribution") %>%
+  layout(title="Uniform Curve", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~qWeib$x, y= ~qWeib$quantile, type="scatter", mode="lines", name="Quant") %>%
+  layout(title="Uniform Distribution", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
+```
+## Student's T (df=1)
+```{r Student T, warning=F, message=F}
+i <- seq(-5, 5, 0.1)
+p <- seq(0.001, 0.999, 0.001)
+dfT <- data.frame(x=i, density=dt(i, 1), distribution=pt(i, 1))
+qT <- data.frame(x=p, quantile=qt(p, 1))
+
+plot_ly(x= ~dfT$x, y= ~dfT$density, type="scatter", mode="lines", name="Density") %>%
+  add_lines(x= ~dfT$x, y= ~dfT$distribution, name="Distribution") %>%
+  layout(title="Student's T Curve", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~qT$x, y= ~qT$quantile, type="scatter", mode="lines", name="Quant") %>%
+  layout(title="Student's T Distribution", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
 ```
