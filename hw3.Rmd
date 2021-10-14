@@ -27,17 +27,19 @@ output:
  * I certify that the following paper represents my own independent work and conforms with the guidelines of academic honesty described in the UMich student handbook.
  * Remember that students are allowed and encouraged to discuss, on a conceptual level, the problems with your class mates, however, this can not involve the exchange of actual code, printouts, solutions, e-mails or other explicit electronic or paper handouts.
 
-
-```{r Problem 3.1, warning=F, message=F}
+```{r Libararies, warning=F, message=F}
 library(reshape)
 library(reshape2)
 library(DT)
 library(plotly)
 library(rvest)
+library(moments)
+library(factoextra)
+library(Rtsne)
 ```
+
 # HW Problem 3.1 
 For each of the probability distributions: , Uniform(1,10), Student's T (df=1), Cauchy, Negative Binomial(10, 0.5), Chi-Square (df=10), Poisson (5), 
-
 1) Generate the following plots functions:
   <ul>
     <li>Density</li>
@@ -47,43 +49,273 @@ For each of the probability distributions: , Uniform(1,10), Student's T (df=1), 
 2) Report the first 4 moments (mean, variance, skewness, kurtosis)
 3) Complete the discrete probability distributions table below. The cell values in the table represent the values of the quantile function for the corresponding p-value (column) and distribution (row).
 
-## Weibull (1,5) Distribution
+## Weibull's (1,5) Distribution
 ```{r Weibull, warning=F, message=F}
-i <- seq(0, 10, 0.1)
+i <- seq(0, 25, 0.1)
 p <- seq(0.001, 0.999, 0.001)
 dfWeib <- data.frame(x=i, density=dweibull(i, 1, 5), distribution=pweibull(i, 1, 5))
-qWeib <- data.frame(x=p, quantile=qweibull(p, 1, 5))
+qDFWeib <- data.frame(x=p, quantile=qweibull(p, 1, 5))
 
-plot_ly(x= ~dfWeib$x, y= ~dfWeib$density, type="scatter", mode="lines", name="Density") %>%
-  add_lines(x= ~dfWeib$x, y= ~dfWeib$distribution, name="Distribution") %>%
-  layout(title="Weibull Curve", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
-plot_ly(x= ~qWeib$x, y= ~qWeib$quantile, type="scatter", mode="lines", name="Quant") %>%
-  layout(title="Weibull Quantile", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
+plot_ly(x= ~dfWeib$x, y= ~dfWeib$density, type="scatter", mode="lines", name="PDF") %>%
+  layout(title="Weibull's (1,5) Density Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~dfWeib$x, y= ~dfWeib$distribution, type="scatter", mode="lines", name="CDF") %>%
+  layout(title="Weibull's (1,5) Distribution Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~qDFWeib$x, y= ~qDFWeib$quantile, type="scatter", mode="lines", name="Quant") %>%
+  layout(title="Weibull's (1,5) Quantile Function", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
 ```
 
 ## Uniform (1,10) Distribution
 ```{r Uniform, warning=F, message=F}
-i <- seq(-5, 5, 0.1)
+i <- seq(-45, 45, 0.1)
 p <- seq(0.001, 0.999, 0.001)
-dfNorm <- data.frame(x=i, density=dnorm(i, 0, 1), distribution=pnorm(i, 0, 1))
-qNorm <- data.frame(x=p, quantile=qnorm(p, 0, 1))
+dfNorm <- data.frame(x=i, density=dnorm(i, 1, 10), distribution=pnorm(i, 1, 10))
+qDFNorm <- data.frame(x=p, quantile=qnorm(p, 1, 10))
 
-plot_ly(x= ~dfNorm$x, y= ~dfNorm$density, type="scatter", mode="lines", name="Density") %>%
-  add_lines(x= ~dfNorm$x, y= ~dfNorm$distribution, name="Distribution") %>%
-  layout(title="Uniform Curve", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
-plot_ly(x= ~qWeib$x, y= ~qWeib$quantile, type="scatter", mode="lines", name="Quant") %>%
-  layout(title="Uniform Distribution", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
+plot_ly(x= ~dfNorm$x, y= ~dfNorm$density, type="scatter", mode="lines", name="PDF") %>%
+  layout(title="Uniform (1,10) Density Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~dfNorm$x, y= ~dfNorm$distribution, type="scatter", mode="lines", name="CDF") %>%
+  layout(title="Uniform (1,10) Distribution Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~qDFNorm$x, y= ~qDFNorm$quantile, type="scatter", mode="lines", name="Quant") %>%
+  layout(title="Uniform (1,10) Quantile Function", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
 ```
-## Student's T (df=1)
+
+## Student's T (df=1) Distribution
 ```{r Student T, warning=F, message=F}
-i <- seq(-5, 5, 0.1)
+i <- seq(-10, 10, 0.1)
 p <- seq(0.001, 0.999, 0.001)
 dfT <- data.frame(x=i, density=dt(i, 1), distribution=pt(i, 1))
-qT <- data.frame(x=p, quantile=qt(p, 1))
+qDFT <- data.frame(x=p, quantile=qt(p, 1))
 
-plot_ly(x= ~dfT$x, y= ~dfT$density, type="scatter", mode="lines", name="Density") %>%
-  add_lines(x= ~dfT$x, y= ~dfT$distribution, name="Distribution") %>%
-  layout(title="Student's T Curve", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
-plot_ly(x= ~qT$x, y= ~qT$quantile, type="scatter", mode="lines", name="Quant") %>%
-  layout(title="Student's T Distribution", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
+plot_ly(x= ~dfT$x, y= ~dfT$density, type="scatter", mode="lines", name="PDF") %>%
+  layout(title="Student's T (df=1) Density Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~dfT$x, y= ~dfT$distribution, type="scatter", mode="lines", name="CDF") %>%
+  layout(title="Student's T (df=1) Distribution Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~qDFT$x, y= ~qDFT$quantile, type="scatter", mode="lines", name="Quant") %>%
+  layout(title="Student's T (df=1) Quantile Function", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
 ```
+
+## Cauchy Distribution
+```{r Cauchy, warning=F, message=F}
+i <- seq(-10, 10, 0.1)
+p <- seq(0.001, 0.999, 0.001)
+dfCauchy <- data.frame(x=i, density=dcauchy(i), distribution=pcauchy(i))
+qDFCauchy <- data.frame(x=p, quantile=qcauchy(p))
+
+plot_ly(x= ~dfCauchy$x, y= ~dfCauchy$density, type="scatter", mode="lines", name="PDF") %>%
+  layout(title="Cauchy Density Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~dfCauchy$x, y= ~dfCauchy$distribution, type="scatter", mode="lines", name="CDF") %>%
+  layout(title="Cauchy Distribution Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~qDFCauchy$x, y= ~qDFCauchy$quantile, type="scatter", mode="lines", name="Quant") %>%
+  layout(title="Cauchy Quantile Function", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
+```
+
+## Negative Binomial (10, 0.5) Distribution
+```{r Negative Binomial, warning=F, message=F}
+i <- seq(0, 20, 1)
+p <- seq(0.001, 0.999, 0.001)
+dfNBinom <- data.frame(x=i, density=dnbinom(i, 10, 0.5), distribution=pnbinom(i, 10, 0.5))
+qDFNBinom <- data.frame(x=p, quantile=qnbinom(p, 10, 0.5))
+
+plot_ly(x= ~dfNBinom$x, y= ~dfNBinom$density, type="scatter", mode="lines", name="PDF") %>%
+  layout(title="Negative Binomial (10, 0.5) Density Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~dfNBinom$x, y= ~dfNBinom$distribution, type="scatter", mode="lines", name="CDF") %>%
+  layout(title="Negative Binomial (10, 0.5) Distribution Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~qDFNBinom$x, y= ~qDFNBinom$quantile, type="scatter", mode="lines", name="Quant") %>%
+  layout(title="Negative Binomial (10, 0.5) Qunatile Function", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
+```
+
+
+## Chi-Square (df=10) Distribution
+```{r Chi-Square Distribution, warning=F, message=F}
+i <- seq(0, 20, 1)
+p <- seq(0.001, 0.999, 0.001)
+dfChisq <- data.frame(x=i, density=dchisq(i, 10), distribution=pchisq(i, 10))
+qDFChisq <- data.frame(x=p, quantile=qchisq(p, 10))
+
+plot_ly(x= ~dfChisq$x, y= ~dfChisq$density, type="scatter", mode="lines", name="PDF") %>%
+  layout(title="Chi-Square (df=10) Density Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~dfChisq$x, y= ~dfChisq$distribution, type="scatter", mode="lines", name="CDF") %>%
+  layout(title="Chi-Square (df=10) Distribution Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~qDFChisq$x, y= ~qDFChisq$quantile, type="scatter", mode="lines", name="Quant") %>%
+  layout(title="Chi-Square (df=10) Quantile Function", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
+```
+
+## Poisson (5) Distribution
+```{r Poisson (5) Distribution, warning=F, message=F}
+i <- seq(0, 20, 1)
+p <- seq(0.001, 0.999, 0.001)
+dfPoisson <- data.frame(x=i, density=dpois(i, 5), distribution=ppois(i, 5))
+qDFPoisson <- data.frame(x=p, quantile=qpois(p, 5))
+
+plot_ly(x= ~dfPoisson$x, y= ~dfPoisson$density, type="scatter", mode="lines", name="PDF") %>%
+  layout(title="Poisson (5) Density Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~dfPoisson$x, y= ~dfPoisson$distribution, type="scatter", mode="lines", name="CDF") %>%
+  layout(title="Poisson (5) Distribution Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
+plot_ly(x= ~qDFPoisson$x, y= ~qDFPoisson$quantile, type="scatter", mode="lines", name="Quant") %>%
+  layout(title="Poisson (5) Quantile Function", legend=list(orientation="h"), xaxis=list(title="Probabilities"), yaxis=list(title="Values"))
+```
+
+## First 4 Moments: Mean, Variance, Skewness, Kurtosis
+```{r Four Moments, warning=F, message=F}
+listDens <- list()
+listDens[[1]] <- as.list(dfWeib)["density"]
+listDens[[2]] <- as.list(dfNorm)["density"]
+listDens[[3]] <- as.list(dfT)["density"]
+listDens[[4]] <- as.list(dfCauchy)["density"]
+listDens[[5]] <- as.list(dfNBinom)["density"]
+listDens[[6]] <- as.list(dfChisq)["density"]
+listDens[[7]] <- as.list(dfPoisson)["density"]
+dfResultsMoments <- data.frame(matrix(ncol=4, nrow=0))
+for (l in listDens) {
+  rDF <- c(sapply(l, mean), lapply(l, var), lapply(l, skewness), lapply(l, kurtosis))
+  names(rDF) <- c("Mean", "Variance", "Skewness", "Kurtosis")
+  dfResultsMoments <- rbind(dfResultsMoments, c(rDF$Mean, rDF$Variance, rDF$Skewness, rDF$Kurtosis))
+}
+colnames(dfResultsMoments) <- c("Mean","Variance","Skewness","Kurtosis")
+rownames(dfResultsMoments) <- c("Weibull's(1,5)", "Uniform (1,10)", "Student's T (df=1)", "Cauchy", "Negative Binomial (10, 0.5)", "Chi-Square (df=10)", "Poisson (5)")
+print(dfResultsMoments)
+```
+
+## Discrete Probability Distributions of the Quantile Functions
+```{r Quantile Probabilities, warning=F, message=F}
+dfProbabilities <- data.frame(matrix(ncol=0, nrow=7))
+forSeq <- seq(0.1,0.9,0.1)
+for (i in forSeq) {
+  vecProb <- c(
+    subset(qDFWeib, qDFWeib$x == i)$quantile,
+    subset(qDFNorm, qDFNorm$x == i)$quantile,
+    subset(qDFT, qDFT$x == i)$quantile,
+    subset(qDFCauchy, qDFCauchy$x == i)$quantile,
+    subset(qDFNBinom, qDFNBinom$x == i)$quantile,
+    subset(qDFChisq, qDFChisq$x == i)$quantile,
+    subset(qDFPoisson, qDFPoisson$x == i)$quantile
+  )
+  dfProbabilities[paste("P", i, "")] <- vecProb
+}
+rownames(dfProbabilities) <- c("Weibull's(1,5)", "Uniform (1,10)", "Student's T (df=1)", "Cauchy", "Negative Binomial (10, 0.5)", "Chi-Square (df=10)", "Poisson (5)")
+print(dfProbabilities)
+```
+
+# HW Problem 3.2
+Solve the following system of linear equations and validate your solution. Validate your solution.
+
+6x + 3y - 3z + w = 2
+7x + y + 2z + 2w = 5
+5x + 3y - 3z + w = 3
+-6x - 2y + 3z + 0w = 6
+```{r Matrix Equations, warning=F, message=F}
+A <- t(matrix(c(6,3,-3,1,7,1,2,2,5,3,-3,1,-6,-2,3,0),nrow = 4, ncol = 4))
+b <- c(2,5,3,6)
+xyzw <- solve(A, b)
+xyzw
+LHS <- A %*% xyzw
+round(LHS-b, 6)
+
+```
+
+# HW Problem 3.3
+Use PCA and t-SNE to analyze and interpret the monthly US Federal Reserve Monetary-Base Data (1959-2009)
+
+## PCA Analysis
+```{r PCA scree, warning=F, message=F}
+urlUSFedRes <- read_html("http://wiki.stat.ucla.edu/socr/index.php/SOCR_Data_MonetaryBase1959_2009") 
+dfFedResWithDates <- html_table(html_nodes(urlUSFedRes, "table")[[2]])
+dfFedRes <- dfFedResWithDates[, -1]
+savingsToCategory <- function(value) {
+  if(value > 6000)
+    category <- 4
+  else if (value > 4000 && value <= 6000)
+    category <- 3
+  else if (value > 2000 && value <= 4000)
+    category <- 2
+  else
+    category <- 1
+  return(category)
+}
+catToColor <- function(category) {
+  mapping = c("red","brown","blue","green")
+  return(mapping[category])
+}
+train <- dfFedRes
+train.labels <- sapply(dfFedRes$SAVINGSL, savingsToCategory)
+train$label <- sapply(dfFedRes$SAVINGSL, savingsToCategory)
+train$label <- as.factor(train$label)
+train.labels.colors <- sapply(train$label, catToColor)
+names(train.labels.colors) <- train$label
+
+
+pca1 <- prcomp(as.matrix(dfFedRes), center=T, scale=T)
+summary(pca1)
+
+eigen<-get_eigenvalue(pca1)
+eigen
+
+#plot_ly(x = c(1:length(pca1$sdev)), y = (pca1$sdev)^2, name="Scree", type="bar") %>%
+plot_ly(x = c(1:length(eigen$eigenvalue)), y = eigen$variance.percent, name="Scree", type="bar") %>%
+  layout(title="Scree Plot", xaxis=list(title="PC's"), yaxis=list(title="Percentage"))
+```
+Based upon the PCA reduction model as shown by the the Scree bar chart, PC1 and PC2 accounts for the majority of the variations.
+
+
+```{r PCA projections, warning=F, message=F}
+scores <- pca1$x
+loadings <- pca1$rotation
+loadings
+scaleLoad <- 100
+
+p <- plot_ly() %>%
+  add_trace(x=scores[,1], y=scores[,2], type="scatter", mode="markers", name=train$label,
+    marker = list(color=train.labels.colors, opacity = 0.7), showLegend=F) %>%
+  layout(title = "Dimensional Reduction Model of SOCR Data Monetary Base (1959-2009) from 7D-2D", 
+         xaxis = list(title = rownames(loadings)[1]), yaxis = list(title = rownames(loadings)[2]))
+p
+
+modelFedRes <- princomp(dfFedRes, scale=T)
+biplot(modelFedRes)
+```
+
+
+```{r PCA bootstrap, warning=F, message=F}
+set.seed(12)
+num_boot = 1000
+bootstrap_it = function(i) {
+  data_resample = dfFedRes[sample(1:nrow(dfFedRes), nrow(dfFedRes), replace=TRUE),] 
+  p_resample = princomp(data_resample,cor = T) 
+  return(sum(p_resample$sdev[1:3]^2)/sum(p_resample$sdev^2))
+  }
+
+pco = data.frame(per=sapply(1:num_boot, bootstrap_it)) 
+quantile(pco$per, probs = c(0.025,0.975))  # specify 95-th % Confidence Interval
+
+corpp = sum(pca1$sdev[1:3]^2)/sum(pca1$sdev^2)
+
+plot_ly(x = pco$per, type = "histogram", name = "Data Histogram") %>% 
+    layout(title='Histogram of a Bootstrap Simulation <br /> Percent of Data Variability Captured by first 3 PCs', 
+           xaxis = list(title = "Percent of Variability"), yaxis = list(title = "Frequency Count"), bargap=0.1)
+```
+
+## t-SNE Analysis
+Run the t-SNE, tracking the execution time (artificially reducing the sample-size to get reasonable calculation time)
+```{r t-SNE analysis, warning=F, message=F}
+execTime_tSNE <- system.time(tsne_FedRes <- Rtsne(train[,], dims = 2, perplexity=30, verbose=TRUE, max_iter = 1000)); execTime_tSNE
+
+dfTSNE <- data.frame(tsne_FedRes$Y, train.labels.colors)
+plot_ly(dfTSNE, x = ~X1, y = ~X2, mode = 'text') %>%
+  add_text(text = names(train.labels.colors), textfont = list(color = dfTSNE$train.labels.colors)) %>%
+  layout(title = "t-SNE 2D Embedding", xaxis = list(title = ""),  yaxis = list(title = ""))
+```
+
+# HW Problem 3.4
+Lease Squares Estimation
+Use the SOCR Knee Pain dataset (Links to an external site.), extract the RB = Right-Back locations (x,y), and fit in a linear model for vertical location (y) in terms of the horizontal location (x). Display the linear model on top of the scatter plot of the paired data.
+```{r Least Squares, message=FALSE, warning=FALSE}
+urlSOCR <- read_html("https://wiki.socr.umich.edu/index.php/SOCR_Data_KneePainData_041409")
+dfSOCR <- html_table(html_nodes(urlSOCR, "table")[[2]])
+dfSOCRRB <- subset(dfSOCR, dfSOCR$View=="RB")
+fit <- lm(Y ~ x, data = dfSOCRRB)
+
+plot_ly() %>%
+  add_markers(x = dfSOCRRB$x, y = dfSOCRRB$Y, name="Pain Location") %>%
+  add_lines(x = dfSOCRRB$x, y= fit$fitted, name="Least Squares") %>%
+  layout(title = "SOCR Data Knee Pain Data Least Squares Estimation", 
+         xaxis = list(title="X-Location"), yaxis=list(title="Y-Location"))
