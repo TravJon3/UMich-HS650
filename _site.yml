@@ -2,6 +2,10 @@ name: "Kevin Wu's Homework Page for University of Michigan - HS650"
 navbar:
   title: "HS650"
   left:
+    - text: "Final Project"
+      href: final_project.html
+    - text: "Mental Health"
+      href: mental_health.html
     - text: "Homework 3"
       href: hw3.html
     - text: "Homework 2"
