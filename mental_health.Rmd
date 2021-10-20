@@ -86,17 +86,15 @@ library(tm)
 library(stringi)
 library(prettyR)
 library(plotly)
-load(file = ".RData")
-
 ```
 
 # Data Preparation
 ```{r Data Preparation, warning=F, message=F}
 #load RDA data frames into environment
-con2019Q1 <- url("http://kevinwurn.github.io/UMich-HS650/final_project_files/2019Q1HealthReformMonitoringSurvey-da37922.0001.rda")
+con2019Q1 <- url("http://kevinwurn.github.io/UMich-HS650/mental_health_files/2019Q1HealthReformMonitoringSurvey-da37922.0001.rda")
 load(con2019Q1)
 close(con2019Q1)
-con2019Q3 <- url("http://kevinwurn.github.io/UMich-HS650/final_project_files/2019Q3HealthReformMonitoringSurvey-da37630.0001.rda")
+con2019Q3 <- url("http://kevinwurn.github.io/UMich-HS650/mental_health_files/2019Q3HealthReformMonitoringSurvey-da37630.0001.rda")
 load(con2019Q3)
 close(con2019Q3)
 

@@ -42,7 +42,7 @@ library(plotly)
 # Data Preparation
 ```{r Data Preparation, warning=F, message=F}
 #load and convert Stata data into R dataframe frames into environment
-df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project/masterfile.dta", encoding = "latin1")
+df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project_files/masterfile.dta", encoding = "latin1")
 ncol(df)
 nrow(df)
 print(paste0("1: ", names(attributes(df[[4]])$labels[1]), "2: ", names(attributes(df[[4]])$labels[2])))
@@ -52,7 +52,10 @@ convertDataframe = function(strType) {
   mapping <- c("%8.0g"="byte", "%8.0g"="int", "%12.0g"="long", "%9.0g"="float", "%10.0g"="double", "%#s"="str#", "%9s"="strL")
   mapping[strType]
 }
+```
 
+# Data Summary
+```{r Data Summary, warning=F, message=F}
 dfDisplay <- data.frame(matrix(ncol = 0, nrow = ncol(df)))
 vectName <- vector(length = ncol(df))
 vectLabel <- vector(length = ncol(df))
@@ -91,3 +94,4 @@ datatable(dfDisplay, options = list(
   ), 
   escape=F
 )
+```
