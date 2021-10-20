@@ -19,7 +19,7 @@ output:
 ---
 **Final Project.Rmd**.
 
- * HW #3
+ * Final Project
  * Fall 2021, DSPA (HS650)
  * Name: Kevin Wu
  * SID: ####0012 (last 4 digits only)
@@ -29,162 +29,65 @@ output:
 
 
 # Final Project Introduction
-dependent variable general sense of well being
-no quantitative way to measure that factor nor clinical predictors
-survey post ACA that measures this in Michigan
-unfortunately nonthing prior to establish baseline
-identify predictive indicators of well being by studying those with higher levels vs those with lower levels
-inherent geo-socio-economic biases 
+
 
 ```{r Introduction, warning=F, message=F}
 
-
-#---------------------------------------------------------------------------
-# factor_to_numeric_icpsr.R
-# 2012/12/06
-#
-# Convert R factor variable back to numeric in an ICPSR-produced R data
-# frame. This works because the original numeric codes were prepended by
-# ICSPR to the factor levels in the process of converting the original
-# numeric categorical variable to factor during R data frame generation.
-#
-# REQUIRES add.value.labels function from prettyR package
-#    http://cran.r-project.org/web/packages/prettyR/index.html
-#
-#
-# Substitute the actual variable and data frame names for da99999.0001$MYVAR
-# placeholders in syntax below.
-#
-#    data frame = da99999.0001
-#    variable   = MYVAR
-#
-#
-# Line-by-line comments:
-#
-# (1) Load prettyR package
-#
-# (2) Create object (lbls) containing the factor levels for the specified
-#     variable.  Sort will be numeric as original codes (zero-padded, if
-#     necessary) were preserved in the factor levels.
-#
-# (3) Strip original codes from lbls, leaving only the value labels, e.g.,
-#       "(01) STRONGLY DISAGREE" becomes "STRONGLY DISAGREE"
-#
-# (4) Strip labels from data, leaving only the original codes, e.g.,
-#       "(01) STRONGLY DISAGREE" becomes "1"
-#
-#     Then, coerce variable to numeric
-#
-# (5) Add value labels, making this a named numeric vector
-#---------------------------------------------------------------------------
-#lbls <- sort(levels(da99999.0001$MYVAR))
-#lbls <- (sub("^\\([0-9]+\\) +(.+$)", "\\1", lbls))
-#da99999.0001$MYVAR <- as.numeric(sub("^\\(0*([0-9]+)\\).+$", "\\1", da99999.0001$MYVAR))
-#da99999.0001$MYVAR <- add.value.labels(da99999.0001$MYVAR, lbls)
-
-library(tm)
-library(stringi)
-library(prettyR)
+library(haven)
+library(stringr)
+library(DT)
 library(plotly)
-load(file = ".RData")
-
 ```
 
 # Data Preparation
 ```{r Data Preparation, warning=F, message=F}
-#load RDA data frames into environment
-con2019Q1 <- url("http://kevinwurn.github.io/UMich-HS650/final_project_files/2019Q1HealthReformMonitoringSurvey-da37922.0001.rda")
-load(con2019Q1)
-close(con2019Q1)
-con2019Q3 <- url("http://kevinwurn.github.io/UMich-HS650/final_project_files/2019Q3HealthReformMonitoringSurvey-da37630.0001.rda")
-load(con2019Q3)
-close(con2019Q3)
+#load and convert Stata data into R dataframe frames into environment
+df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project/masterfile.dta", encoding = "latin1")
+ncol(df)
+nrow(df)
+print(paste0("1: ", names(attributes(df[[4]])$labels[1]), "2: ", names(attributes(df[[4]])$labels[2])))
 
-#rename dataframes
-df2019Q1 <- da37922.0001
-df2019Q3 <- da37630.0001
 
-#add year/quarter stamps - change RID 
-df2019Q1$year <- 2019
-df2019Q1$quarter <- 0
-df2019Q1$quarter <- as.factor(df2019Q1$quarter)
-df2019Q1$RID <- paste0("A", df2019Q1$RID)
-
-df2019Q3$year <- 2019
-df2019Q3$quarter <- 1
-df2019Q3$quarter <- as.factor(df2019Q3$quarter)
-df2019Q3$RID <- paste0("B", df2019Q3$RID)
-
-#merge the two dataframes
-colnames2019Q1 <- names(df2019Q1)
-colnames2019Q3 <- names(df2019Q3)
-
-#
-removenames2019Q1 <- removeWords(colnames2019Q1,colnames2019Q3)
-colnames2019Q1 <- removeWords(colnames2019Q1, removenames2019Q1)
-
-removenames2019Q3 <- removeWords(colnames2019Q3,colnames2019Q1)
-colnames2019Q3 <- removeWords(colnames2019Q3, removenames2019Q3)
-
-colnamesInnerJoin <- stri_remove_empty_na(colnames2019Q3)
-
-df2019Q1 <- df2019Q1[colnamesInnerJoin]
-df2019Q3 <- df2019Q3[colnamesInnerJoin]
-df2019 <- rbind(df2019Q1, df2019Q3)
-
-#clean up / factorialize the data1
-for (i in 1:ncol(df2019)) {
-  column <- df2019[,i]
-  df2019[,i] <- as.numeric(sub("^\\(0*([0-9]+)\\).+$", "\\1", column))
+convertDataframe = function(strType) {
+  mapping <- c("%8.0g"="byte", "%8.0g"="int", "%12.0g"="long", "%9.0g"="float", "%10.0g"="double", "%#s"="str#", "%9s"="strL")
+  mapping[strType]
 }
-```
 
-# Data Summary
-median is 0 days.. good.  50% respondents.
+dfDisplay <- data.frame(matrix(ncol = 0, nrow = ncol(df)))
+vectName <- vector(length = ncol(df))
+vectLabel <- vector(length = ncol(df))
+vectFormat <- vector(length = ncol(df))
+vectDescriptions <- vector(length = ncol(df))
 
-CopyQ3
-
-CopyQ4
-
-histogram shows... increments of 5... why?  because.. people naturally think in terms of 5 days.
-interestingly, despite it's right skewness... mean is still   4-5 days out of 30 days - roughly 15% which is still telling... that when people are sick, they are sick.
-
-Doesn't show it, but
-
-```{r Data Summary, message=FALSE, warning=FALSE}
-#had to trim out the NA to calculate the mean/median, otherwise, I would receive NA as the result.
-mean(df2019$Q3, na.rm = T)
-median(df2019$Q3, na.rm = T)
-length(df2019$Q3)
-
-
-plot_ly() %>%
-  add_histogram(df2019$Q3) %>%
-  layout(title="Histogram over 30 Days Where Mental Health Was Not Good",
-    xaxis=list(title="Number of Days"),
-    yaxis=list(title="Number of Participants")
-  )
-
-#HIST1 - A Place to go for healthcare advice
-dfSubPlaceToGo <- subset(df2019, Q4 == 1 || Q4 == 2)
-#HIST2 - No place to go for healthcare advice
-dfSubNoPlaceToGo <- subset(df2019, Q4 == 3)
-plot_ly() %>%
-  #HIST1
-  add_histogram(~dfSubPlaceToGo$Q3, name="Those with Access to Advice") %>%
-  #HIST2
-  add_histogram(~dfSubNoPlaceToGo$Q3, name="Those without Access") %>%
-  layout(title="Histogram over 30 Days Where Mental Health Was Not Good",
-    xaxis=list(title="Number of Days"),
-    yaxis=list(title="Number of Participants")
-  )
-
-nullcount <- 0
-for (i in 1:ncol(df2019)) {
-  column <- df2019[,i]
-  columnCount <- sum(is.na(column))
-  if (columnCount > 0)
-    nullcount <- nullcount + 1
-  print(paste0(names(df2019[,i]), " has ", columnCount, " null entries"))
+for(i in 1:ncol(df)) {
+  vectName[i] <- names(df[, i])
+  if(is.null(attributes(df[[i]])$label) == F)
+    vectLabel[i] <- attributes(df[[i]])$label
+  if(is.null(attributes(df[[i]])$format.stata) == F)
+    vectFormat[i] <- lapply(attributes(df[[i]])$format.stata, convertDataframe)
+  if(is.null(attributes(df[[i]])$class) == F && attributes(df[[i]])$class[3] == "double")
+    vectFormat[i] <- "double"
+  if(is.null(attributes(df[[i]])$labels) == F && length(attributes(df[[i]])$labels) > 0) {
+    vectLabels <- list(length(attributes(df[[i]])$labels))
+    for(j in 1:length(attributes(df[[i]])$labels)) {
+      vectLabels[j] <- as.character(attributes(df[[i]])$labels[j])
+      if(is.null(names(attributes(df[[i]])$labels[j])) == F && as.character(names(attributes(df[[i]])$labels[j])) != "Actual number")
+        vectLabels[j] <- paste(c(vectLabels[j], ":", as.character(names(attributes(df[[i]])$labels[j]))), collapse = " ")
+      else if(as.character(names(attributes(df[[i]])$labels[j])) == "Actual number")
+        vectLabels[j] <- paste0(vectLabels[j], ":::")
+    }
+    vectDescriptions[i] <- str_flatten(vectLabels, "<br />")
+    vectDescriptions[i] <- str_replace_all(vectDescriptions[i], ":::<br />", ", ")
+  }
 }
-print (nullcount)
+dfDisplay$ColumnName <- vectName
+dfDisplay$Label <- vectLabel
+dfDisplay$Format<- vectFormat
+dfDisplay$Labels <- vectDescriptions
+
+datatable(dfDisplay, options = list(
+  pageLength=100,
+  lengthMenu=c(20,50,100,150,250,582)
+  ), 
+  escape=F
+)
