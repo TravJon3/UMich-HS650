@@ -2,6 +2,8 @@ name: "Kevin Wu's Homework Page for University of Michigan - HS650"
 navbar:
   title: "HS650"
   left:
+    - text: "Homework 3"
+      href: hw3.html
     - text: "Homework 2"
       href: hw2.html
     - text: "Homework 1"

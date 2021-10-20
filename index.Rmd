@@ -19,4 +19,5 @@ This is the home page for University of Michigan HS650 class.  This site is stil
 
 1. [Homework 1](/UMich-HS650/hw1.html)
 2. [Homework 2](/UMich-HS650/hw2.html)
+2. [Homework 3](/UMich-HS650/hw3.html)
 </div>
