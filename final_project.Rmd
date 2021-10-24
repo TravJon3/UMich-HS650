@@ -43,19 +43,17 @@ library(plotly)
 ```{r Data Preparation, warning=F, message=F}
 #load and convert Stata data into R dataframe frames into environment
 df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project_files/masterfile.dta", encoding = "latin1")
+# dfChild02_11vars <- read_dta("/Users/Kevin/Downloads/From Adolescence to Adulthood - Are Americas Young Adults Flourishing/Cleaning-and-merging/child02-11vars.dta", encoding = "latin1")
+# dfCleanMainPCGFile <- read_dta("/Users/Kevin/Downloads/From Adolescence to Adulthood - Are Americas Young Adults Flourishing/Cleaning-and-merging/cleanmain+pcgfile.dta", encoding = "latin1")
+# dfIDMergFilePCG <- read_dta("/Users/Kevin/Downloads/From Adolescence to Adulthood - Are Americas Young Adults Flourishing/Cleaning-and-merging/idmergefile-pcg.dta", encoding = "latin1")
 ncol(df)
 nrow(df)
-print(paste0("1: ", names(attributes(df[[4]])$labels[1]), "2: ", names(attributes(df[[4]])$labels[2])))
 
-
-convertDataframe = function(strType) {
+convertStatDataType = function(strType) {
   mapping <- c("%8.0g"="byte", "%8.0g"="int", "%12.0g"="long", "%9.0g"="float", "%10.0g"="double", "%#s"="str#", "%9s"="strL")
   mapping[strType]
 }
-```
 
-# Data Summary
-```{r Data Summary, warning=F, message=F}
 dfDisplay <- data.frame(matrix(ncol = 0, nrow = ncol(df)))
 vectName <- vector(length = ncol(df))
 vectLabel <- vector(length = ncol(df))
@@ -67,7 +65,7 @@ for(i in 1:ncol(df)) {
   if(is.null(attributes(df[[i]])$label) == F)
     vectLabel[i] <- attributes(df[[i]])$label
   if(is.null(attributes(df[[i]])$format.stata) == F)
-    vectFormat[i] <- lapply(attributes(df[[i]])$format.stata, convertDataframe)
+    vectFormat[i] <- lapply(attributes(df[[i]])$format.stata, convertStatDataType)
   if(is.null(attributes(df[[i]])$class) == F && attributes(df[[i]])$class[3] == "double")
     vectFormat[i] <- "double"
   if(is.null(attributes(df[[i]])$labels) == F && length(attributes(df[[i]])$labels) > 0) {
@@ -89,9 +87,12 @@ dfDisplay$Format<- vectFormat
 dfDisplay$Labels <- vectDescriptions
 
 datatable(dfDisplay, options = list(
-  pageLength=100,
+  pageLength=50,
   lengthMenu=c(20,50,100,150,250,582)
   ), 
   escape=F
 )
 ```
+
+# Data Summary
+```{r Data Summary, warning=F, message=F}

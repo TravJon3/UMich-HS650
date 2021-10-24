@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Homework 4</title>
+
+<script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.9.4.1/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-1.57.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-1.57.1/plotly-latest.min.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HS650</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="final_project.html">Final Project</a>
+</li>
+<li>
+  <a href="mental_health.html">Mental Health</a>
+</li>
+<li>
+  <a href="hw3.html">Homework 3</a>
+</li>
+<li>
+  <a href="hw2.html">Homework 2</a>
+</li>
+<li>
+  <a href="hw1.html">Homework 1</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Homework 4</h1>
+<h3 class="subtitle"><h2>
+<u>Data Science and Predictive Analytics (HS650), Fall 2021</u>
+</h2></h3>
+<h4 class="author"><h3>
+Kevin Wu
+</h3></h4>
+<h4 class="date">October 2021</h4>
+
+</div>
+
+
+<p><strong>Homework_4_HS650_Fall_2021.Rmd</strong>.</p>
+<ul>
+<li>HW #4</li>
+<li>Fall 2021, DSPA (HS650)</li>
+<li>Name: Kevin Wu</li>
+<li>SID: ####0012 (last 4 digits only)</li>
+<li>UMich E-mail: <a href="mailto:kevinkwu@umich.edu" class="email">kevinkwu@umich.edu</a></li>
+<li>I certify that the following paper represents my own independent work and conforms with the guidelines of academic honesty described in the UMich student handbook.</li>
+<li>Remember that students are allowed and encouraged to discuss, on a conceptual level, the problems with your class mates, however, this can not involve the exchange of actual code, printouts, solutions, e-mails or other explicit electronic or paper handouts.</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tm)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wordcloud)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corpus)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span></code></pre></div>
+<div id="hw-problem-4.1" class="section level1" number="1">
+<h1 number="1"><span class="header-section-number">1</span> HW Problem 4.1</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>urlSOCR <span class="ot">&lt;-</span> <span class="fu">read_html</span>(<span class="st">&quot;http://wiki.socr.umich.edu/index.php/SOCR_Data_2011_US_JobsRanking#2011_Ranking_of_the_200_most_common_Jobs_in_the_US&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dfSOCR <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">html_table</span>(<span class="fu">html_nodes</span>(urlSOCR, <span class="st">&quot;table&quot;</span>)[[<span class="dv">1</span>]]))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>dfJSD <span class="ot">&lt;-</span> dfSOCR[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>dfJSD<span class="sc">$</span>Description <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&#39;_&#39;</span>, <span class="st">&#39; &#39;</span>, dfJSD<span class="sc">$</span>Description)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>corpusJSD <span class="ot">&lt;-</span> <span class="fu">Corpus</span>(<span class="fu">VectorSource</span>(dfJSD<span class="sc">$</span>Description))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>corpusClean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpusJSD, tolower)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>corpusClean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpusClean, removePunctuation)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>corpusClean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpusClean, stripWhitespace)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>corpusClean <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpusClean, removeWords, <span class="fu">c</span>(<span class="st">&quot;and&quot;</span>, <span class="st">&quot;the&quot;</span>, <span class="st">&quot;for&quot;</span>, <span class="st">&quot;other&quot;</span>, <span class="st">&quot;with&quot;</span>, <span class="st">&quot;from&quot;</span>))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>jsdDTM <span class="ot">&lt;-</span> <span class="fu">DocumentTermMatrix</span>(corpusClean)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">inspect</span>(jsdDTM)</span></code></pre></div>
+<pre><code>## &lt;&lt;DocumentTermMatrix (documents: 200, terms: 1087)&gt;&gt;
+## Non-/sparse entries: 1896/215504
+## Sparsity           : 99%
+## Maximal term length: 15
+## Weighting          : term frequency (tf)
+## Sample             :
+##      Terms
+## Docs  assists develops equipment individuals industrial maintains operates
+##   119       0        0         0           0          0         0        0
+##   129       0        0         0           0          0         0        0
+##   15        0        0         0           1          0         0        0
+##   16        0        0         0           0          0         0        0
+##   23        0        0         0           0          0         0        0
+##   50        0        0         0           0          0         0        0
+##   54        0        0         0           0          0         0        0
+##   72        0        0         0           0          0         0        0
+##   91        0        0         1           0          0         0        1
+##   94        1        0         0           0          0         0        0
+##      Terms
+## Docs  prepares repairs studies
+##   119        0       0       0
+##   129        1       0       0
+##   15         0       0       0
+##   16         0       0       1
+##   23         0       0       0
+##   50         0       0       0
+##   54         0       0       0
+##   72         0       0       0
+##   91         1       0       0
+##   94         0       0       0</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ly</span>(dfJSD, <span class="at">x =</span> <span class="sc">~</span>Stress_Category, <span class="at">y =</span> <span class="sc">~</span>Hiring_Potential, <span class="at">type=</span><span class="st">&quot;box&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">title =</span> <span class="st">&quot;Hiring Potential Given Stress Category&quot;</span>, <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Stress Category&quot;</span>), <span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Hiring Potential&quot;</span>))</span></code></pre></div>
+<div id="htmlwidget-1f765932d990b7d20f95" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1f765932d990b7d20f95">{"x":{"visdat":{"2e804efa542c":["function () ","plotlyVisDat"]},"cur_data":"2e804efa542c","attrs":{"2e804efa542c":{"x":{},"y":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"box"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Hiring Potential Given Stress Category","xaxis":{"domain":[0,1],"automargin":true,"title":"Stress Category"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Hiring Potential"},"hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"fillcolor":"rgba(31,119,180,0.5)","x":[1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,0,1,2,1,1,0,2,1,1,2,1,1,2,1,3,1,2,2,2,2,2,2,1,3,0,2,1,2,1,2,1,1,1,2,1,0,1,1,2,1,2,0,1,2,2,2,2,3,2,2,3,1,2,1,0,0,1,2,2,3,1,2,1,1,1,2,3,1,3,2,1,4,1,3,0,1,3,1,4,4,3,1,1,2,1,1,5,1,1,2,3,1,2,4,2,1,0,1,1,0,0,3,1,1,1,1,1,2,3,2,1,2,2,2,4,2,3,1,3,1,2,3,2,2,2,3,1,1,4,2,2,4,1,2,1,3,2,4,2,2,2,5,2,4,2,3,2,1,2,2,4,2,2,4,2,2,3,2,3,2,3,4,3,4,3,2],"y":[27.4,19.78,17.04,11.08,15.53,12.1,11.78,11.08,21.44,33.07,19.63,16.74,23.53,11.96,3.64,8.56,24.22,17.55,8.3,-0.6,17.43,14.33,5.39,10.47,4.27,4.7,19.93,-7.24,6.48,10,17.56,21.58,22.39,24.1,14.29,14.7,6.22,6.65,4.38,6.48,7.19,12.76,12.14,8.86,28.04,9.71,6.52,5.81,5.09,-5.25,1,17.65,19.11,-1.61,15.11,14.74,9.49,21.29,-8,25.75,-3.59,1.36,8.43,25.9,32.98,-16.96,15.69,14.26,-2.05,-2.89,5.66,10.14,7.54,1.19,14.44,7.69,6.45,-2.65,6.79,-3.54,8.79,10.11,20.65,-2.58,37.05,-0.17,6.35,12.85,-24.06,-20.18,-0.81,9.42,17.54,20.14,15.48,1.07,-3.66,-0.69,-9.28,8.32,20.58,-3.68,9.42,4.18,-9.33,-0.95,-3.53,5.93,-14.31,-11.36,4.7,-7.86,2.6,-2.59,10.1,-3.71,-6.53,-2.68,0.5,-12.35,5.53,-10.48,-11.43,11.03,16.57,-8.37,18.9,-0.44,13.97,-17.68,-10.53,-12.78,3.35,-14.37,-14.5,5.45,-6.78,-12.62,-5,-2.93,-6.75,3.82,-7.09,2.65,-31.88,10.89,10.38,-1.24,2.84,6.86,13.63,-11.22,1.08,-40.76,1.18,-3.93,5.19,5.22,0.53,9.5,0.79,-13.62,-0.84,3.39,0.67,7.71,-2.47,-1.25,-5.07,-2.91,2.28,-8.53,0.69,-3.58,-0.16,18.22,-11.25,7.85,8.74,-4.17,-6.4,-5.5,-2,8.14,2.09,0,-0.92,-14.25,4.5,-14.14,7.11,-30.29,-3.48,-15.74,4.68,5.27,-9.32,0.09,-12.73,-19.57],"type":"box","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ly</span>(dfJSD, <span class="at">x =</span> <span class="sc">~</span>Hiring_Potential, <span class="at">type=</span><span class="st">&quot;histogram&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">title =</span> <span class="st">&quot;Hiring Potential Distribution&quot;</span>, <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Hiring Potential&quot;</span>), <span class="at">bargap=</span><span class="fl">0.1</span>)</span></code></pre></div>
+<div id="htmlwidget-20d638bed3d8392e0218" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-20d638bed3d8392e0218">{"x":{"visdat":{"2e80e8a3cc0":["function () ","plotlyVisDat"]},"cur_data":"2e80e8a3cc0","attrs":{"2e80e8a3cc0":{"x":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"histogram"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Hiring Potential Distribution","xaxis":{"domain":[0,1],"automargin":true,"title":"Hiring Potential"},"bargap":0.1,"yaxis":{"domain":[0,1],"automargin":true},"hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[27.4,19.78,17.04,11.08,15.53,12.1,11.78,11.08,21.44,33.07,19.63,16.74,23.53,11.96,3.64,8.56,24.22,17.55,8.3,-0.6,17.43,14.33,5.39,10.47,4.27,4.7,19.93,-7.24,6.48,10,17.56,21.58,22.39,24.1,14.29,14.7,6.22,6.65,4.38,6.48,7.19,12.76,12.14,8.86,28.04,9.71,6.52,5.81,5.09,-5.25,1,17.65,19.11,-1.61,15.11,14.74,9.49,21.29,-8,25.75,-3.59,1.36,8.43,25.9,32.98,-16.96,15.69,14.26,-2.05,-2.89,5.66,10.14,7.54,1.19,14.44,7.69,6.45,-2.65,6.79,-3.54,8.79,10.11,20.65,-2.58,37.05,-0.17,6.35,12.85,-24.06,-20.18,-0.81,9.42,17.54,20.14,15.48,1.07,-3.66,-0.69,-9.28,8.32,20.58,-3.68,9.42,4.18,-9.33,-0.95,-3.53,5.93,-14.31,-11.36,4.7,-7.86,2.6,-2.59,10.1,-3.71,-6.53,-2.68,0.5,-12.35,5.53,-10.48,-11.43,11.03,16.57,-8.37,18.9,-0.44,13.97,-17.68,-10.53,-12.78,3.35,-14.37,-14.5,5.45,-6.78,-12.62,-5,-2.93,-6.75,3.82,-7.09,2.65,-31.88,10.89,10.38,-1.24,2.84,6.86,13.63,-11.22,1.08,-40.76,1.18,-3.93,5.19,5.22,0.53,9.5,0.79,-13.62,-0.84,3.39,0.67,7.71,-2.47,-1.25,-5.07,-2.91,2.28,-8.53,0.69,-3.58,-0.16,18.22,-11.25,7.85,8.74,-4.17,-6.4,-5.5,-2,8.14,2.09,0,-0.92,-14.25,4.5,-14.14,7.11,-30.29,-3.48,-15.74,4.68,5.27,-9.32,0.09,-12.73,-19.57],"type":"histogram","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ly</span>(dfJSD, <span class="at">x =</span> <span class="sc">~</span>Stress_Category, <span class="at">type=</span><span class="st">&quot;histogram&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">title =</span> <span class="st">&quot;Stress Category Distribution&quot;</span>, <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Stress Category&quot;</span>), <span class="at">bargap=</span><span class="fl">0.1</span>)</span></code></pre></div>
+<div id="htmlwidget-2da11ccb83411a3beb86" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2da11ccb83411a3beb86">{"x":{"visdat":{"2e80585a66cb":["function () ","plotlyVisDat"]},"cur_data":"2e80585a66cb","attrs":{"2e80585a66cb":{"x":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"histogram"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Stress Category Distribution","xaxis":{"domain":[0,1],"automargin":true,"title":"Stress Category"},"bargap":0.1,"yaxis":{"domain":[0,1],"automargin":true},"hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,0,1,2,1,1,0,2,1,1,2,1,1,2,1,3,1,2,2,2,2,2,2,1,3,0,2,1,2,1,2,1,1,1,2,1,0,1,1,2,1,2,0,1,2,2,2,2,3,2,2,3,1,2,1,0,0,1,2,2,3,1,2,1,1,1,2,3,1,3,2,1,4,1,3,0,1,3,1,4,4,3,1,1,2,1,1,5,1,1,2,3,1,2,4,2,1,0,1,1,0,0,3,1,1,1,1,1,2,3,2,1,2,2,2,4,2,3,1,3,1,2,3,2,2,2,3,1,1,4,2,2,4,1,2,1,3,2,4,2,2,2,5,2,4,2,3,2,1,2,2,4,2,2,4,2,2,3,2,3,2,3,4,3,4,3,2],"type":"histogram","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ly</span>(dfJSD, <span class="at">x =</span> <span class="sc">~</span>Stress_Category, <span class="at">y =</span> <span class="sc">~</span><span class="st">`</span><span class="at">Average_Income(USD)</span><span class="st">`</span>, <span class="at">type=</span><span class="st">&quot;box&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">title =</span> <span class="st">&quot;Average Income (USD) Given Stress Category&quot;</span>, <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Stress Category&quot;</span>), <span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Average Income (USD)&quot;</span>))</span></code></pre></div>
+<div id="htmlwidget-7d36bd86d18d56165b37" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7d36bd86d18d56165b37">{"x":{"visdat":{"2e80390d2b25":["function () ","plotlyVisDat"]},"cur_data":"2e80390d2b25","attrs":{"2e80390d2b25":{"x":{},"y":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"box"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Average Income (USD) Given Stress Category","xaxis":{"domain":[0,1],"automargin":true,"title":"Stress Category"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Average Income (USD)"},"hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"fillcolor":"rgba(31,119,180,0.5)","x":[1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,0,1,2,1,1,0,2,1,1,2,1,1,2,1,3,1,2,2,2,2,2,2,1,3,0,2,1,2,1,2,1,1,1,2,1,0,1,1,2,1,2,0,1,2,2,2,2,3,2,2,3,1,2,1,0,0,1,2,2,3,1,2,1,1,1,2,3,1,3,2,1,4,1,3,0,1,3,1,4,4,3,1,1,2,1,1,5,1,1,2,3,1,2,4,2,1,0,1,1,0,0,3,1,1,1,1,1,2,3,2,1,2,2,2,4,2,3,1,3,1,2,3,2,2,2,3,1,1,4,2,2,4,1,2,1,3,2,4,2,2,2,5,2,4,2,3,2,1,2,2,4,2,2,4,2,2,3,2,3,2,3,4,3,4,3,2],"y":[87140,94178,87204,73208,77153,85210,74278,63208,63144,67107,70122,60174,47153,106196,101164,61221,70193,47155,95130,87240,65143,105233,55239,109147,52127,63170,96163,71176,54197,55100,48256,68358,76139,30110,36129,109070,75122,55165,33138,31148,85119,35176,49214,83086,74104,53171,51352,51181,97109,58175,58200,121065,48211,113439,46211,81274,116249,62229,34200,53175,46141,77136,33143,51190,81198,33104,23169,43226,68195,33211,57166,54114,40154,45219,142144,24169,63145,83135,66179,51246,54279,113211,192065,55142,84105,24083,44335,53085,31194,26182,23119,160242,41154,64114,40148,46207,58134,44131,33272,51132,365258,51132,46342,25118,18067,62105,30147,73193,32969,37164,67470,30114,90160,161141,82210,33229,30147,56132,34150,33165,106153,34152,38157,54203,40357,31163,40090,50456,54197,28132,27147,47122,24135,27263,28150,54145,34122,38138,18100,18107,22125,46182,61291,30265,23112,24089,22138,47176,40184,36186,37163,38178,51308,31124,53118,49207,22119,59222,20153,39150,37179,37238,49116,51139,34167,53171,18053,47175,19093,43309,38128,31147,40169,52042,39184,45222,28375,49185,32174,38283,38160,29150,35200,32114,40209,19100,41208,34275,36150,39186,29211,34171,34152,35126,30168,21127,34168,32109,34127,32143],"type":"box","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ly</span>(dfJSD, <span class="at">x =</span> <span class="sc">~</span>Physical_Demand, <span class="at">y =</span> <span class="sc">~</span><span class="st">`</span><span class="at">Average_Income(USD)</span><span class="st">`</span>, <span class="at">type=</span><span class="st">&quot;scatter&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  add_lines(x = ~Physical_Demand, y= ~lm( Physical_Demand ~ `Average_Income(USD)`)) %&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">title =</span> <span class="st">&quot;Average Income (USD) Given Physical Demand&quot;</span>, <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Physical Demand&quot;</span>), <span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Average Income (USD)&quot;</span>))</span></code></pre></div>
+<div id="htmlwidget-48789c4d71dd0407adbd" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-48789c4d71dd0407adbd">{"x":{"visdat":{"2e805b514668":["function () ","plotlyVisDat"]},"cur_data":"2e805b514668","attrs":{"2e805b514668":{"x":{},"y":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Average Income (USD) Given Physical Demand","xaxis":{"domain":[0,1],"automargin":true,"title":"Physical Demand"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Average Income (USD)"},"hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[5,3.97,3.97,3.95,5.08,6.98,4.98,5.09,7.43,7,5.09,4.23,5.79,7.98,4,6.04,8.43,6.47,6.21,4.09,9.43,7.98,4.76,8.21,6.36,5.85,9.79,5.84,7.56,7.26,7.03,12.79,10.21,6.06,7.26,8.86,8.21,7.23,5.18,7.26,5.62,7.98,7.98,10,15.43,8.56,7.16,7.98,6.21,7.12,6.85,8.96,9.56,5.09,5.84,12.98,10.79,4.09,6.04,9.09,6.92,10.28,8.26,9.09,17.79,5.03,9.3,7.44,9.98,9.39,14.19,15.98,5.47,8.85,9.96,9.22,14.98,11.11,7.09,4.85,6.85,6.09,10.9,7.98,9.36,6.03,9.85,13.43,8.98,7.98,7.41,11.9,20.05,13.15,18.18,6.97,15.39,16.39,8.79,11.87,15.9,13.39,6.05,6,7,4.62,14.39,6.92,12.13,12.39,7.25,14.09,7.24,6,20.72,13.39,14.41,14.39,13.98,10.82,10.87,14.39,12.41,15.15,8.58,9,15,6.85,24.11,9.67,13.29,16.87,12.55,13.53,13.53,14.77,14.86,17.46,11,13,16.16,21.8,9.85,10.85,9.53,17,18.47,22.01,10.03,18.85,20.13,17.57,9.58,17.1,18.92,8.23,13.46,34.53,11,13.41,27.85,17.85,8.85,26.18,12.03,17.63,22,32.85,17,9.58,21.68,6,28.09,26.86,25.46,43.23,7.85,22.63,36.55,11.85,25.85,19.98,21.57,30.53,15.85,19,30.73,9.85,30.77,28.03,36.41,25.67,26,29.08,21.26,14.46,33.46,38.87,36.85,36.89],"y":[87140,94178,87204,73208,77153,85210,74278,63208,63144,67107,70122,60174,47153,106196,101164,61221,70193,47155,95130,87240,65143,105233,55239,109147,52127,63170,96163,71176,54197,55100,48256,68358,76139,30110,36129,109070,75122,55165,33138,31148,85119,35176,49214,83086,74104,53171,51352,51181,97109,58175,58200,121065,48211,113439,46211,81274,116249,62229,34200,53175,46141,77136,33143,51190,81198,33104,23169,43226,68195,33211,57166,54114,40154,45219,142144,24169,63145,83135,66179,51246,54279,113211,192065,55142,84105,24083,44335,53085,31194,26182,23119,160242,41154,64114,40148,46207,58134,44131,33272,51132,365258,51132,46342,25118,18067,62105,30147,73193,32969,37164,67470,30114,90160,161141,82210,33229,30147,56132,34150,33165,106153,34152,38157,54203,40357,31163,40090,50456,54197,28132,27147,47122,24135,27263,28150,54145,34122,38138,18100,18107,22125,46182,61291,30265,23112,24089,22138,47176,40184,36186,37163,38178,51308,31124,53118,49207,22119,59222,20153,39150,37179,37238,49116,51139,34167,53171,18053,47175,19093,43309,38128,31147,40169,52042,39184,45222,28375,49185,32174,38283,38160,29150,35200,32114,40209,19100,41208,34275,36150,39186,29211,34171,34152,35126,30168,21127,34168,32109,34127,32143],"type":"scatter","mode":"markers","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>subsetInterval <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(dfJSD), <span class="fu">floor</span>(<span class="fu">nrow</span>(dfJSD) <span class="sc">*</span> <span class="fl">0.9</span>))  <span class="co"># 90% training + 10% testing</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>jsdDFTrain <span class="ot">&lt;-</span> dfJSD[subsetInterval, ]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>jsdDFTest <span class="ot">&lt;-</span> dfJSD[<span class="sc">-</span>subsetInterval, ]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>jsdDFTrainLStress <span class="ot">&lt;-</span> <span class="fu">subset</span>(jsdDFTrain, Stress_Category <span class="sc">==</span> <span class="dv">0</span> <span class="sc">|</span> Stress_Category <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> Stress_Category <span class="sc">==</span> <span class="dv">2</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>jsdDFTrainHStress <span class="ot">&lt;-</span> <span class="fu">subset</span>(jsdDFTrain, Stress_Category <span class="sc">==</span> <span class="dv">3</span> <span class="sc">|</span> Stress_Category <span class="sc">==</span> <span class="dv">4</span> <span class="sc">|</span> Stress_Category <span class="sc">==</span> <span class="dv">5</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>jsdDFTestLStress <span class="ot">&lt;-</span> <span class="fu">subset</span>(jsdDFTest, Stress_Category <span class="sc">==</span> <span class="dv">0</span> <span class="sc">|</span> Stress_Category <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> Stress_Category <span class="sc">==</span> <span class="dv">2</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>jsdDFTestHStress <span class="ot">&lt;-</span> <span class="fu">subset</span>(jsdDFTest, Stress_Category <span class="sc">==</span> <span class="dv">3</span> <span class="sc">|</span> Stress_Category <span class="sc">==</span> <span class="dv">4</span> <span class="sc">|</span> Stress_Category <span class="sc">==</span> <span class="dv">5</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>jsdCorpusTrainLStress <span class="ot">&lt;-</span> <span class="fu">Corpus</span>(<span class="fu">VectorSource</span>(jsdDFTrainLStress<span class="sc">$</span>Description))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>jsdCorpusTrainLStress <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(jsdCorpusTrainLStress, tolower)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>jsdCorpusTrainLStress <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(jsdCorpusTrainLStress, stripWhitespace)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>jsdCorpusTrainLStress <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(jsdCorpusTrainLStress, removeWords, <span class="fu">c</span>(<span class="st">&quot;and&quot;</span>, <span class="st">&quot;the&quot;</span>, <span class="st">&quot;for&quot;</span>, <span class="st">&quot;other&quot;</span>, <span class="st">&quot;with&quot;</span>, <span class="st">&quot;from&quot;</span>))</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>jsdCorpusTrainHStress <span class="ot">&lt;-</span> <span class="fu">Corpus</span>(<span class="fu">VectorSource</span>(jsdDFTrainHStress<span class="sc">$</span>Description))</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>jsdCorpusTrainHStress <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(jsdCorpusTrainHStress, tolower)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>jsdCorpusTrainHStress <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(jsdCorpusTrainHStress, stripWhitespace)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>jsdCorpusTrainHStress <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(jsdCorpusTrainHStress, removeWords, <span class="fu">c</span>(<span class="st">&quot;and&quot;</span>, <span class="st">&quot;the&quot;</span>, <span class="st">&quot;for&quot;</span>, <span class="st">&quot;other&quot;</span>, <span class="st">&quot;with&quot;</span>, <span class="st">&quot;from&quot;</span>))</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="fu">wordcloud</span>(jsdCorpusTrainLStress, <span class="at">min.freq =</span> <span class="dv">7</span>, <span class="at">random.order =</span> <span class="cn">FALSE</span>, <span class="at">colors =</span> <span class="fu">brewer.pal</span>(<span class="dv">4</span>, <span class="st">&quot;Dark2&quot;</span>))</span></code></pre></div>
+<p><img src="hw4_files/figure-html/4.1-6.png" width="672" /></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wordcloud</span>(jsdCorpusTrainHStress, <span class="at">min.freq =</span> <span class="dv">7</span>, <span class="at">random.order =</span> <span class="cn">FALSE</span>, <span class="at">colors =</span> <span class="fu">brewer.pal</span>(<span class="dv">4</span>, <span class="st">&quot;Dark2&quot;</span>))</span></code></pre></div>
+<p><img src="hw4_files/figure-html/4.1-7.png" width="672" /></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>jsdDTMLStress <span class="ot">&lt;-</span> <span class="fu">DocumentTermMatrix</span>(jsdCorpusTrainLStress, <span class="at">control=</span><span class="fu">list</span>(<span class="at">stopwords=</span>T))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>jsdDTMHStress <span class="ot">&lt;-</span> <span class="fu">DocumentTermMatrix</span>(jsdCorpusTrainHStress, <span class="at">control=</span><span class="fu">list</span>(<span class="at">stopwords=</span>T))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>jsdDTMLStress <span class="ot">&lt;-</span> <span class="fu">removeSparseTerms</span>(jsdDTMLStress, <span class="fl">0.98</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>jsdDTMHStress <span class="ot">&lt;-</span> <span class="fu">removeSparseTerms</span>(jsdDTMHStress, <span class="fl">0.98</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>wordSumsLStress <span class="ot">&lt;-</span> <span class="fu">colSums</span>(<span class="fu">as.matrix</span>(jsdDTMLStress))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>wordSumsHStress <span class="ot">&lt;-</span> <span class="fu">colSums</span>(<span class="fu">as.matrix</span>(jsdDTMHStress))</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ly</span>(<span class="at">x =</span> <span class="sc">~</span><span class="fu">unname</span>(wordSumsLStress), <span class="at">y =</span> <span class="sc">~</span><span class="fu">names</span>(wordSumsLStress), <span class="at">type=</span><span class="st">&quot;bar&quot;</span>, <span class="at">orientation=</span><span class="st">&quot;h&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">title=</span><span class="st">&quot;Common Word Descrptions Low Stress Jobs&quot;</span>, <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Words&quot;</span>), <span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Counts&quot;</span>), <span class="at">bargap=</span><span class="st">&quot;0.1&quot;</span>)</span></code></pre></div>
+<div id="htmlwidget-4154ad7fe5a2e52ad143" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4154ad7fe5a2e52ad143">{"x":{"visdat":{"2e805fc87f1f":["function () ","plotlyVisDat"]},"cur_data":"2e805fc87f1f","attrs":{"2e805fc87f1f":{"x":{},"y":{},"orientation":"h","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Common Word Descrptions Low Stress Jobs","xaxis":{"domain":[0,1],"automargin":true,"title":"Words"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Counts","type":"category","categoryorder":"array","categoryarray":["according","activities","along","analysis","analyzes","animals","areas","assembles","assembly","assesses","assists","available","buildings","business","businesses","care","cleans","collects","commercial","conditions","conducts","construction","creates","customers","design","development","develops","devices","diagnoses","diagnostic","directs","disease","educational","electrical","equipment","gas","government","improve","individuals","industrial","industry","information","installs","institutions","knowledge","language","livestock","locations","machinery","machines","maintains","maintenance","makes","manufacturing","materials","medical","monitors","natural","nature","oil","operates","operation","organizes","parts","patients","performs","physical","plans","plants","practical","prepares","problems","processes","products","proper","property","provides","range","raw","records","repairs","reports","research","researches","residential","routes","routine","scientific","services","social","structures","studies","supervises","systems","techniques","tests","theories","treatment","treats","use","used","using","variety","work"]},"bargap":"0.1","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[5,3,11,15,3,4,6,9,7,4,7,6,4,6,6,4,6,5,8,3,7,4,5,4,3,10,5,7,3,11,3,8,4,5,5,5,5,3,3,3,3,4,7,3,4,3,3,3,3,4,5,7,3,4,10,3,3,3,5,8,5,3,6,3,4,5,3,3,12,5,6,10,4,5,6,3,4,3,3,3,3,4,3,4,4,5,7,4,4,5,3,3,3,6,4,5,3,3,3,3,3,3,3,3],"y":["commercial","gas","industrial","repairs","residential","structures","systems","develops","products","businesses","installs","services","cleans","diagnoses","treats","operation","business","educational","problems","theories","customers","makes","variety","assesses","available","equipment","machinery","materials","raw","assists","diagnostic","maintains","medical","records","treatment","use","used","locations","proper","routes","analysis","disease","performs","along","development","researches","scientific","conducts","livestock","range","research","analyzes","government","industry","prepares","reports","natural","property","machines","operates","parts","nature","physical","areas","buildings","electrical","improve","practical","studies","activities","directs","plans","language","social","provides","care","patients","construction","work","creates","assembles","knowledge","oil","techniques","maintenance","supervises","according","tests","information","monitors","processes","assembly","institutions","individuals","animals","plants","devices","routine","conditions","manufacturing","collects","using","organizes","design"],"orientation":"h","type":"bar","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ly</span>(<span class="at">x =</span> <span class="sc">~</span><span class="fu">unname</span>(wordSumsHStress), <span class="at">y =</span> <span class="sc">~</span><span class="fu">names</span>(wordSumsHStress), <span class="at">type=</span><span class="st">&quot;bar&quot;</span>, <span class="at">orientation=</span><span class="st">&quot;h&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">title=</span><span class="st">&quot;Common Word Descrptions High Stress Jobs&quot;</span>, <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Words&quot;</span>), <span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">&quot;Counts&quot;</span>), <span class="at">bargap=</span><span class="st">&quot;0.1&quot;</span>)</span></code></pre></div>
+<div id="htmlwidget-3b1ebd187004ae78804c" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3b1ebd187004ae78804c">{"x":{"visdat":{"2e80316e3e81":["function () ","plotlyVisDat"]},"cur_data":"2e80316e3e81","attrs":{"2e80316e3e81":{"x":{},"y":{},"orientation":"h","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Common Word Descrptions High Stress Jobs","xaxis":{"domain":[0,1],"automargin":true,"title":"Words"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Counts","type":"category","categoryorder":"array","categoryarray":["accidents","according","accounts","activities","activity","acts","administering","advertising","advise","advises","ailments","air","aircraft","amount","applies","appointed","articles","assigned","assists","attacks","attends","attention","audiences","automobile","based","bodies","bodily","bridges","buildings","businesses","buyer","cab","campaigns","care","cargo","centers","children","circumstances","cleanses","clients","clinics","clothing","collects","comfort","commercial","companies","complete","concerning","conducts","constructed","construction","consumer","control","corporate","correctional","counsels","coverage","covers","crime","crime-prevention","criminal","cuts","data","delivers","demand","designs","destinations","develops","diagnoses","diesel-electric","distribute","dramatic","dropping","effectively","electric","employees","enforces","ensures","entertains","equipment","estate","evaluates","events","exteriors","facilities","fells","film","finishes","fire","firms","framework","freight","gas-turbine-","governmental","gunshot","health","heart","helps","holistic","hospitals","houses","image","immediate","individuals","informs","inmates'","installs","instructs","insurance","interiors","intermediary","interpretation","interpreting","interprets","inventory","investigates","irradiated","jails","labor","laws","legal","limbs","lines","lives","locomotive","lumber","magazines","maintain","maintains","maintenance","make","manufacturers","material","materials","matters;","measures","medical","men","merchandise","monitors","municipality","needs","negotiates","new","news","newspapers","newsworthy","nuclear","old","operates","operation","operations","orders","organizations","organs","paints","paper","passengers","patients","performers","performing","performs","personnel","physical","physicians","picking","plans","plant","positive","power","prepares","presentations","prime","prisons","processed","procure","products","programs","properly","property","protection","protects","provides","public","purchasing","radio","raises","ravages","re-roofs","reactors","real","recommendations","reconstruct","regulations","related","remodeled","remove","repair","repairs","replace","represent","represents","request","requiring","research","retail","roads","roles","roofs","routines","rulings","sales","salesperson","saves","seller","sells","situations","spaces","specifications","stage","steel","stores","streets","structures","supervises","surfaces","systems","tasks","taxi","television","tends","timber","trade","transactions","transport","transports","treatment","trends","type","used","using","usually","variety","varnishes","wholesale","wholesalers","wide","women","wood","work","workers","works","wounds"]},"bargap":"0.1","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"x":[4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,3,1,1,1,1,1,1,1,2,2,1,1,2,1,1,2,2,1,1,3,1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,3,3,1,1,2,2,1,1,2,2,1,1,1,3,4,2,1,1,1,1,1,3,3,1,2,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,1,2,3,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"y":["businesses","collects","concerning","consumer","data","evaluates","make","purchasing","recommendations","trends","accidents","attacks","attends","attention","automobile","demand","gunshot","heart","immediate","medical","situations","wounds","advises","amount","based","circumstances","clients","coverage","insurance","needs","sells","type","administering","assigned","assists","care","centers","clinics","health","holistic","hospitals","maintenance","organizations","patients","physicians","public","treatment","activities","correctional","enforces","facilities","inmates'","jails","prisons","regulations","supervises","accounts","advertising","campaigns","companies","negotiates","procure","products","buildings","installs","new","old","performs","re-roofs","repairs","roofs","aircraft","appointed","cargo","destinations","operates","passengers","transport","comfort","commercial","corporate","tends","conducts","designs","equipment","monitors","nuclear","operation","plant","power","reactors","research","distribute","manufacturers","represents","stores","wholesalers","cuts","fells","lumber","paper","processed","timber","transports","wood","advise","counsels","individuals","interpretation","laws","legal","matters;","represent","rulings","using","activity","crime","crime-prevention","criminal","investigates","measures","protection","provides","works","articles","children","clothing","complete","lines","men","women","audiences","dramatic","entertains","film","informs","instructs","interpreting","radio","roles","stage","television","effectively","employees","ensures","materials","properly","used","work","bridges","framework","raises","steel","structures","cleanses","irradiated","material","personnel","control","firms","inventory","maintains","merchandise","orders","retail","sales","wholesale","acts","buyer","estate","intermediary","prime","property","real","salesperson","seller","transactions","usually","cab","dropping","municipality","picking","request","roads","streets","taxi","bodies","governmental","helps","image","maintain","positive","diesel-electric","electric","freight","gas-turbine-","locomotive","air","delivers","news","prepares","presentations","related","construction","labor","performing","physical","requiring","tasks","trade","variety","wide","workers","fire","lives","protects","ravages","saves","applies","exteriors","finishes","houses","interiors","paints","surfaces","varnishes","develops","interprets","performers","routines","covers","events","magazines","newspapers","newsworthy","programs","ailments","bodily","diagnoses","limbs","operations","organs","reconstruct","remove","repair","replace","systems","according","constructed","plans","remodeled","spaces","specifications"],"orientation":"h","type":"bar","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># findFreqTerms(jsdDTMLStress, 5)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># colSums(as.matrix(jsdDTMLStress))</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdDTMHStress &lt;- DocumentTermMatrix(jsdCorpusTrainHStress)</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect(jsdDTMHStress)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdCorpusTestLStress &lt;- Corpus(VectorSource(jsdDFTestLStress$Description))</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdCorpusTestLStress &lt;- tm_map(jsdCorpusTestLStress, tolower)</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdCorpusTestLStress &lt;- tm_map(jsdCorpusTestLStress, stripWhitespace)</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdCorpusTestLStress &lt;- tm_map(jsdCorpusTestLStress, removeWords, c(&quot;and&quot;, &quot;the&quot;, &quot;for&quot;, &quot;other&quot;, &quot;with&quot;, &quot;from&quot;))</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdCorpusTestHStress &lt;- Corpus(VectorSource(jsdDFTestHStress$Description))</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdCorpusTestHStress &lt;- tm_map(jsdCorpusTestHStress, tolower)</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdCorpusTestHStress &lt;- tm_map(jsdCorpusTestHStress, stripWhitespace)</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdCorpusTestHStress &lt;- tm_map(jsdCorpusTestHStress, removeWords, c(&quot;and&quot;, &quot;the&quot;, &quot;for&quot;, &quot;other&quot;, &quot;with&quot;, &quot;from&quot;))</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdDTMTrain &lt;- jsdDTM[subsetInterval, ]</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdDTMTest &lt;- jsdDTM[-subsetInterval, ]</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdCorpusTrainLStress</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdCorpusTrainHStress</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="co"># jsdDFTestLStress</span></span></code></pre></div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
