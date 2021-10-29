@@ -31,88 +31,137 @@ output:
 library(rvest)
 library(tm)
 library(wordcloud)
-library(corpus)
 library(plotly)
+library(e1071)
+library(gmodels)
+library(C50)
+library(caret)
 ```
 
 # HW Problem 4.1 
 ```{r 4.1, warning=F, message=F}
 urlSOCR <- read_html("http://wiki.socr.umich.edu/index.php/SOCR_Data_2011_US_JobsRanking#2011_Ranking_of_the_200_most_common_Jobs_in_the_US")
-dfSOCR <- as.data.frame(html_table(html_nodes(urlSOCR, "table")[[1]]))
-dfJSD <- dfSOCR[-1]
-dfJSD$Description <- gsub('_', ' ', dfJSD$Description)
+socrDF <- as.data.frame(html_table(html_nodes(urlSOCR, "table")[[1]]))
+jsdDF <- socrDF[-1]
+jsdDF$Description <- gsub('_', ' ', jsdDF$Description)
+#jsdDF$Job_Title <- gsub('_', ' ', jsdDF$Job_Title)
 
-corpusJSD <- Corpus(VectorSource(dfJSD$Description))
-corpusClean <- tm_map(corpusJSD, tolower)
-corpusClean <- tm_map(corpusClean, removePunctuation)
-corpusClean <- tm_map(corpusClean, stripWhitespace)
-corpusClean <- tm_map(corpusClean, removeWords, c("and", "the", "for", "other", "with", "from"))
-
-jsdDTM <- DocumentTermMatrix(corpusClean)
-
-
-plot_ly(dfJSD, x = ~Stress_Category, y = ~Hiring_Potential, type="box") %>%
+plot_ly(jsdDF, x = ~Stress_Category, y = ~Hiring_Potential, type="box") %>%
   layout(title = "Hiring Potential Given Stress Category", xaxis = list(title = "Stress Category"), yaxis = list(title = "Hiring Potential"))
-plot_ly(dfJSD, x = ~Hiring_Potential, type="histogram") %>%
+plot_ly(jsdDF, x = ~Hiring_Potential, type="histogram") %>%
   layout(title = "Hiring Potential Distribution", xaxis = list(title = "Hiring Potential"), bargap=0.1)
-plot_ly(dfJSD, x = ~Stress_Category, type="histogram") %>%
+plot_ly(jsdDF, x = ~Stress_Category, type="histogram") %>%
   layout(title = "Stress Category Distribution", xaxis = list(title = "Stress Category"), bargap=0.1)
-plot_ly(dfJSD, x = ~Stress_Category, y = ~`Average_Income(USD)`, type="box") %>%
+plot_ly(jsdDF, x = ~Stress_Category, y = ~`Average_Income(USD)`, type="box") %>%
   layout(title = "Average Income (USD) Given Stress Category", xaxis = list(title = "Stress Category"), yaxis = list(title = "Average Income (USD)"))
-plot_ly(dfJSD, x = ~Physical_Demand, y = ~`Average_Income(USD)`, type="scatter") %>%
+plot_ly(jsdDF, x = ~Physical_Demand, y = ~`Average_Income(USD)`, type="scatter") %>%
 #  add_lines(x = ~Physical_Demand, y= ~lm( Physical_Demand ~ `Average_Income(USD)`)) %>%
   layout(title = "Average Income (USD) Given Physical Demand", xaxis = list(title = "Physical Demand"), yaxis = list(title = "Average Income (USD)"))
 
-set.seed(12345)
-subsetInterval <- sample(nrow(dfJSD), floor(nrow(dfJSD) * 0.9))  # 90% training + 10% testing
+set.seed(1234)
+subsetInterval <- sample(nrow(jsdDF), floor(nrow(jsdDF) * 0.9))  # 90% training + 10% testing
+corpusJSD <- Corpus(VectorSource(jsdDF$Description))
+corpusClean <- tm_map(corpusJSD, tolower)
+corpusClean <- tm_map(corpusClean, removePunctuation)
+corpusClean <- tm_map(corpusClean, removeNumbers)
+corpusClean <- tm_map(corpusClean, removeWords, stopwords('english'))
+corpusClean <- tm_map(corpusClean, stripWhitespace)
+jsdDTM <- DocumentTermMatrix(corpusClean)
+jsdDFTrain <- jsdDF[subsetInterval, ]
+jsdDFTest <- jsdDF[-subsetInterval, ]
+jsdDTMTrain <- jsdDTM[subsetInterval, ] 
+jsdDTMTest <- jsdDTM[-subsetInterval, ] 
+jsdCorpusTrain <- corpusClean[subsetInterval]
+jsdCorpusTest <- corpusClean[-subsetInterval]
 
-jsdDFTrain <- dfJSD[subsetInterval, ]
-jsdDFTrainLStress <- subset(jsdDFTrain, Stress_Category == 0 | Stress_Category == 1 | Stress_Category == 2)
-jsdDFTrainHStress <- subset(jsdDFTrain, Stress_Category == 3 | Stress_Category == 4 | Stress_Category == 5)
-jsdCorpusTrainLStress <- Corpus(VectorSource(jsdDFTrainLStress$Description))
-jsdCorpusTrainLStress <- tm_map(jsdCorpusTrainLStress, tolower)
-jsdCorpusTrainLStress <- tm_map(jsdCorpusTrainLStress, stripWhitespace)
-jsdCorpusTrainLStress <- tm_map(jsdCorpusTrainLStress, removeWords, c("and", "the", "for", "other", "with", "from"))
-jsdCorpusTrainHStress <- Corpus(VectorSource(jsdDFTrainHStress$Description))
-jsdCorpusTrainHStress <- tm_map(jsdCorpusTrainHStress, tolower)
-jsdCorpusTrainHStress <- tm_map(jsdCorpusTrainHStress, stripWhitespace)
-jsdCorpusTrainHStress <- tm_map(jsdCorpusTrainHStress, removeWords, c("and", "the", "for", "other", "with", "from"))
+#See Distribution of Stress Categories between Training vs Testing datasets
+prop.table(table(jsdDFTrain$Stress_Category))
+prop.table(table(jsdDFTest$Stress_Category))
 
-wordcloud(jsdCorpusTrainLStress, min.freq = 7, random.order = FALSE, colors = brewer.pal(4, "Dark2"))
-wordcloud(jsdCorpusTrainHStress, min.freq = 7, random.order = FALSE, colors = brewer.pal(4, "Dark2"))
+#Binari"ize" Stress label for training and testing datasets
+jsdDFTrain$Stress_High <- jsdDFTrain$Stress_Category %in% c(3:5)
+jsdDFTrain$Stress_High <- factor(jsdDFTrain$Stress_High, levels = c(F, T), labels = c("Low_Stress", "High_Stress"))
+jsdDFTest$Stress_High <- jsdDFTest$Stress_Category %in% c(3:5)
+jsdDFTest$Stress_High <- factor(jsdDFTest$Stress_High, levels = c(F, T), labels = c("Low_Stress", "High_Stress"))
 
-jsdDTMTrainLStress <- DocumentTermMatrix(jsdCorpusTrainLStress, control=list(stopwords=T))
-jsdDTMTrainHStress <- DocumentTermMatrix(jsdCorpusTrainHStress, control=list(stopwords=T))
-jsdDTMTrainLStress <- removeSparseTerms(jsdDTMLStress, 0.98)
-jsdDTMTrainHStress <- removeSparseTerms(jsdDTMHStress, 0.98)
+prop.table(table(jsdDFTrain$Stress_High))
+prop.table(table(jsdDFTest$Stress_High))
 
-wordSumsLStress <- colSums(as.matrix(jsdDTMTrainLStress))
-wordSumsHStress <- colSums(as.matrix(jsdDTMTrainHStress))
+# separate out low vs high stress from training data for graphics
+jsdDFTrainLow <- subset(jsdDFTrain, Stress_High=="Low_Stress")
+jsdDFTrainHigh <- subset(jsdDFTrain, Stress_High=="High_Stress")
+jsdCorpusTrainLow <- Corpus(VectorSource(jsdDFTrainLow$Description))
+jsdCorpusTrainLow <- tm_map(jsdCorpusTrainLow, tolower)
+jsdCorpusTrainLow <- tm_map(jsdCorpusTrainLow, removePunctuation)
+jsdCorpusTrainLow <- tm_map(jsdCorpusTrainLow, removeNumbers)
+jsdCorpusTrainLow <- tm_map(jsdCorpusTrainLow, stripWhitespace)
+jsdCorpusTrainLow <- tm_map(jsdCorpusTrainLow, removeWords, stopwords('english'))
+jsdCorpusTrainHigh <- Corpus(VectorSource(jsdDFTrainHigh$Description))
+jsdCorpusTrainHigh <- tm_map(jsdCorpusTrainHigh, tolower)
+jsdCorpusTrainHigh <- tm_map(jsdCorpusTrainHigh, removeNumbers)
+jsdCorpusTrainHigh <- tm_map(jsdCorpusTrainHigh, removePunctuation)
+jsdCorpusTrainHigh <- tm_map(jsdCorpusTrainHigh, stripWhitespace)
+jsdCorpusTrainHigh <- tm_map(jsdCorpusTrainHigh, removeWords, stopwords('english'))
 
-plot_ly(x = ~unname(wordSumsLStress), y = ~names(wordSumsLStress), type="bar", orientation="h") %>%
-  layout(title="Common Word Descrptions Low Stress Jobs", xaxis = list(title = "Words"), yaxis = list(title = "Counts"), bargap="0.1")
-plot_ly(x = ~unname(wordSumsHStress), y = ~names(wordSumsHStress), type="bar", orientation="h") %>%
-  layout(title="Common Word Descrptions High Stress Jobs", xaxis = list(title = "Words"), yaxis = list(title = "Counts"), bargap="0.1")
+jsdDTMTrainLow <- DocumentTermMatrix(jsdCorpusTrainLow)
+jsdDTMTrainLow <- removeSparseTerms(jsdDTMTrainLow, 0.98)
+jsdDTMTrainHigh <- DocumentTermMatrix(jsdCorpusTrainHigh)
+jsdDTMTrainHigh <- removeSparseTerms(jsdDTMTrainHigh, 0.98)
+# Low Stress Jobs
+wordcloud(jsdCorpusTrainLow, min.freq = 7, random.order = FALSE, colors = brewer.pal(4, "Dark2"))
+wordSumLow <- colSums(as.matrix(jsdDTMTrainLow))
+plot_ly(x = ~unname(wordSumLow), y = ~names(wordSumLow), type="bar", orientation="h") %>%
+  layout(title="Common Word Descriptions Low Stress Jobs", xaxis = list(title = "Words"), yaxis = list(title = "Counts"), bargap="0.1")
+# High Stress Jobs
+wordcloud(jsdCorpusTrainHigh, min.freq = 3, random.order = FALSE, colors = brewer.pal(4, "Dark2"))
+wordSumHigh <- colSums(as.matrix(jsdDTMTrainHigh))
+plot_ly(x = ~unname(wordSumHigh), y = ~names(wordSumHigh), type="bar", orientation="h") %>%
+  layout(title="Common Word Descriptions High Stress Jobs", xaxis = list(title = "Words"), yaxis = list(title = "Counts"), bargap="0.1")
+```
 
-# Incorporate Test Data
-jsdDFTest <- dfJSD[-subsetInterval, ]
-jsdDFTestLStress <- subset(jsdDFTest, Stress_Category == 0 | Stress_Category == 1 | Stress_Category == 2)
-jsdDFTestHStress <- subset(jsdDFTest, Stress_Category == 3 | Stress_Category == 4 | Stress_Category == 5)
-jsdCorpusTestLStress <- Corpus(VectorSource(jsdDFTestLStress$Description))
-jsdCorpusTestLStress <- tm_map(jsdCorpusTestLStress, tolower)
-jsdCorpusTestLStress <- tm_map(jsdCorpusTestLStress, stripWhitespace)
-jsdCorpusTestLStress <- tm_map(jsdCorpusTestLStress, removeWords, c("and", "the", "for", "other", "with", "from"))
-jsdCorpusTestHStress <- Corpus(VectorSource(jsdDFTestHStress$Description))
-jsdCorpusTestHStress <- tm_map(jsdCorpusTestHStress, tolower)
-jsdCorpusTestHStress <- tm_map(jsdCorpusTestHStress, stripWhitespace)
-jsdCorpusTestHStress <- tm_map(jsdCorpusTestHStress, removeWords, c("and", "the", "for", "other", "with", "from"))
+## Naive Bayes
+```{r Naive Bayes, warning=F, message=F}
+# Create Function to binary"ize" Yes/No whether word appears > 5 times in the DTM and Apply
+convertToCounts <- function(wordFrequent) {
+  wordFrequent <- ifelse(wordFrequent > 0, 1, 0)
+  wordFrequent < factor(wordFrequent, levels = c(0, 1), labels = c("No", "Yes"))
+  return(wordFrequent)
+}
 
-jsdDTMTestLStress <- DocumentTermMatrix(jsdCorpusTrainLStress, control=list(stopwords=T))
-jsdDTMTestHStress <- DocumentTermMatrix(jsdCorpusTrainHStress, control=list(stopwords=T))
-jsdDTMTestLStress <- removeSparseTerms(jsdDTMTestLStress, 0.98)
-jsdDTMTestHStress <- removeSparseTerms(jsdDTMTestHStress, 0.98)
+#create training dictionary object & respective DTMs
+jsdDict <- as.character(findFreqTerms(jsdDTMTrain, 5))
+jsdDTMTrain <- DocumentTermMatrix(jsdCorpusTrain, list(dictioanry = jsdDict))
+jsdDTMTest <- DocumentTermMatrix(jsdCorpusTest, list(dictioanry = jsdDict))
 
+jsdTrain <- apply(jsdDTMTrain, MARGIN = 2, convertToCounts)
+jsdTest <- apply(jsdDTMTest, MARGIN = 2, convertToCounts)
+jsdClassifier <- naiveBayes(jsdTrain, jsdDFTrain$Stress_High)
+jsdBayesPredict <- predict(jsdClassifier, jsdTest)
 
-head(jsdDTMLStress)
+crossTable <- CrossTable(jsdBayesPredict, jsdDFTest$Stress_High)
+crossTable
+```
 
-````
+## C5.0
+```{r C5.0, warning=F, message=F}
+jsdTree50 <- C5.0(jsdDFTrain[,-c(1,6,9,10)], jsdDFTrain$Stress_High)
+jsdTree50
+summary(jsdTree50)
+
+jsdTree50Predict <- predict(jsdTree50, jsdDFTest[, -c(1,6,9,10)])
+confusionMatrix(table(jsdTree50Predict, jsdDFTest$Stress_High))
+
+plot(jsdTree50, type="simple")
+```
+
+## Multiple Linear Regression
+```{r Multiple Linear Regression, warning=F, message=F}
+
+fit <- lm(formula = Overall_Score ~ `Average_Income(USD)` + Work_Environment + Stress_Level + Stress_Category + Physical_Demand + Hiring_Potential, jsdDF)
+summary(fit)
+
+plot_ly(x=fit$fitted.values, y=fit$residuals, type="scatter", mode="markers") %>%
+  layout(title="LM: Fitted-values vs. Model-Residuals",
+         xaxis=list(title="Fitted"), 
+         yaxis = list(title="Residuals"))
+step(fit,direction = "backward")

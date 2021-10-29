@@ -42,10 +42,8 @@ library(plotly)
 # Data Preparation
 ```{r Data Preparation, warning=F, message=F}
 #load and convert Stata data into R dataframe frames into environment
-df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project_files/masterfile.dta", encoding = "latin1")
-# dfChild02_11vars <- read_dta("/Users/Kevin/Downloads/From Adolescence to Adulthood - Are Americas Young Adults Flourishing/Cleaning-and-merging/child02-11vars.dta", encoding = "latin1")
-# dfCleanMainPCGFile <- read_dta("/Users/Kevin/Downloads/From Adolescence to Adulthood - Are Americas Young Adults Flourishing/Cleaning-and-merging/cleanmain+pcgfile.dta", encoding = "latin1")
-# dfIDMergFilePCG <- read_dta("/Users/Kevin/Downloads/From Adolescence to Adulthood - Are Americas Young Adults Flourishing/Cleaning-and-merging/idmergefile-pcg.dta", encoding = "latin1")
+#df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project_files/masterfile.dta", encoding = "latin1")
+df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project_files/clean-childvarsJune2021.dta", encoding = "latin1")
 ncol(df)
 nrow(df)
 
@@ -88,8 +86,8 @@ dfDisplay$Labels <- vectDescriptions
 
 datatable(dfDisplay, options = list(
   pageLength=50,
-  lengthMenu=c(20,50,100,150,250,582)
-  ), 
+  lengthMenu=c(20,50,100,150,250,396)
+  ),
   escape=F
 )
 ```
