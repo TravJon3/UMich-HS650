@@ -68,8 +68,8 @@ plot_ly(x= ~qDFWeib$x, y= ~qDFWeib$quantile, type="scatter", mode="lines", name=
 ```{r Uniform, warning=F, message=F}
 i <- seq(-45, 45, 0.1)
 p <- seq(0.001, 0.999, 0.001)
-dfNorm <- data.frame(x=i, density=dnorm(i, 1, 10), distribution=pnorm(i, 1, 10))
-qDFNorm <- data.frame(x=p, quantile=qnorm(p, 1, 10))
+dfNorm <- data.frame(x=i, density=dunif(i, 1, 10), distribution=punif(i, 1, 10))
+qDFNorm <- data.frame(x=p, quantile=qunif(p, 1, 10))
 
 plot_ly(x= ~dfNorm$x, y= ~dfNorm$density, type="scatter", mode="lines", name="PDF") %>%
   layout(title="Uniform (1,10) Density Function", legend=list(orientation="h"), xaxis=list(title="X-Values"), yaxis=list(title="Y-Values"))
