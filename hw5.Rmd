@@ -30,7 +30,6 @@ output:
 ```{r Libararies, warning=F, message=F}
 library(plotly)
 library(neuralnet)
-library(DT)
 library(stats)
 library(cluster)
 library(matrixStats)
@@ -38,7 +37,7 @@ library(cluster)
 library(mclust)
 ```
 
-# HW Problem 5.1, Learning the Power Law
+# HW Problem 5.1 - Learning the Power Law
 
 Design, train, and optimize a generic neural network (NN) that can learn and predict the power-function (Links to an external site.) for a given power parameter (λ∈R). Assess the accuracy of the NN prediction of the power function. [Hint: Recall the example with the square-root function (Links to an external site.).]
 ```{r 5.1, warning=F, message=F}
@@ -78,7 +77,7 @@ plot_ly(x = ~test_base, y = ~test_power_data,  type="scatter", mode="lines", nam
            yaxis = list(title="Outputs (y=power(x))"),
            legend = list(orientation = 'h'))
 ```
-# HW Problem 5.2 (ALS Clustering):
+# HW Problem 5.2 - ALS Clustering
 
 Use the ALS dataset to study a rare but devastating progressive neurodegenerative disease, amyotrophic lateral sclerosis (ALS). Major clinically relevant questions include: What patient phenotypes can be automatically and reliably identified and used to predict the change of the ALSFRS slope over time?
 ```{r 5.2, warning=F, message=F}
@@ -90,7 +89,6 @@ als_df <- read.csv(pathname_ALS_big)
 als_df <- als_df[-1]
 
 # preliminary data summaries and visualizations
-datatable(als_df)
 str(als_df)
 plot_ly() %>%
   add_trace(x = ~als_df$hands_median, name="hands_median", type="box") %>%
@@ -238,11 +236,10 @@ plot(sil_sing, col=1:length(unique(sil_sing[,1])))
 plot(sil_comp, col=1:length(unique(sil_comp[,1])))
 plot(sil_ward, col=1:length(unique(sil_ward[,1])))
 ```
-# HW Problem 5.2b (Gaussian mixture model):
+## HW Problem 5.2b - Gaussian Mixture Model
 
 Fit a Gaussian mixture model, select the optimal model, report BIC, and display density and classification plots
 Compare the result of the above methods
-
 ```{r 5.2b, warning=F, message=F}
 # Gaussioan mixture models
 set.seed(123)
