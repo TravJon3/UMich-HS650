@@ -1,0 +1,142 @@
+---
+title: "Homework 6"
+subtitle: "<h2><u>Data Science and Predictive Analytics (HS650), Fall 2021</u></h2>"
+author: "<h3>Kevin Wu</h3>"
+date: "`r format(Sys.time(), '%B %Y')`"
+tags: [DSPA, SOCR, MIDAS, Big Data, Predictive Analytics] 
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: show
+    self_contained: yes
+---
+**Homework_6_HS650_Fall_2021.Rmd**.
+
+ * HW #6
+ * Fall 2021, DSPA (HS650)
+ * Name: Kevin Wu
+ * SID: ####0012 (last 4 digits only)
+ * UMich E-mail: kevinkwu@umich.edu
+ * I certify that the following paper represents my own independent work and conforms with the guidelines of academic honesty described in the UMich student handbook.
+ * Remember that students are allowed and encouraged to discuss, on a conceptual level, the problems with your class mates, however, this can not involve the exchange of actual code, printouts, solutions, e-mails or other explicit electronic or paper handouts.
+
+```{r Libararies, warning=F, message=F}
+library(plotly)
+library(igraph)
+library(networkD3)
+
+library(DT)
+library(Boruta)
+library(caret)
+library(randomForest)
+library(mlbench)
+```
+
+# HW Problem 6.1 (Network data visualization)
+Use the "Les Miserables (Links to an external site.)" dataset (03_les miserablese_GraphData.txt)
+Visualize the network of (novel) characters as an undirected graph
+Summarize the graph and explain the output
+Calculate the degree and the centrality of this graph
+Find some important nodes (corresponding to key novel characters)
+Will the results change if we assume the graph is directed?
+
+```{r 6.1, warning=F, message=F}
+miserablese<-read.table("https://umich.instructure.com/courses/38100/files/330389/download?download_frd=1", sep="", header=F)
+miserablese <- as.matrix(miserablese, ncol=2)
+head(miserablese)
+
+graph_m <- graph.edgelist(miserablese, directed = F)
+# U - undirected graph
+# N - named edge
+# 77 - nodes
+# 254 - edges or relationships
+summary(graph_m)
+
+df <- as_data_frame(graph_m, what = "edges")
+# Javascript note indexing starts at zero, not 1, make an artificial index zero root
+df1 <- rbind(c(0,1), df)   
+# Use D3 to display graph
+simpleNetwork(df1,fontSize = 10, zoom = T)
+
+degree(graph_m)
+betweenness(graph_m)
+```
+
+# HW Problem 6.2 (Feature Selection):
+Use the 06_PPMI_ClassificationValidationData_Short dataset
+Set ResearchGroup as class variable.
+Delete irrelevant columns (e.g. X, FID_IID) and select only the PD and Control cohorts, as the ResearchGroup feature includes PD, Control and SWEDD (which are mild cases of PD)
+Properly convert the variables types, as may be necessary
+Compare alternative feature selection methods - Boruta, Random Feature Elimination (RFE), and stepwise feature selection
+Summarize and visualize the results
+Report and compare the variables selected by these methods. How much overlap is there in the selected salient features?
+
+```{r 6.2, warning=F, message=F}
+ppmi_df <- read.csv("http://kevinwurn.github.io/UMich-HS650/hw6_files/06_PPMI_ClassificationValidationData_Short.csv")
+ppmi_df_filtered <- ppmi_df[-c(1:2)]
+ppmi_df_filtered <- subset(ppmi_df_filtered, ResearchGroup != "SWEDD")
+ppmi_df_filtered$ResearchGroup <- as.factor(ppmi_df_filtered$ResearchGroup)
+
+datatable(ppmi_df_filtered)
+
+
+set.seed(123)
+boruta_model <- Boruta(ResearchGroup~., data = ppmi_df_filtered)
+print(boruta_model)
+
+df_long <- tidyr::gather(as.data.frame(boruta_model$ImpHistory), feature, measurement)
+plot_ly(df_long, y = ~measurement, color = ~feature, type = "box") %>%
+  layout(title="Box-and-whisker Plots Across All PPMI Features",
+           xaxis = list(title="Features"),
+           yaxis = list(title="Importance"),
+           showlegend=F)
+
+final_boruta_model <- TentativeRoughFix(boruta_model)
+
+getConfirmedFormula(final_boruta_model)
+
+print(final_boruta_model$finalDecision[final_boruta_model$finalDecision %in% c("Confirmed", "Tentative")])
+
+
+set.seed(123)
+control <- rfeControl(functions = rfFuncs, method = "cv", number=10)
+rf.train <- rfe(ppmi_df_filtered[, !names(ppmi_df_filtered) %in% "ResearchGroup"], ppmi_df_filtered[, c("ResearchGroup")], sizes=c(10, 20, 30, 40), rfeControl=control)
+rf.train
+plot(rf.train, type="b")
+
+
+predRFE <- predictors(rf.train)
+predBoruta <- getSelectedAttributes(final_boruta_model, withTentative = F)
+
+intersect(predBoruta, predRFE)
+
+
+# Define a base model - intercept only
+base.mod <- lm(ResearchGroup ~ 1, data = ppmi_df_filtered)
+# Define the full model - including all predictors
+all.mod <- lm(ResearchGroup ~ ., data = ppmi_df_filtered)
+# ols_step <- lm(ALSFRS_slope ~ ., data=data2)
+# ols_step <- step(base.mod, scope = list(lower = base.mod, upper = all.mod), direction = 'both', k=2, trace = F)
+# summary(ols_step) # ols_step
+
+# get the shortlisted variable
+# stepwiseConfirmedVars <- names(unlist(ols_step[[1]]))
+# # remove the intercept 
+# stepwiseConfirmedVars <- stepwiseConfirmedVars[!stepwiseConfirmedVars %in% "(Intercept)"]
+# print(stepwiseConfirmedVars)
+# 
+# 
+# # estimate variable importance
+# predStepwise <- varImp(ols_step, scale=FALSE)
+# # summarize importance
+# print(predStepwise)
+# 
+# intersect(predBoruta, stepwiseConfirmedVars)
+```

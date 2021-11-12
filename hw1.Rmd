@@ -187,6 +187,7 @@ qq.df.norm_norm %>%
 ## HW Problem 1.3d.
 Then, compare it with qqnorm() or plot_ly()  of student t simulation and interpret the findings.
 ```{r name13d, warning=F, message=F}
+set.seed(123)
 qqnorm(valuesNorm)
 qqline(valuesT)
 ```
