@@ -29,50 +29,55 @@ output:
 
 
 # Final Project Introduction
+<p>The PSID (Panel Study of Income Dynamics) began in 1968, studying over 18,000 individuals living in 5,000 families.  In 1997, the PSID launched the CDS (Child Development Supplement) I-III studying the children of these families.  The TAS (Transition into Adulthood Supplement) began in 2005 which collected data from these very children transitioning into young adults.  The following data is a custom dataset composed of the CDSII (children interviewed in 2001) and follows these children in the TAS 2011.</p>
 
+<p>Want to know (i.e. dependent variable) "change" = 2 (desirable move/state) vs 0 (steady but not ideal move/state) & 1 (undesirable move/state)</p>
+<p>The questions I'm looking to answer are</p>
+<ul>
+  <li><b>What model makes the best prediction for teens that flourish?</b></li>
+  <li><b>What are the best predictors?</b></li>
+</ul>
 
-```{r Introduction, warning=F, message=F}
-
-library(haven)
-library(stringr)
-library(DT)
-library(plotly)
+```{r Introduction, warning=F, message=F, child='final_project_common.Rmd'}
 ```
 
-# Data Preparation
-```{r Data Preparation, warning=F, message=F}
+# Dataset Details
+<p>The following dataset I am analyzing is a filtered version of a <a href="https://www.openicpsr.org/openicpsr/project/143381/version/V1/view">custom dataset</a> Dr. Ashley Palmer compiled from a <a href="https://psycnet.apa.org/record/2006-11985-014">study done by Dr. Corey Keyes in 2006</a> using the CDSII data.</p>
+<p>The following features were removed from Dr. Palmer's custom dataset because they were derived from the original CDSII and TAS2011 questions that are used to create the "mhstatus" and "change" features - the features that I am studying.</p>
+<p>Fields removed from original custom dataset:<br/><small>"persid", "dob", "date_ciw2002", "mage2002", "age2002", "tasdate2011", "mage2011", "age2011", "eligsecL", "sample", "agecat_11", "parent11", "higheduc", "college", "employed", "sleeprecomm", "nutrit11_1", "nutrit11_2", "bingedrk3", "subusect", "goodhlth_11", "agedx_cat", "k6miss", "k6scale", "spd", "phq2", "ewb1_flr2011", "ewb2_flr2011", "ewb3_flr2011", "avgemot", "sumemot", "swb1_flr2011", "swb2_flr2011", "swb3_flr2011", "swb4_flr2011", "swb5_flr2011", "avgsoc", "sumsoc", "pwb1_flr2011", "pwb2_flr2011", "pwb3_flr2011", "pwb4_flr2011", "pwb5_flr2011", "pwb6_flr2011", "avgpsyc", "sumpsyc", "flrmiss11", "flr_fxing2011", "flourish_2011", "ewb1_lan2011", "ewb2_lan2011", "ewb3_lan2011", "swb1_lan2011", "swb2_lan2011", "swb3_lan2011", "swb4_lan2011", "swb5_lan2011", "pwb1_lan2011", "pwb2_lan2011", "pwb3_lan2011", "pwb4_lan2011", "pwb5_lan2011", "pwb6_lan2011", "lan_fxing2011", "lngsh_bin2011", "mod_bin2011", "posmh_2011", "ewb1_flr2002", "ewb2_flr2002", "ewb3_flr2002", "swb1_flr2002", "swb2_flr2002", "swb3_flr2002", "swb4_flr2002", "swb5_flr2002", "pwb1_flr2002",  "pwb2_flr2002", "pwb3_flr2002", "pwb4_flr2002", "flourishingfull_02", "flr_fxing2002", "flourish_2002", "ewb1_lan2002", "ewb2_lan2002", "ewb3_lan2002", "swb1_lan2002", "swb2_lan2002", "swb3_lan2002", "swb4_lan2002", "swb5_lan2002", "pwb1_lan2002", "pwb2_lan2002", "pwb3_lan2002", "pwb4_lan2002", "lan_fxing2002", "lngsh_bin2002", "mod_bin2002", "posmh_2002"</small></p>
+<p>Many features are nominal</p>
+```{r Dataset Details, warning=F, message=F}
 #load and convert Stata data into R dataframe frames into environment
-#df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project_files/masterfile.dta", encoding = "latin1")
-df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project_files/clean-childvarsJune2021.dta", encoding = "latin1")
-ncol(df)
-nrow(df)
+
+ncol(df_filtered)
+nrow(df_filtered)
 
 convertStatDataType = function(strType) {
   mapping <- c("%8.0g"="byte", "%8.0g"="int", "%12.0g"="long", "%9.0g"="float", "%10.0g"="double", "%#s"="str#", "%9s"="strL")
   mapping[strType]
 }
 
-dfDisplay <- data.frame(matrix(ncol = 0, nrow = ncol(df)))
-vectName <- vector(length = ncol(df))
-vectLabel <- vector(length = ncol(df))
-vectFormat <- vector(length = ncol(df))
-vectDescriptions <- vector(length = ncol(df))
+dfDisplay <- data.frame(matrix(ncol = 0, nrow = ncol(df_filtered)))
+vectName <- vector(length = ncol(df_filtered))
+vectLabel <- vector(length = ncol(df_filtered))
+vectFormat <- vector(length = ncol(df_filtered))
+vectDescriptions <- vector(length = ncol(df_filtered))
 
-for(i in 1:ncol(df)) {
-  vectName[i] <- names(df[, i])
-  if(is.null(attributes(df[[i]])$label) == F)
-    vectLabel[i] <- attributes(df[[i]])$label
-  if(is.null(attributes(df[[i]])$format.stata) == F)
-    vectFormat[i] <- lapply(attributes(df[[i]])$format.stata, convertStatDataType)
-  if(is.null(attributes(df[[i]])$class) == F && attributes(df[[i]])$class[3] == "double")
+for(i in 1:ncol(df_filtered)) {
+  vectName[i] <- names(df_filtered[, i])
+  if(is.null(attributes(df_filtered[[i]])$label) == F)
+    vectLabel[i] <- attributes(df_filtered[[i]])$label
+  if(is.null(attributes(df_filtered[[i]])$format.stata) == F)
+    vectFormat[i] <- lapply(attributes(df_filtered[[i]])$format.stata, convertStatDataType)
+  if(is.null(attributes(df_filtered[[i]])$class) == F && attributes(df_filtered[[i]])$class[3] == "double")
     vectFormat[i] <- "double"
-  if(is.null(attributes(df[[i]])$labels) == F && length(attributes(df[[i]])$labels) > 0) {
-    vectLabels <- list(length(attributes(df[[i]])$labels))
-    for(j in 1:length(attributes(df[[i]])$labels)) {
-      vectLabels[j] <- as.character(attributes(df[[i]])$labels[j])
-      if(is.null(names(attributes(df[[i]])$labels[j])) == F && as.character(names(attributes(df[[i]])$labels[j])) != "Actual number")
-        vectLabels[j] <- paste(c(vectLabels[j], ":", as.character(names(attributes(df[[i]])$labels[j]))), collapse = " ")
-      else if(as.character(names(attributes(df[[i]])$labels[j])) == "Actual number")
+  if(is.null(attributes(df_filtered[[i]])$labels) == F && length(attributes(df_filtered[[i]])$labels) > 0) {
+    vectLabels <- list(length(attributes(df_filtered[[i]])$labels))
+    for(j in 1:length(attributes(df_filtered[[i]])$labels)) {
+      vectLabels[j] <- as.character(attributes(df_filtered[[i]])$labels[j])
+      if(is.null(names(attributes(df_filtered[[i]])$labels[j])) == F && as.character(names(attributes(df_filtered[[i]])$labels[j])) != "Actual number")
+        vectLabels[j] <- paste(c(vectLabels[j], ":", as.character(names(attributes(df_filtered[[i]])$labels[j]))), collapse = " ")
+      else if(as.character(names(attributes(df_filtered[[i]])$labels[j])) == "Actual number")
         vectLabels[j] <- paste0(vectLabels[j], ":::")
     }
     vectDescriptions[i] <- str_flatten(vectLabels, "<br />")
@@ -85,12 +90,15 @@ dfDisplay$Format<- vectFormat
 dfDisplay$Labels <- vectDescriptions
 
 datatable(dfDisplay, options = list(
-  pageLength=50,
-  lengthMenu=c(20,50,100,150,250,396)
+  pageLength=10,
+  lengthMenu=c(10,50,100,150,250,300)
   ),
   escape=F
 )
 ```
 
-# Data Summary
-```{r Data Summary, warning=F, message=F}
+# Data Distribution
+```{r Data Distribution, warning=F, message=F}
+
+
+```

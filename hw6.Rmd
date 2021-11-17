@@ -41,10 +41,10 @@ library(mlbench)
 
 # HW Problem 6.1 (Network data visualization)
 Use the "Les Miserables (Links to an external site.)" dataset (03_les miserablese_GraphData.txt)
-Visualize the network of (novel) characters as an undirected graph
-Summarize the graph and explain the output
-Calculate the degree and the centrality of this graph
-Find some important nodes (corresponding to key novel characters)
+Visualize the network of (novel) characters as an undirected graph.
+Summarize the graph and explain the output.
+Calculate the degree and the centrality of this graph.
+Find some important nodes (corresponding to key novel characters).
 Will the results change if we assume the graph is directed?
 
 ```{r 6.1, warning=F, message=F}
@@ -65,8 +65,20 @@ df1 <- rbind(c(0,1), df)
 # Use D3 to display graph
 simpleNetwork(df1,fontSize = 10, zoom = T)
 
+# The following nodes have the greatest number of edges, signalling their connectedness and perhaps importance
+# Valjean		36
+# Gavroche	22
+# Marius		19
 degree(graph_m)
+
+# The following are the previous nodes' betweeness, suggesting for the most part that connectedness may indicate importance, aside from Myreal with the number of edges = 10, which is lower in comparison to other nodes.
+# Valjean		1624.4688004
+# Myreal		504.0000000
+# Gavroche	470.5706319
+# Marius		376.2925926
 betweenness(graph_m)
+
+# the results would change if the graph were directed in that having terminal nodes may have a high degree of edges / connections, but a lower degree of conntectedness / centrality as by definition, they are terminal nodes.
 ```
 
 # HW Problem 6.2 (Feature Selection):
@@ -79,13 +91,13 @@ Summarize and visualize the results
 Report and compare the variables selected by these methods. How much overlap is there in the selected salient features?
 
 ```{r 6.2, warning=F, message=F}
-ppmi_df <- read.csv("http://kevinwurn.github.io/UMich-HS650/hw6_files/06_PPMI_ClassificationValidationData_Short.csv")
-ppmi_df_filtered <- ppmi_df[-c(1:2)]
+ppmi_df <- read.csv("https://umich.instructure.com/files/330400/download?download_frd=1")
+filter <- c("X", "FID_IID", "UPDRS_Part_I_Summary_Score_Baseline", "UPDRS_Part_I_Summary_Score_Month_03", "UPDRS_Part_I_Summary_Score_Month_06", "UPDRS_Part_I_Summary_Score_Month_09", "UPDRS_Part_I_Summary_Score_Month_12", "UPDRS_Part_I_Summary_Score_Month_18", "UPDRS_Part_I_Summary_Score_Month_24", "UPDRS_Part_II_Patient_Questionnaire_Summary_Score_Baseline", "UPDRS_Part_II_Patient_Questionnaire_Summary_Score_Month_03", "UPDRS_Part_II_Patient_Questionnaire_Summary_Score_Month_06", "UPDRS_Part_II_Patient_Questionnaire_Summary_Score_Month_09", "UPDRS_Part_II_Patient_Questionnaire_Summary_Score_Month_12", "UPDRS_Part_II_Patient_Questionnaire_Summary_Score_Month_18", "UPDRS_Part_II_Patient_Questionnaire_Summary_Score_Month_24", "UPDRS_Part_III_Summary_Score_Baseline", "UPDRS_Part_III_Summary_Score_Month_03", "UPDRS_Part_III_Summary_Score_Month_06", "UPDRS_Part_III_Summary_Score_Month_09", "UPDRS_Part_III_Summary_Score_Month_12", "UPDRS_Part_III_Summary_Score_Month_18", "UPDRS_Part_III_Summary_Score_Month_24")
+ppmi_df_filtered <- ppmi_df[ , !names(ppmi_df) %in% filter]
 ppmi_df_filtered <- subset(ppmi_df_filtered, ResearchGroup != "SWEDD")
 ppmi_df_filtered$ResearchGroup <- as.factor(ppmi_df_filtered$ResearchGroup)
-
+ppmi_df_filtered <- as.data.frame(lapply(ppmi_df_filtered, as.integer))
 datatable(ppmi_df_filtered)
-
 
 set.seed(123)
 boruta_model <- Boruta(ResearchGroup~., data = ppmi_df_filtered)
@@ -115,6 +127,7 @@ plot(rf.train, type="b")
 predRFE <- predictors(rf.train)
 predBoruta <- getSelectedAttributes(final_boruta_model, withTentative = F)
 
+#  Boruta = RFE all 26 variables overlap
 intersect(predBoruta, predRFE)
 
 
@@ -122,21 +135,33 @@ intersect(predBoruta, predRFE)
 base.mod <- lm(ResearchGroup ~ 1, data = ppmi_df_filtered)
 # Define the full model - including all predictors
 all.mod <- lm(ResearchGroup ~ ., data = ppmi_df_filtered)
-# ols_step <- lm(ALSFRS_slope ~ ., data=data2)
-# ols_step <- step(base.mod, scope = list(lower = base.mod, upper = all.mod), direction = 'both', k=2, trace = F)
-# summary(ols_step) # ols_step
+ols_step <- lm(ResearchGroup ~ ., data = ppmi_df_filtered)
+ols_step <- step(base.mod, scope = list(lower = base.mod, upper = all.mod), direction = 'both', k=2, trace = F)
+summary(ols_step) # ols_step
 
 # get the shortlisted variable
-# stepwiseConfirmedVars <- names(unlist(ols_step[[1]]))
-# # remove the intercept 
-# stepwiseConfirmedVars <- stepwiseConfirmedVars[!stepwiseConfirmedVars %in% "(Intercept)"]
-# print(stepwiseConfirmedVars)
-# 
-# 
-# # estimate variable importance
-# predStepwise <- varImp(ols_step, scale=FALSE)
-# # summarize importance
-# print(predStepwise)
-# 
-# intersect(predBoruta, stepwiseConfirmedVars)
+stepwiseConfirmedVars <- names(unlist(ols_step[[1]]))
+# remove the intercept
+stepwiseConfirmedVars <- stepwiseConfirmedVars[!stepwiseConfirmedVars %in% "(Intercept)"]
+print(stepwiseConfirmedVars)
+
+
+# estimate variable importance
+predStepwise <- varImp(ols_step, scale=FALSE)
+# summarize importance
+print(predStepwise)
+
+# Boruta & OLS only 9 variables intersect
+intersect(predBoruta, stepwiseConfirmedVars)
+
+# RFE & OLS 12 variables intersect
+intersect(predRFE, stepwiseConfirmedVars)
+
+# Stepwise predicts the importance of the 14 variables.  Boruta and RFE variables overlap differently with stepwise.
+# However, Top 5 RFE, Boruta, and OLS are all in agreement being the top 5 variables.  It is safe to say that these are good precitors for the outcome ResearchGroup variable.
+# - X_Assessment_Non.Motor_Geriatric_Depression_Scale_GDS_Short_Summary_Score_Month_06
+# - L_putamen_Volume
+# - X_Assessment_Non.Motor_Epworth_Sleepiness_Scale_Summary_Score_Month_24
+# - Age
+# - chr17_rs199533_DP
 ```

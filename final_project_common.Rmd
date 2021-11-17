@@ -1,0 +1,9 @@
+```{r allsource, echo=FALSE, results='asis', warning=FALSE, cache=FALSE}
+library(haven)
+library(stringr)
+library(DT)
+library(plotly)
+df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project_files/clean-childvarsJune2021.dta", encoding = "latin1")
+filterremove <- c("persid", "date_ciw2002", "mage2002", "age2002", "tasdate2011", "mage2011", "age2011", "eligsecL", "sample", "agecat_11", "parent11", "higheduc", "college", "employed", "sleeprecomm", "nutrit11_1", "nutrit11_2", "bingedrk3", "subusect", "goodhlth_11", "agedx_cat", "k6miss", "k6scale", "spd", "phq2", "ewb1_flr2011", "ewb2_flr2011", "ewb3_flr2011", "avgemot", "sumemot", "swb1_flr2011", "swb2_flr2011", "swb3_flr2011", "swb4_flr2011", "swb5_flr2011", "avgsoc", "sumsoc", "pwb1_flr2011", "pwb2_flr2011", "pwb3_flr2011", "pwb4_flr2011", "pwb5_flr2011", "pwb6_flr2011", "avgpsyc", "sumpsyc", "flrmiss11", "flr_fxing2011", "flourish_2011", "ewb1_lan2011", "ewb2_lan2011", "ewb3_lan2011", "swb1_lan2011", "swb2_lan2011", "swb3_lan2011", "swb4_lan2011", "swb5_lan2011", "pwb1_lan2011", "pwb2_lan2011", "pwb3_lan2011", "pwb4_lan2011", "pwb5_lan2011", "pwb6_lan2011", "lan_fxing2011", "lngsh_bin2011", "mod_bin2011", "posmh_2011", "ewb1_flr2002", "ewb2_flr2002", "ewb3_flr2002", "swb1_flr2002", "swb2_flr2002", "swb3_flr2002", "swb4_flr2002", "swb5_flr2002", "pwb1_flr2002",  "pwb2_flr2002", "pwb3_flr2002", "pwb4_flr2002", "flourishingfull_02", "flr_fxing2002", "flourish_2002", "ewb1_lan2002", "ewb2_lan2002", "ewb3_lan2002", "swb1_lan2002", "swb2_lan2002", "swb3_lan2002", "swb4_lan2002", "swb5_lan2002", "pwb1_lan2002", "pwb2_lan2002", "pwb3_lan2002", "pwb4_lan2002", "lan_fxing2002", "lngsh_bin2002", "mod_bin2002", "posmh_2002")
+df_filtered <- df[ , !names(df) %in% filterremove]
+```

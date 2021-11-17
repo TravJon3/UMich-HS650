@@ -82,9 +82,8 @@ plot_ly(x = ~test_base, y = ~test_power_data,  type="scatter", mode="lines", nam
 Use the ALS dataset to study a rare but devastating progressive neurodegenerative disease, amyotrophic lateral sclerosis (ALS). Major clinically relevant questions include: What patient phenotypes can be automatically and reliably identified and used to predict the change of the ALSFRS slope over time?
 ```{r 5.2, warning=F, message=F}
 
-pathname_ALS_HW5 <- "http://kevinwurn.github.io/UMich-HS650/hw5_files/"
-pathname_ALS_small <- paste0(pathname_ALS_HW5, "ALS_TestingData_78.csv")
-pathname_ALS_big <- paste0(pathname_ALS_HW5, "ALS_TrainingData_2223.csv")
+pathname_ALS_small <- "https://umich.instructure.com/files/1789623/download?download_frd=1"
+pathname_ALS_big <- "https://umich.instructure.com/files/1789624/download?download_frd=1"
 als_df <- read.csv(pathname_ALS_big)
 als_df <- als_df[-1]
 

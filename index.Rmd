@@ -17,11 +17,5 @@ output: html_document
 
 This is my home page for my University of Michigan HS650 class.  This site is still in the works and is built using github pages and RMD files.  All of this is new to me.
 
-1. [Homework 5](/UMich-HS650/hw5.html)
-2. [Homework 4](/UMich-HS650/hw4.html)
-3. [Homework 3](/UMich-HS650/hw3.html)
-4. [Homework 2](/UMich-HS650/hw2.html)
-5. [Homework 1](/UMich-HS650/hw1.html)
-
-
+1. [Final Project](/UMich-HS650/final_project.html)
 </div>

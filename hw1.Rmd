@@ -160,12 +160,14 @@ Generate 1,000 standard normal variables and another 1,200 student t distributed
 ## HW Problem 1.3a.
 Generate 1,000 standard normal variables 
 ```{r name13a, warning=F, message=F}
+set.seed(123)
 valuesNorm <- rnorm(1000)
 ```
 
 ## HW Problem 1.3b.
 and another 1,200 student t distributed random variables with df=20.
 ```{r name13b, warning=F, message=F}
+set.seed(123)
 valuesT <- rt(1200, 20)
 ```
 
@@ -187,7 +189,6 @@ qq.df.norm_norm %>%
 ## HW Problem 1.3d.
 Then, compare it with qqnorm() or plot_ly()  of student t simulation and interpret the findings.
 ```{r name13d, warning=F, message=F}
-set.seed(123)
 qqnorm(valuesNorm)
 qqline(valuesT)
 ```
