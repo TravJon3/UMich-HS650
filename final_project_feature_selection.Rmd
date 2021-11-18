@@ -1,0 +1,134 @@
+---
+title: "Final Project"
+subtitle: "Feature Selection"
+author: "Kevin Wu"
+date: "`r format(Sys.time(), '%B %Y')`"
+tags: [DSPA, SOCR, MIDAS, Big Data, Predictive Analytics] 
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: show
+    self_contained: yes
+---
+**final_project_feature_selection.Rmd**.
+
+# Feature Selection Introduction
+<p>Not going to do RFE because Boruta is based on RFE.  stepwise feature selection and PCA confirmation</p>
+
+```{r Introduction, warning=F, message=F, include=F, child='final_project_common.Rmd'}
+```
+
+```{r Libraries, warning=F, message=F}
+library(Boruta)
+library(mlbench)
+library(caret)
+library(factoextra)
+
+if(currently_developing) {
+  df_filtered <- df_test
+  df_filtered_objective <- df_objective_test
+}
+
+
+run_stepwise <- function(df_run) {
+  set.seed(1234)
+  base.mod <- lm(PositiveChange ~ 1, data = df_run)
+  # Define the full model - including all predictors
+  all.mod <- lm(PositiveChange ~ ., data = df_run)
+  ols_step <- lm(PositiveChange ~ ., data = df_run)
+  ols_step <- step(base.mod, scope = list(lower = base.mod, upper = all.mod), direction = 'both', k = 2, trace = F)
+}
+```
+
+## Boruta - Full Dataset
+```{r BorutaFull, warning=F, message=F}
+set.seed(1234)
+boruta_full <- Boruta(PositiveChange ~ ., data = df_filtered)
+print(boruta_full)
+#boruta_full <- TentativeRoughFix(boruta_full)
+getConfirmedFormula(boruta_full)
+#print(boruta_full$finalDecision[boruta_full$finalDecision %in% c("Confirmed", "Tentative")])
+
+df_long <- gather(as.data.frame(boruta_full$ImpHistory), feature, measurement)
+plot_ly(df_long, y = ~measurement, color = ~feature, type = "box") %>%
+  layout(title="Box-and-whisker Plots Across All Features",
+           xaxis = list(title="Features"),
+           yaxis = list(title="Importance"),
+           showlegend=F)
+```
+
+## Boruta - Objective Dataset
+```{r BorutaObjective, warning=F, message=F}
+set.seed(1234)
+boruta_objective <- Boruta(PositiveChange ~ ., data = df_filtered_objective)
+print(boruta_objective)
+#boruta_objective <- TentativeRoughFix(boruta_objective)
+getConfirmedFormula(boruta_objective)
+#print(boruta_objective$finalDecision[boruta_objective$finalDecision %in% c("Confirmed", "Tentative")])
+
+df_objective_long <- gather(as.data.frame(boruta_objective$ImpHistory), feature, measurement)
+plot_ly(df_objective_long, y = ~measurement, color = ~feature, type = "box") %>%
+  layout(title="Box-and-whisker Plots Across Objective Features",
+           xaxis = list(title="Features"),
+           yaxis = list(title="Importance"),
+           showlegend=F)
+```
+
+## Stepwise Feature Selection - Full Dataset
+```{r StepwiseFull, warning=F, message=F}
+ols_full <- run_stepwise(df_filtered)
+summary(ols_full)
+# get the shortlisted variable
+ols_confirmed_vars_full <- names(unlist(ols_full[[1]]))
+# remove the intercept 
+ols_confirmed_vars_full <- ols_confirmed_vars_full[!ols_confirmed_vars_full %in% "(Intercept)"]
+print(ols_confirmed_vars_full)
+# estimate variable importance
+pred_ols_full <- varImp(ols_full, scale=FALSE)
+# summarize importance
+print(pred_ols_full)
+```
+
+## Stepwise Feature Selection - Objective Dataset
+```{r StepwiseObjective, warning=F, message=F}
+ols_objective <- run_stepwise(df_filtered_objective)
+summary(ols_objective)
+# get the shortlisted variable
+ols_confirmed_vars_objective <- names(unlist(ols_objective[[1]]))
+# remove the intercept 
+ols_confirmed_vars_objective <- ols_confirmed_vars_objective[!ols_confirmed_vars_objective %in% "(Intercept)"]
+print(ols_confirmed_vars_objective)
+# estimate variable importance
+pred_ols_objective <- varImp(ols_objective, scale=FALSE)
+# summarize importance
+print(pred_ols_objective)
+```
+
+## PCA - Full Dataset
+```{r PCAFull, warning=F, message=F}
+set.seed(1234)
+pca_full <- prcomp(as.matrix(df_filtered), center = T)
+pca_full$rotation
+eigen_full <- get_eigenvalue(pca_full)
+
+```
+
+## PCA - Objective Dataset
+```{r PCAObjective, warning=F, message=F}
+set.seed(1234)
+pca_objective <- prcomp(as.matrix(df_filtered_objective), center = T)
+pca_objective$rotation
+eigen_objective <- get_eigenvalue(pca_objective)
+
+```
+
+## Summary
+```{r Summary, warning=F, message=F}
+```

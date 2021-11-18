@@ -1,7 +1,7 @@
 ---
 title: "Final Project"
-subtitle: "<h2><u>Data Science and Predictive Analytics (HS650), Fall 2021</u></h2>"
-author: "<h3>Kevin Wu</h3>"
+subtitle: "Summary, Evaluation, and Conclusions"
+author: "Kevin Wu"
 date: "`r format(Sys.time(), '%B %Y')`"
 tags: [DSPA, SOCR, MIDAS, Big Data, Predictive Analytics] 
 output:
@@ -17,7 +17,7 @@ output:
     code_folding: show
     self_contained: yes
 ---
-**Final Project.Rmd**.
+**final_project.Rmd**.
 
  * Final Project
  * Fall 2021, DSPA (HS650)
@@ -33,63 +33,93 @@ output:
 
 <p>Want to know (i.e. dependent variable) "change" = 2 (desirable move/state) vs 0 (steady but not ideal move/state) & 1 (undesirable move/state)</p>
 <p>The questions I'm looking to answer are</p>
-<ul>
-  <li><b>What model makes the best prediction for teens that flourish?</b></li>
-  <li><b>What are the best predictors?</b></li>
-</ul>
+* <b>What model makes the best prediction for teens that flourish?</b>
+* <b>What are the best predictors?</b>
 
-```{r Introduction, warning=F, message=F, child='final_project_common.Rmd'}
+<p>These are the methods of approaches I will take to analyze the data</p>
+1. Use feature selection models (OLS, rfe, Boruta) and confirm them with PCA.
+2. Use clustering nearest neighbors (k-Means, kNN) and check with SVM.
+3. Use classification trees (neuralnet, randomForest) and check with rpart.
+4. Start with lm multiple regression, and then use cv.glmnet and BART to confirm.
+5. Compare with apriori techniques.
+
+```{r Introduction, warning=F, message=F, include=F, child='final_project_common.Rmd'}
 ```
 
 # Dataset Details
 <p>The following dataset I am analyzing is a filtered version of a <a href="https://www.openicpsr.org/openicpsr/project/143381/version/V1/view">custom dataset</a> Dr. Ashley Palmer compiled from a <a href="https://psycnet.apa.org/record/2006-11985-014">study done by Dr. Corey Keyes in 2006</a> using the CDSII data.</p>
-<p>The following features were removed from Dr. Palmer's custom dataset because they were derived from the original CDSII and TAS2011 questions that are used to create the "mhstatus" and "change" features - the features that I am studying.</p>
-<p>Fields removed from original custom dataset:<br/><small>"persid", "dob", "date_ciw2002", "mage2002", "age2002", "tasdate2011", "mage2011", "age2011", "eligsecL", "sample", "agecat_11", "parent11", "higheduc", "college", "employed", "sleeprecomm", "nutrit11_1", "nutrit11_2", "bingedrk3", "subusect", "goodhlth_11", "agedx_cat", "k6miss", "k6scale", "spd", "phq2", "ewb1_flr2011", "ewb2_flr2011", "ewb3_flr2011", "avgemot", "sumemot", "swb1_flr2011", "swb2_flr2011", "swb3_flr2011", "swb4_flr2011", "swb5_flr2011", "avgsoc", "sumsoc", "pwb1_flr2011", "pwb2_flr2011", "pwb3_flr2011", "pwb4_flr2011", "pwb5_flr2011", "pwb6_flr2011", "avgpsyc", "sumpsyc", "flrmiss11", "flr_fxing2011", "flourish_2011", "ewb1_lan2011", "ewb2_lan2011", "ewb3_lan2011", "swb1_lan2011", "swb2_lan2011", "swb3_lan2011", "swb4_lan2011", "swb5_lan2011", "pwb1_lan2011", "pwb2_lan2011", "pwb3_lan2011", "pwb4_lan2011", "pwb5_lan2011", "pwb6_lan2011", "lan_fxing2011", "lngsh_bin2011", "mod_bin2011", "posmh_2011", "ewb1_flr2002", "ewb2_flr2002", "ewb3_flr2002", "swb1_flr2002", "swb2_flr2002", "swb3_flr2002", "swb4_flr2002", "swb5_flr2002", "pwb1_flr2002",  "pwb2_flr2002", "pwb3_flr2002", "pwb4_flr2002", "flourishingfull_02", "flr_fxing2002", "flourish_2002", "ewb1_lan2002", "ewb2_lan2002", "ewb3_lan2002", "swb1_lan2002", "swb2_lan2002", "swb3_lan2002", "swb4_lan2002", "swb5_lan2002", "pwb1_lan2002", "pwb2_lan2002", "pwb3_lan2002", "pwb4_lan2002", "lan_fxing2002", "lngsh_bin2002", "mod_bin2002", "posmh_2002"</small></p>
-<p>Many features are nominal</p>
+<p>The following features were removed from Dr. Palmer's custom dataset because they were derived from the original CDSII and TAS2011 questions that are used to create the "change" features - the features that I am studying.</p>
+<p>In the effort to factorialize "mhstatus" and "change" I had to either remove the missing values, or account for them.  Since there is no way to determine whether a missing value indicates a languishing status (perhaps due to the incomplete nature of the survey) or an incomplete status, I chose to remove them as my main focus is what features aid in positive changes.  As such, by removing 30% or 835 participant surveys, the data is heavily skewed toward those experiencing positive changes.</p>
+<p>I also created a separate dataset containing only objective data, as through my modeling, I noticed a lot of the subjective indicators were strongly influencing the outcomes.  I wanted to see what was contributing to these subjective indicators, so I created a dataset of only "objective" features.</p>
+<p>Many features are nominal, making it inappropriate to scale the features.  FIX THIS........With roughly 300 features that are similar in nature.......FIX THIS</p>
+[Header File: Defining Datasets](final_project_common.html)
 ```{r Dataset Details, warning=F, message=F}
 #load and convert Stata data into R dataframe frames into environment
 
 ncol(df_filtered)
 nrow(df_filtered)
+ncol(df_filtered_objective)
+nrow(df_filtered_objective)
 
-convertStatDataType = function(strType) {
+convertStatDataType <- function(strType) {
   mapping <- c("%8.0g"="byte", "%8.0g"="int", "%12.0g"="long", "%9.0g"="float", "%10.0g"="double", "%#s"="str#", "%9s"="strL")
   mapping[strType]
 }
 
-dfDisplay <- data.frame(matrix(ncol = 0, nrow = ncol(df_filtered)))
-vectName <- vector(length = ncol(df_filtered))
-vectLabel <- vector(length = ncol(df_filtered))
-vectFormat <- vector(length = ncol(df_filtered))
-vectDescriptions <- vector(length = ncol(df_filtered))
-
-for(i in 1:ncol(df_filtered)) {
-  vectName[i] <- names(df_filtered[, i])
-  if(is.null(attributes(df_filtered[[i]])$label) == F)
-    vectLabel[i] <- attributes(df_filtered[[i]])$label
-  if(is.null(attributes(df_filtered[[i]])$format.stata) == F)
-    vectFormat[i] <- lapply(attributes(df_filtered[[i]])$format.stata, convertStatDataType)
-  if(is.null(attributes(df_filtered[[i]])$class) == F && attributes(df_filtered[[i]])$class[3] == "double")
-    vectFormat[i] <- "double"
-  if(is.null(attributes(df_filtered[[i]])$labels) == F && length(attributes(df_filtered[[i]])$labels) > 0) {
-    vectLabels <- list(length(attributes(df_filtered[[i]])$labels))
-    for(j in 1:length(attributes(df_filtered[[i]])$labels)) {
-      vectLabels[j] <- as.character(attributes(df_filtered[[i]])$labels[j])
-      if(is.null(names(attributes(df_filtered[[i]])$labels[j])) == F && as.character(names(attributes(df_filtered[[i]])$labels[j])) != "Actual number")
-        vectLabels[j] <- paste(c(vectLabels[j], ":", as.character(names(attributes(df_filtered[[i]])$labels[j]))), collapse = " ")
-      else if(as.character(names(attributes(df_filtered[[i]])$labels[j])) == "Actual number")
-        vectLabels[j] <- paste0(vectLabels[j], ":::")
+convertDataframeDisplay <- function(df_convert) {
+  dfDisplay <- data.frame(matrix(ncol = 0, nrow = ncol(df_convert)))
+  vectName <- vector(length = ncol(df_convert))
+  vectLabel <- vector(length = ncol(df_convert))
+  vectFormat <- vector(length = ncol(df_convert))
+  vectDescriptions <- vector(length = ncol(df_convert))
+  
+  for(i in 1:ncol(df_convert)) {
+    vectName[i] <- names(df_convert[, i])
+    if(is.null(attributes(df_convert[[i]])$label) == F)
+      vectLabel[i] <- attributes(df_convert[[i]])$label
+    if(is.null(attributes(df_convert[[i]])$format.stata) == F)
+      vectFormat[i] <- lapply(attributes(df_convert[[i]])$format.stata, convertStatDataType)
+    if(is.null(attributes(df_convert[[i]])$class) == F && attributes(df_convert[[i]])$class == "factor") {
+      vectFormat[i] <- "factor"
+      vectDescriptions[i] <- str_flatten(attributes(df_convert[[i]])$levels, "<br />")
     }
-    vectDescriptions[i] <- str_flatten(vectLabels, "<br />")
-    vectDescriptions[i] <- str_replace_all(vectDescriptions[i], ":::<br />", ", ")
+    if(is.null(attributes(df_convert[[i]])$class) == F && attributes(df_convert[[i]])$class != "factor" && attributes(df_convert[[i]])$class[3] == "double")
+      vectFormat[i] <- "double"
+    if(is.null(attributes(df_convert[[i]])$labels) == F && length(attributes(df_convert[[i]])$labels) > 0) {
+      vectLabels <- list(length(attributes(df_convert[[i]])$labels))
+      for(j in 1:length(attributes(df_convert[[i]])$labels)) {
+        vectLabels[j] <- as.character(attributes(df_convert[[i]])$labels[j])
+        if(is.null(names(attributes(df_convert[[i]])$labels[j])) == F && as.character(names(attributes(df_convert[[i]])$labels[j])) != "Actual number")
+          vectLabels[j] <- paste(c(vectLabels[j], ":", as.character(names(attributes(df_convert[[i]])$labels[j]))), collapse = " ")
+        else if(as.character(names(attributes(df_convert[[i]])$labels[j])) == "Actual number")
+          vectLabels[j] <- paste0(vectLabels[j], ":::")
+      }
+      vectDescriptions[i] <- str_flatten(vectLabels, "<br />")
+      vectDescriptions[i] <- str_replace_all(vectDescriptions[i], ":::<br />", ", ")
+    }
   }
+  dfDisplay$ColumnName <- vectName
+  dfDisplay$Label <- vectLabel
+  dfDisplay$Format<- vectFormat
+  dfDisplay$Labels <- vectDescriptions
+  return(dfDisplay)
 }
-dfDisplay$ColumnName <- vectName
-dfDisplay$Label <- vectLabel
-dfDisplay$Format<- vectFormat
-dfDisplay$Labels <- vectDescriptions
+```
+## Filtered Dataframe aka Full Dataset
+```{r Dataset Details All, warning=F, message=F}
+df_display <- convertDataframeDisplay(df_filtered_non_int)
+datatable(df_display, options = list(
+  pageLength=10,
+  lengthMenu=c(10,50,100,150,250,300)
+  ),
+  escape=F
+)
+```
 
-datatable(dfDisplay, options = list(
+## Filtered Dataframe with Only Objective Data aka Objective Dataset
+```{r Dataset Details Objective, warning=F, message=F}
+df_objective_display <- convertDataframeDisplay(df_filtered_objective_non_int)
+datatable(df_objective_display, options = list(
   pageLength=10,
   lengthMenu=c(10,50,100,150,250,300)
   ),
@@ -99,6 +129,15 @@ datatable(dfDisplay, options = list(
 
 # Data Distribution
 ```{r Data Distribution, warning=F, message=F}
+plot_ly(x = ~mhstatus, type="histogram") %>%
+  layout(title = "Distribution of Mental Health Status", xaxis = list(title = "Mental Health Status"), bargap=0.1,
+         legend = list(orientation = 'h', title = list(text = "<b>Mental Health</b>")))
+```
+## Comparison Between Training and Testing Data
+```{r DDTrainingTest, warning=F, message=F}
 
-
+prop.table(table(mhstatus_train))
+prop.table(table(mhstatus_test))
+prop.table(table(df_train$PositiveChange))
+prop.table(table(df_test$PositiveChange))
 ```
