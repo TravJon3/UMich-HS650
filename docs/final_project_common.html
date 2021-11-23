@@ -248,7 +248,16 @@ $(document).ready(function () {
   <a href="final_project_feature_selection.html">Feautre Selection</a>
 </li>
 <li>
-  <a href="hw6.html">Homework 6</a>
+  <a href="final_project_clustering.html">Clustering</a>
+</li>
+<li>
+  <a href="final_project_rule_learning.html">Rule Learning</a>
+</li>
+<li>
+  <a href="final_project_trees.html">Trees</a>
+</li>
+<li>
+  <a href="hw6.html">HW 6</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -272,48 +281,83 @@ library(DT)
 library(plotly)
 library(tidyr)
 library(dplyr)
+library(stats)
+library(caret)
+library(mltools)
+library(data.table)
 df &lt;- read_dta(&quot;http://kevinwurn.github.io/UMich-HS650/final_project_files/clean-childvarsJune2021.dta&quot;, encoding = &quot;latin1&quot;)
 filter_remove &lt;- c(&quot;persid&quot;, &quot;date_ciw2002&quot;, &quot;mage2002&quot;, &quot;age2002&quot;, &quot;tasdate2011&quot;, &quot;mage2011&quot;, &quot;age2011&quot;, &quot;eligsecL&quot;, &quot;sample&quot;, &quot;agecat_11&quot;, &quot;parent11&quot;, &quot;higheduc&quot;, &quot;college&quot;, &quot;employed&quot;, &quot;sleeprecomm&quot;, &quot;nutrit11_1&quot;, &quot;nutrit11_2&quot;, &quot;bingedrk3&quot;, &quot;subusect&quot;, &quot;goodhlth_11&quot;, &quot;agedx_cat&quot;, &quot;k6miss&quot;, &quot;k6scale&quot;, &quot;spd&quot;, &quot;phq2&quot;, &quot;ewb1_flr2011&quot;, &quot;ewb2_flr2011&quot;, &quot;ewb3_flr2011&quot;, &quot;avgemot&quot;, &quot;sumemot&quot;, &quot;swb1_flr2011&quot;, &quot;swb2_flr2011&quot;, &quot;swb3_flr2011&quot;, &quot;swb4_flr2011&quot;, &quot;swb5_flr2011&quot;, &quot;avgsoc&quot;, &quot;sumsoc&quot;, &quot;pwb1_flr2011&quot;, &quot;pwb2_flr2011&quot;, &quot;pwb3_flr2011&quot;, &quot;pwb4_flr2011&quot;, &quot;pwb5_flr2011&quot;, &quot;pwb6_flr2011&quot;, &quot;avgpsyc&quot;, &quot;sumpsyc&quot;, &quot;flrmiss11&quot;, &quot;flr_fxing2011&quot;, &quot;flourish_2011&quot;, &quot;ewb1_lan2011&quot;, &quot;ewb2_lan2011&quot;, &quot;ewb3_lan2011&quot;, &quot;swb1_lan2011&quot;, &quot;swb2_lan2011&quot;, &quot;swb3_lan2011&quot;, &quot;swb4_lan2011&quot;, &quot;swb5_lan2011&quot;, &quot;pwb1_lan2011&quot;, &quot;pwb2_lan2011&quot;, &quot;pwb3_lan2011&quot;, &quot;pwb4_lan2011&quot;, &quot;pwb5_lan2011&quot;, &quot;pwb6_lan2011&quot;, &quot;lan_fxing2011&quot;, &quot;lngsh_bin2011&quot;, &quot;mod_bin2011&quot;, &quot;posmh_2011&quot;, &quot;ewb1_flr2002&quot;, &quot;ewb2_flr2002&quot;, &quot;ewb3_flr2002&quot;, &quot;swb1_flr2002&quot;, &quot;swb2_flr2002&quot;, &quot;swb3_flr2002&quot;, &quot;swb4_flr2002&quot;, &quot;swb5_flr2002&quot;, &quot;pwb1_flr2002&quot;,  &quot;pwb2_flr2002&quot;, &quot;pwb3_flr2002&quot;, &quot;pwb4_flr2002&quot;, &quot;flourishingfull_02&quot;, &quot;flr_fxing2002&quot;, &quot;flourish_2002&quot;, &quot;ewb1_lan2002&quot;, &quot;ewb2_lan2002&quot;, &quot;ewb3_lan2002&quot;, &quot;swb1_lan2002&quot;, &quot;swb2_lan2002&quot;, &quot;swb3_lan2002&quot;, &quot;swb4_lan2002&quot;, &quot;swb5_lan2002&quot;, &quot;pwb1_lan2002&quot;, &quot;pwb2_lan2002&quot;, &quot;pwb3_lan2002&quot;, &quot;pwb4_lan2002&quot;, &quot;lan_fxing2002&quot;, &quot;lngsh_bin2002&quot;, &quot;mod_bin2002&quot;, &quot;posmh_2002&quot;)
-df_filtered &lt;- df[ , !names(df) %in% filter_remove]
+df_full &lt;- df[ , !names(df) %in% filter_remove]
 
 #factorialize change variable into &quot;PositiveChange&quot;
-df_filtered$PositiveChange &lt;- df_filtered$change %in% c(2)
-df_filtered$PositiveChange &lt;- factor(df_filtered$PositiveChange, levels=c(F, T), labels = c(&quot;Not Positive Change&quot;, &quot;Positve Change&quot;))
-#save dataframe with NAs
-df_filtered_na &lt;- df_filtered
-#change all NA values to 9999 to indicate missing
-df_filtered &lt;- df_filtered %&gt;% replace(is.na(.), 9999)
+df_full$PositiveChange &lt;- df_full$change %in% c(2)
+df_full$PositiveChange &lt;- factor(df_full$PositiveChange, levels=c(F, T), labels = c(&quot;Not Positive Change&quot;, &quot;Positve Change&quot;))
 # subset out missing values from mhstatus which is roughly 30% of participants (835) =(
-df_filtered &lt;- subset(df_filtered, mhstatus != 9999)
-df_filtered_na &lt;- subset(df_filtered_na, mhstatus != NA)
+df_full &lt;- df_full[!is.na(df_full$mhstatus), ]
+df_full_na &lt;- df_full
+#change all NA values to 100 to indicate missing
+df_full &lt;- df_full %&gt;% replace(is.na(.), 100)
 #factorialize mhstatus and rename levels for increased legibility and create a separate vector as mhstatus will be removed
-mhstatus &lt;- factor(df_filtered$mhstatus, levels=c(0:8, 9999), labels = c(&quot;Languishing to Languishing&quot;, &quot;Languishing to Moderate&quot;, &quot;Languishing to Flourishing&quot;, &quot;Moderate to Languishing&quot;, &quot;Moderate to Moderate&quot;, &quot;Moderate to Flourishing&quot;, &quot;Flourishing to Languishing&quot;, &quot;Flourishing to Flourishing&quot;, &quot;Flourishing to Flourishing&quot;, &quot;Missing&quot;))
+mhstatus &lt;- factor(df_full$mhstatus, levels=c(0:8, 100), labels = c(&quot;Languishing to Languishing&quot;, &quot;Languishing to Moderate&quot;, &quot;Languishing to Flourishing&quot;, &quot;Moderate to Languishing&quot;, &quot;Moderate to Moderate&quot;, &quot;Moderate to Flourishing&quot;, &quot;Flourishing to Languishing&quot;, &quot;Flourishing to Flourishing&quot;, &quot;Flourishing to Flourishing&quot;, &quot;Missing&quot;))
 #remove additional features directly related to PostiveChange
-filter_remove &lt;- c(&quot;change&quot;, &quot;mhstatus&quot;, &quot;flscale_02&quot;, &quot;TA111121&quot;)
-df_filtered_non_int &lt;- df_filtered[ , !names(df_filtered) %in% filter_remove]
-df_filtered &lt;- as.data.frame(lapply(df_filtered_non_int, as.integer))
+#remove TA111121 all NA
+#remove TA110835 too many values that are NA
+filter_remove &lt;- c(&quot;change&quot;, &quot;mhstatus&quot;, &quot;flscale_02&quot;, &quot;TA111121&quot;, &quot;cdsiiresult&quot;, &quot;CHLDREL&quot;, &quot;TA110835&quot;)
+df_full_na &lt;- df_full_na[ , !names(df_full_na) %in% filter_remove]
+df_full_non_int &lt;- df_full[ , !names(df_full) %in% filter_remove]
+df_full_na &lt;- as.data.frame(lapply(df_full_na, as.integer))
+df_full &lt;- as.data.frame(lapply(df_full_non_int, as.integer))
+df_full_onehot &lt;- df_full
+df_full_onehot &lt;- lapply(df_full_onehot, as.factor)
+#$ df_full_onehot &lt;- data.frame(predict(dummyVars(&quot; ~ .&quot;, data = df_full_onehot), newdata = df_full_onehot))
+df_full_onehot &lt;- one_hot(as.data.table(df_full_onehot))
+df_full &lt;-as.data.frame(lapply(df_full, scale))
 
 #create another df removing emotions that contribute to flourishing.  only keep physical contributing factors to flourishing
 filter_remove_subjective &lt;- c(&quot;ewb1_2011&quot;, &quot;ewb2_2011&quot;, &quot;ewb3_2011&quot;, &quot;swb1_2011&quot;, &quot;swb2_2011&quot;, &quot;swb3_2011&quot;, &quot;swb4_2011&quot;, &quot;swb5_2011&quot;, &quot;pwb1_2011&quot;, &quot;pwb2_2011&quot;, &quot;pwb3_2011&quot;, &quot;pwb4_2011&quot;, &quot;pwb5_2011&quot;, &quot;pwb6_2011&quot;, &quot;nervous_2011&quot;, &quot;hopeless_2011&quot;, &quot;restless_2011&quot;, &quot;effort_2011&quot;, &quot;sad_2011&quot;, &quot;worthless_2011&quot;, &quot;k6sxfreq_2011&quot;, &quot;degreefreq_2011&quot;, &quot;k6interfere_2011&quot;, &quot;ownactions&quot;, &quot;probsolve&quot;, &quot;moneymng&quot;, &quot;creditcardmng&quot;, &quot;supervise_2011&quot;, &quot;leader_2011&quot;, &quot;logical_2011&quot;, &quot;helping_2011&quot;, &quot;intelligence_2011&quot;, &quot;independence_2011&quot;, &quot;confidence_2011&quot;, &quot;decisiveness_2011&quot;, &quot;listening_2011&quot;, &quot;teaching_2011&quot;, &quot;meetppl_11&quot;, &quot;shy_11&quot;, &quot;selfcon_11&quot;, &quot;perform_11&quot;, &quot;lifesat_2011&quot;, &quot;ewb1_02&quot;, &quot;ewb2_02&quot;, &quot;ewb3_02&quot;, &quot;swb1_02&quot;, &quot;swb2_02&quot;, &quot;swb3_02&quot;, &quot;swb4_02&quot;, &quot;swb5_02&quot;, &quot;pwb1_02&quot;, &quot;pwb2_02&quot;, &quot;pwb3_02&quot;, &quot;pwb4_02&quot;, &quot;Q23K26A&quot;, &quot;Q23K26B&quot;, &quot;Q23K26C&quot;, &quot;Q23K26D&quot;, &quot;Q23K26E&quot;, &quot;Q23K28&quot;)
-df_filtered_objective_na &lt;-  df_filtered_na[ , !names(df_filtered_na) %in% filter_remove_subjective]
-df_filtered_objective_non_int &lt;- df_filtered_non_int[ , !names(df_filtered_non_int) %in% filter_remove_subjective]
-df_filtered_objective &lt;- as.data.frame(lapply(df_filtered_objective_non_int, as.integer))
+df_objective_na &lt;- df_full_na[ , !names(df_full_na) %in% filter_remove_subjective]
+df_objective_non_int &lt;- df_full_non_int[ , !names(df_full_non_int) %in% filter_remove_subjective]
+df_objective &lt;- as.data.frame(lapply(df_objective_non_int, as.integer))
+df_objective_onehot &lt;- df_objective
+df_objective_onehot &lt;- lapply(df_objective_onehot, as.factor)
+df_objective_onehot &lt;- data.frame(predict(dummyVars(&quot; ~ .&quot;, data = df_objective_onehot), newdata = df_objective_onehot))
+df_objective &lt;-as.data.frame(lapply(df_objective, scale))
 
 #create training / testing data dataframes
 set.seed(1234)
-subsetInterval &lt;- sample(nrow(df_filtered), floor(nrow(df_filtered) * 0.85))  # 85% training + 15% testing
-df_train &lt;- df_filtered[subsetInterval, ]
-df_test &lt;- df_filtered[-subsetInterval, ]
-df_objective_train &lt;- df_filtered_objective[subsetInterval, ]
-df_objective_test &lt;- df_filtered_objective[-subsetInterval, ]
-df_train_na &lt;- df_filtered_na[subsetInterval, ]
-df_test_na &lt;- df_filtered_na[-subsetInterval, ]
-df_objective_train_na &lt;- df_filtered_objective_na[subsetInterval, ]
-df_objective_test_na &lt;- df_filtered_objective_na[-subsetInterval, ]
+subsetInterval &lt;- sample(nrow(df_full), floor(nrow(df_full) * 0.80))  # 80% training + 20% testing
+
+#scaled
+df_full_train &lt;- df_full[subsetInterval, ]
+df_full_test &lt;- df_full[-subsetInterval, ]
+df_objective_train &lt;- df_objective[subsetInterval, ]
+df_objective_test &lt;- df_objective[-subsetInterval, ]
+#unscaled
+df_full_train_onehot &lt;- df_full_onehot[subsetInterval, ]
+df_full_test_onehot &lt;- df_full_onehot[-subsetInterval, ]
+df_objective_train_onehot &lt;- df_objective_onehot[subsetInterval, ]
+df_objective_test_onehot &lt;- df_objective_onehot[-subsetInterval, ]
+df_full_train_na &lt;- df_full_na[subsetInterval, ]
+df_full_test_na &lt;- df_full_na[-subsetInterval, ]
+df_objective_train_na &lt;- df_objective_na[subsetInterval, ]
+df_objective_test_na &lt;- df_objective_na[-subsetInterval, ]
 
 mhstatus_train &lt;- mhstatus[subsetInterval]
 mhstatus_test &lt;- mhstatus[-subsetInterval] 
 
+#common variables
+k_full &lt;- as.integer(sqrt(nrow(df_full)/2))
+k_full_train &lt;- as.integer(sqrt(nrow(df_full_train)/2))
+k_full_test &lt;- as.integer(sqrt(nrow(df_full_test)/2))
+k_objective &lt;- as.integer(sqrt(nrow(df_objective)/2))
+k_objective_train &lt;- as.integer(sqrt(nrow(df_objective_train)/2))
+k_objective_test &lt;- as.integer(sqrt(nrow(df_objective_test)/2))
+k_full_onehot &lt;- as.integer(sqrt(nrow(df_full_onehot)/2))
+k_full_train_onehot &lt;- as.integer(sqrt(nrow(df_full_train_onehot)/2))
+k_full_test_onehot &lt;- as.integer(sqrt(nrow(df_full_test_onehot)/2))
+k_objective_onehot &lt;- as.integer(sqrt(nrow(df_objective_onehot)/2))
+k_objective_train_onehot &lt;- as.integer(sqrt(nrow(df_objective_train_onehot)/2))
+k_objective_test_onehot &lt;- as.integer(sqrt(nrow(df_objective_test_onehot)/2))
 
 ######################################################
 ## below is to set testing data as training data to speed up rendering
@@ -321,10 +365,16 @@ mhstatus_test &lt;- mhstatus[-subsetInterval]
 ######################################################
 currently_developing &lt;- T
 if(currently_developing) {
-  df_train &lt;- df_test
+  df_full_train &lt;- df_full_test
   df_objective_train &lt;- df_objective_test
-  df_train_na &lt;- df_test_na
-  df_objective_train_na &lt;- df_objective_test_na
+  df_full_train_onehot &lt;- df_full_test_onehot
+  df_objective_train_onehot &lt;- df_objective_test_onehot
+
+  df_full &lt;- df_full_test
+  df_objective &lt;- df_objective_test
+  df_full_onehot &lt;- df_full_test_onehot
+  df_objective_onehot &lt;- df_objective_test_onehot
+  df_objective_na &lt;- df_objective_test_na
 }</code></pre>
 
 

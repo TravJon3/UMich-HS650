@@ -1,0 +1,12 @@
+base
+haven
+stringr
+DT
+ggplot2
+plotly
+tidyr
+dplyr
+lattice
+caret
+mltools
+data.table

@@ -1,0 +1,165 @@
+---
+title: "Final Project"
+subtitle: "Clustering"
+author: "Kevin Wu"
+date: "`r format(Sys.time(), '%B %Y')`"
+tags: [DSPA, SOCR, MIDAS, Big Data, Predictive Analytics] 
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: show
+    self_contained: yes
+---
+**final_project_clustering.Rmd**.
+
+# Clustering Nearest Neighbor
+<p>k-Means, kNN, SVM</p>
+
+```{r Introduction, warning=F, message=F, include=F, child='final_project_common.Rmd'}
+```
+## k-Means Helper Functions and Libraries
+```{r HeaderKMeans, warning=F, message=F}
+library(cluster)
+library(matrixStats)
+
+kpp_init <- function(dat, K) {
+  x = as.matrix(dat)
+  n = nrow(x)
+  # Randomly choose a first center
+  centers = matrix(NA, nrow=K, ncol=ncol(x))
+  set.seed(1234)
+  centers[1,] = as.matrix(x[sample(1:n, 1),])
+  for (k in 2:K) {
+    # Calculate dist^2 to closest center for each point
+    dists = matrix(NA, nrow=n, ncol=k-1)
+    for (j in 1:(k-1)) {
+      temp = sweep(x, 2, centers[j,], '-')
+      dists[,j] = rowSums(temp^2)
+    }
+    dists = rowMins(dists)
+    # Draw next center with probability proportional to dist^2
+    cumdists = cumsum(dists)
+    prop = runif(1, min=0, max=cumdists[n])
+    centers[k,] = as.matrix(x[min(which(cumdists > prop)),])
+  }
+  return(centers)
+}
+
+plot_silhouette <- function(df, K, bKPP = T) {
+  set.seed(1234)
+  if(bKPP)
+    clusters <- kmeans(df, kpp_init(df, K), iter.max=10, algorithm='Lloyd')
+  else
+    clusters <- kmeans(df, K)
+  dis <- dist(df)
+  sil <- silhouette(clusters$cluster, dis)
+  summary(sil)
+  
+  return(list(factoextra::fviz_silhouette(sil, label=T, palette = "jco", ggtheme = theme_classic()), clusters))
+}
+
+plot_tuning <- function(df, n_rows) {
+  mat = matrix(0, nrow = n_rows)
+  for(i in 2:n_rows) {
+    set.seed(1234)
+    clust_kpp = kmeans(df, kpp_init(df, i), iter.max=10, algorithm='Lloyd')
+    dis <- dist(df)
+    sil = silhouette(clust_kpp$cluster, dis)
+    mat[i] = mean(as.matrix(sil)[,3])
+  }
+  colnames(mat) <- c("Avg_Silhouette_Value")
+  df <- data.frame(k = 2:n_rows, sil = mat[2:n_rows])
+  plot_ly(df, x = ~k, y = ~sil, type = 'scatter', mode = 'lines', name='Silhouette') %>%
+    layout(title="Average Silhouette Graph")
+}
+
+explicate_clusters <- function(clusters) {
+  df <- as.data.frame(t(clusters$centers))
+  rowNames <- rownames(df)
+  cluster_num <- length(clusters$size)
+  colnames(df) <- paste0("Cluster",c(1:cluster_num))
+  p <- plot_ly()
+  for(i in 1:ncol(df)) {
+    p <- p %>% add_trace(data = df, x = rownames(df), y = ~df[ , i], type = "bar", name = paste0("Cluster", i))
+  }
+  p <- p %>% layout(title="Explicating Derived Cluster Labels", yaxis = list(title = 'Cluster Centers'), barmode = 'group')
+  p
+}
+
+```
+
+## k-Means - Full Dataset
+```{r kMeansFull, warning=F, message=F}
+# instead of running it at default k=sqrt(n/2) times which is roughly 31 times, these iterations take a really long time.  Having run it once, the largest number of clusters that are distributed are roughly around 11
+new_k_full <- 11
+plot_silhouette(df_full_onehot, new_k_full, bKPP=F)[[1]]
+plot_silhouette(df_full_onehot, new_k_full, bKPP=T)[[1]]
+plot_tuning(df_full_onehot, new_k_full)
+new_k_full <- 4
+returned_list <- plot_silhouette(df_full_onehot, new_k_full, bKPP=F)
+returned_list[[1]]
+clusters_full <- returned_list[[2]]
+clusters_full$centers
+
+
+# explicate_clusters(clusters_full)
+```
+
+## k-Means - Objective Dataset
+```{r kMeansObjective, warning=F, message=F}
+new_k_objective <- 11
+plot_silhouette(df_objective_onehot, new_k_objective, bKPP=F)[[1]]
+plot_silhouette(df_objective_onehot, new_k_objective, bKPP=T)[[1]]
+plot_tuning(df_objective_onehot, new_k_objective)
+new_k_objective <- 3
+returned_list <- plot_silhouette(df_objective_onehot, new_k_objective, bKPP=F)
+returned_list[[1]]
+clusters_full <- returned_list[[2]]
+clusters_full$centers
+
+# explicate_clusters(clusters_objective)
+```
+
+## kNN Helper Functions and Libraries
+```{r HeaderKNN, warning=F, message=F}
+library(class)
+library(gmodels)
+library(e1071)
+```
+
+## kNN - Full Dataset
+```{r kNNFull, warning=F, message=F}
+labels_train_full <- df_full_test_onehot[ , "PositiveChange.2"]
+labels_test_full <- df_test_onehot[ , "PositiveChange.2"]
+df_full_test_onehot <- df_full_test_onehot[ , !names(df_full_test_onehot) %in% "PositiveChange.2"]
+df_test_onehot <- df_test_onehot[ , !names(df_test_onehot) %in% "PositiveChange.2"]
+
+pred_full <- knn(train = df_full_test_onehot, test = df_test_onehot, cl = labels_train_full, k = new_k_full)
+CrossTable(x = labels_test_full, y = pred_full, prop.chisq = F)
+tuning_full = tune.knn(x = df_full_test_onehot, y = as.factor(labels_train_full), k = 1:new_k_full)
+tuning_full
+```
+
+## kNN - Objective Dataset
+```{r kNNObjective, warning=F, message=F}
+labels_train_objective <- df_objective_train_onehot[ , "PositiveChange.2"]
+labels_test_objective <- df_objective_test_onehot[ , "PositiveChange.2"]
+df_objective_train_onehot <- df_objective_train_onehot[ , !names(df_objective_train_onehot) %in% "PositiveChange.2"]
+df_objective_test_onehot <- df_objective_test_onehot[ , !names(df_objective_test_onehot) %in% "PositiveChange.2"]
+
+pred_objective <- knn(train = df_objective_train_onehot, test = df_objective_test_onehot, cl = labels_train_objective, k = new_k_objective)
+CrossTable(x = labels_test_objective, y = pred_objective, prop.chisq = F)
+tuning_objective = tune.knn(x = df_objective_train_onehot, y = as.factor(labels_train_objective), k = 1:new_k_objective)
+tuning_objective
+```
+
+# Summary
+```{r Summary, warning=F, message=F}
+```

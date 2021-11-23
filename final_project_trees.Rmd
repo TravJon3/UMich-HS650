@@ -1,0 +1,45 @@
+---
+title: "Final Project"
+subtitle: "Trees"
+author: "Kevin Wu"
+date: "`r format(Sys.time(), '%B %Y')`"
+tags: [DSPA, SOCR, MIDAS, Big Data, Predictive Analytics] 
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: show
+    self_contained: yes
+---
+**final_project_trees.Rmd**.
+
+
+# Classification Trees
+<p></p>
+
+```{r Introduction, warning=F, message=F, include=F, child='final_project_common.Rmd'}
+```
+
+## Classification Trees Helper Functions and Libraries
+```{r Header, warning=F, message=F}
+
+
+```
+
+## Classification Trees - Full Dataset
+```{r OneHotFull, warning=F, message=F}
+
+
+```
+
+## Classification Trees - Objective Dataset
+```{r OneHotObjective, warning=F, message=F}
+
+
+```

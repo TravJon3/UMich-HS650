@@ -20,22 +20,16 @@ output:
 **final_project_feature_selection.Rmd**.
 
 # Feature Selection Introduction
-<p>Not going to do RFE because Boruta is based on RFE.  stepwise feature selection and PCA confirmation</p>
+<p>Not going to do RFE because Boruta is based on RFE.  Stepwise feature selection and PCA confirmation.  Multiple Factor Analysis</p>
 
 ```{r Introduction, warning=F, message=F, include=F, child='final_project_common.Rmd'}
 ```
 
-```{r Libraries, warning=F, message=F}
+```{r Header, warning=F, message=F}
 library(Boruta)
 library(mlbench)
-library(caret)
-library(factoextra)
-
-if(currently_developing) {
-  df_filtered <- df_test
-  df_filtered_objective <- df_objective_test
-}
-
+#library(factoextra)
+library(fastICA)
 
 run_stepwise <- function(df_run) {
   set.seed(1234)
@@ -50,7 +44,7 @@ run_stepwise <- function(df_run) {
 ## Boruta - Full Dataset
 ```{r BorutaFull, warning=F, message=F}
 set.seed(1234)
-boruta_full <- Boruta(PositiveChange ~ ., data = df_filtered)
+boruta_full <- Boruta(PositiveChange ~ ., data = df_full)
 print(boruta_full)
 #boruta_full <- TentativeRoughFix(boruta_full)
 getConfirmedFormula(boruta_full)
@@ -67,7 +61,7 @@ plot_ly(df_long, y = ~measurement, color = ~feature, type = "box") %>%
 ## Boruta - Objective Dataset
 ```{r BorutaObjective, warning=F, message=F}
 set.seed(1234)
-boruta_objective <- Boruta(PositiveChange ~ ., data = df_filtered_objective)
+boruta_objective <- Boruta(PositiveChange ~ ., data = df_objective)
 print(boruta_objective)
 #boruta_objective <- TentativeRoughFix(boruta_objective)
 getConfirmedFormula(boruta_objective)
@@ -83,7 +77,7 @@ plot_ly(df_objective_long, y = ~measurement, color = ~feature, type = "box") %>%
 
 ## Stepwise Feature Selection - Full Dataset
 ```{r StepwiseFull, warning=F, message=F}
-ols_full <- run_stepwise(df_filtered)
+ols_full <- run_stepwise(df_full)
 summary(ols_full)
 # get the shortlisted variable
 ols_confirmed_vars_full <- names(unlist(ols_full[[1]]))
@@ -98,7 +92,7 @@ print(pred_ols_full)
 
 ## Stepwise Feature Selection - Objective Dataset
 ```{r StepwiseObjective, warning=F, message=F}
-ols_objective <- run_stepwise(df_filtered_objective)
+ols_objective <- run_stepwise(df_objective)
 summary(ols_objective)
 # get the shortlisted variable
 ols_confirmed_vars_objective <- names(unlist(ols_objective[[1]]))
@@ -111,24 +105,26 @@ pred_ols_objective <- varImp(ols_objective, scale=FALSE)
 print(pred_ols_objective)
 ```
 
-## PCA - Full Dataset
+##  - Full Dataset
 ```{r PCAFull, warning=F, message=F}
 set.seed(1234)
-pca_full <- prcomp(as.matrix(df_filtered), center = T)
-pca_full$rotation
-eigen_full <- get_eigenvalue(pca_full)
+# pca_full <- prcomp(as.matrix(df_full_onehot))
+# eigen_full <- get_eigenvalue(pca_full)
+# eigen_full
+# plot_ly(x = c(1:length(pca_full$sdev)), y = pca_full$sdev*pca_full$sdev, name = "Scree", type = "bar") %>%
+#   layout(title="Scree Plot", xaxis = list(title="PC's"),  yaxis = list(title="Variances (SD^2)"))
 
+# ICA_full <- fastICA(df_full_onehot, k_full, alg.typ = "parallel", fun = "logcosh", alpha = 1, 
+#             method = "C", row.norm = FALSE, maxit = 200, tol = 0.0001)
+# ICA_full
 ```
 
-## PCA - Objective Dataset
+##  - Objective Dataset
 ```{r PCAObjective, warning=F, message=F}
 set.seed(1234)
-pca_objective <- prcomp(as.matrix(df_filtered_objective), center = T)
-pca_objective$rotation
-eigen_objective <- get_eigenvalue(pca_objective)
 
 ```
 
-## Summary
+# Summary
 ```{r Summary, warning=F, message=F}
 ```

@@ -1,0 +1,96 @@
+---
+title: "Final Project Fule Learning"
+subtitle: "Clustering Nearest Neighbor"
+author: "Kevin Wu"
+date: "`r format(Sys.time(), '%B %Y')`"
+tags: [DSPA, SOCR, MIDAS, Big Data, Predictive Analytics] 
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: show
+    self_contained: yes
+---
+**final_project_rule_learning.Rmd**.
+
+# Rule Learning
+<p>apriori - nominal/categorical variables with each </p>
+
+```{r Introduction, warning=F, message=F, include=F, child='final_project_common.Rmd'}
+```
+
+## Apriori Helper Functions and Libraries
+```{r Header, warning=F, message=F}
+library(arules)
+
+
+```
+
+## Apriori Learning - Full Dataset
+```{r AprioriFull, warning=F, message=F}
+transactions <- read.transactions("clean-childvarsJune2021.csv", sep=",", rm.duplicates=T)
+summary(transactions)
+inspect(transactions)
+
+# df_objective_train_onehot <- Filter(function(x)(length(unique(x))>1), df_objective_train_onehot)
+# df_objective_test_onehot <- Filter(function(x)(length(unique(x))>1), df_objective_test_onehot)
+
+
+# df_transactions <- df_objective_unscaled
+# df_transactions <- unique(df_transactions)
+# df_transactions$const <- TRUE
+# TransactionID <- seq(from = 1:nrow(df_objective_unscaled))
+# df_transactions <- cbind(TransactionID, df_objective_unscaled)
+# 
+# df_transactions_prep <- reshape(data = df_transactions, idvar = c("ER33601","ER34001"), timevar = "TransactionID", direction = "wide")
+# matrix_transactions <- as.matrix(df_transactions_prep[ , !names(df_transactions_prep) %in% c("ER33601", "ER34001", "TransactionID")])
+# colnames(matrix_transactions) <- gsub(x=colnames(matrix_transactions), pattern="const\\.", replacement="")
+# matrix_transactions[is.na(matrix_transactions)] <- FALSE
+# matrix_transactions[matrix_transactions == 100] <- FALSE
+# transactions <- as(matrix_transactions, "transactions")
+# summary(transactions)
+# 
+# mat <- as.matrix(transactions@data)
+# # capture the row/column names
+# rowNames <- transactions@itemInfo$labels
+# colNames <- paste0("S", c(1:dim(mat)[2]))
+# rownames(mat) <- rowNames
+# colnames(mat) <- colNames
+# 
+# # convert matrix to DF for processing, order rows based on their average (across subjects/cases/columns), back to matrix for display
+# df <- as.data.frame(1*mat)
+# df$avg <- rowMeans(df)
+# dfOrdered <- df[order(df$avg, decreasing = T), ]
+# matOrdered <- as.matrix(dfOrdered)
+# 
+# # track the ordered row names
+# rowNames <- rownames(dfOrdered)
+# colNames <- colnames(dfOrdered)
+# 
+# # 2D top 20 terms bar plot
+# # To order the transactions based on "avg", instead of alphabetically (mind the "-" sign to order Large to small!)
+# plot_ly(x = reorder(rowNames[c(1:20)], -dfOrdered[1:20, "avg"]), y=dfOrdered[1:20, "avg"], name="Top 20 Meds", type="bar")  %>%
+#   layout(title='Frequency of Medications (Top 20) based on averaging across Cases',
+#            xaxis = list(title="Term"),
+#            yaxis = list(title="Relative Frequency"))
+# # 3D surface plot
+# plot_ly(x = colNames, y = rowNames, z = 2*matOrdered, type = "surface") %>%
+#   layout(title='Term (X) by Sample (Y) Frequency (Z) Plot',
+#            xaxis = list(title="Term"),
+#            yaxis = list(title="Sample ID")) %>% hide_colorbar()
+# myrules <- apriori(transactions)
+# myrules
+# summary(myrules)
+# inspect(sort(myrules, by="lift"))
+```
+
+## Apriori Learning - Objective Dataset
+```{r AprioriObjective, warning=F, message=F}
+
+```

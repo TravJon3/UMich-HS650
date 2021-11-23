@@ -5,48 +5,83 @@ library(DT)
 library(plotly)
 library(tidyr)
 library(dplyr)
+library(stats)
+library(caret)
+library(mltools)
+library(data.table)
 df <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project_files/clean-childvarsJune2021.dta", encoding = "latin1")
 filter_remove <- c("persid", "date_ciw2002", "mage2002", "age2002", "tasdate2011", "mage2011", "age2011", "eligsecL", "sample", "agecat_11", "parent11", "higheduc", "college", "employed", "sleeprecomm", "nutrit11_1", "nutrit11_2", "bingedrk3", "subusect", "goodhlth_11", "agedx_cat", "k6miss", "k6scale", "spd", "phq2", "ewb1_flr2011", "ewb2_flr2011", "ewb3_flr2011", "avgemot", "sumemot", "swb1_flr2011", "swb2_flr2011", "swb3_flr2011", "swb4_flr2011", "swb5_flr2011", "avgsoc", "sumsoc", "pwb1_flr2011", "pwb2_flr2011", "pwb3_flr2011", "pwb4_flr2011", "pwb5_flr2011", "pwb6_flr2011", "avgpsyc", "sumpsyc", "flrmiss11", "flr_fxing2011", "flourish_2011", "ewb1_lan2011", "ewb2_lan2011", "ewb3_lan2011", "swb1_lan2011", "swb2_lan2011", "swb3_lan2011", "swb4_lan2011", "swb5_lan2011", "pwb1_lan2011", "pwb2_lan2011", "pwb3_lan2011", "pwb4_lan2011", "pwb5_lan2011", "pwb6_lan2011", "lan_fxing2011", "lngsh_bin2011", "mod_bin2011", "posmh_2011", "ewb1_flr2002", "ewb2_flr2002", "ewb3_flr2002", "swb1_flr2002", "swb2_flr2002", "swb3_flr2002", "swb4_flr2002", "swb5_flr2002", "pwb1_flr2002",  "pwb2_flr2002", "pwb3_flr2002", "pwb4_flr2002", "flourishingfull_02", "flr_fxing2002", "flourish_2002", "ewb1_lan2002", "ewb2_lan2002", "ewb3_lan2002", "swb1_lan2002", "swb2_lan2002", "swb3_lan2002", "swb4_lan2002", "swb5_lan2002", "pwb1_lan2002", "pwb2_lan2002", "pwb3_lan2002", "pwb4_lan2002", "lan_fxing2002", "lngsh_bin2002", "mod_bin2002", "posmh_2002")
-df_filtered <- df[ , !names(df) %in% filter_remove]
+df_full <- df[ , !names(df) %in% filter_remove]
 
 #factorialize change variable into "PositiveChange"
-df_filtered$PositiveChange <- df_filtered$change %in% c(2)
-df_filtered$PositiveChange <- factor(df_filtered$PositiveChange, levels=c(F, T), labels = c("Not Positive Change", "Positve Change"))
-#save dataframe with NAs
-df_filtered_na <- df_filtered
-#change all NA values to 9999 to indicate missing
-df_filtered <- df_filtered %>% replace(is.na(.), 9999)
+df_full$PositiveChange <- df_full$change %in% c(2)
+df_full$PositiveChange <- factor(df_full$PositiveChange, levels=c(F, T), labels = c("Not Positive Change", "Positve Change"))
 # subset out missing values from mhstatus which is roughly 30% of participants (835) =(
-df_filtered <- subset(df_filtered, mhstatus != 9999)
-df_filtered_na <- subset(df_filtered_na, mhstatus != NA)
+df_full <- df_full[!is.na(df_full$mhstatus), ]
+df_full_na <- df_full
+#change all NA values to 100 to indicate missing
+df_full <- df_full %>% replace(is.na(.), 100)
 #factorialize mhstatus and rename levels for increased legibility and create a separate vector as mhstatus will be removed
-mhstatus <- factor(df_filtered$mhstatus, levels=c(0:8, 9999), labels = c("Languishing to Languishing", "Languishing to Moderate", "Languishing to Flourishing", "Moderate to Languishing", "Moderate to Moderate", "Moderate to Flourishing", "Flourishing to Languishing", "Flourishing to Flourishing", "Flourishing to Flourishing", "Missing"))
-#remove additional features directly related to PostiveChange
-filter_remove <- c("change", "mhstatus", "flscale_02", "TA111121")
-df_filtered_non_int <- df_filtered[ , !names(df_filtered) %in% filter_remove]
-df_filtered <- as.data.frame(lapply(df_filtered_non_int, as.integer))
+mhstatus <- factor(df_full$mhstatus, levels=c(0:8, 100), labels = c("Languishing to Languishing", "Languishing to Moderate", "Languishing to Flourishing", "Moderate to Languishing", "Moderate to Moderate", "Moderate to Flourishing", "Flourishing to Languishing", "Flourishing to Flourishing", "Flourishing to Flourishing", "Missing"))
+#remove additional features directly related to PositiveChange
+#remove TA111121 all NA
+#remove TA110835 too many values that are NA
+filter_remove <- c("change", "mhstatus", "flscale_02", "TA111121", "cdsiiresult", "CHLDREL", "TA110835")
+df_full_na <- df_full_na[ , !names(df_full_na) %in% filter_remove]
+df_full_non_int <- df_full[ , !names(df_full) %in% filter_remove]
+df_full_na <- as.data.frame(lapply(df_full_na, as.integer))
+df_full <- as.data.frame(lapply(df_full_non_int, as.integer))
+df_full_onehot <- df_full
+df_full_onehot <- lapply(df_full_onehot, as.factor)
+#$ df_full_onehot <- data.frame(predict(dummyVars(" ~ .", data = df_full_onehot), newdata = df_full_onehot))
+df_full_onehot <- one_hot(as.data.table(df_full_onehot))
+df_full <-as.data.frame(lapply(df_full, scale))
 
 #create another df removing emotions that contribute to flourishing.  only keep physical contributing factors to flourishing
 filter_remove_subjective <- c("ewb1_2011", "ewb2_2011", "ewb3_2011", "swb1_2011", "swb2_2011", "swb3_2011", "swb4_2011", "swb5_2011", "pwb1_2011", "pwb2_2011", "pwb3_2011", "pwb4_2011", "pwb5_2011", "pwb6_2011", "nervous_2011", "hopeless_2011", "restless_2011", "effort_2011", "sad_2011", "worthless_2011", "k6sxfreq_2011", "degreefreq_2011", "k6interfere_2011", "ownactions", "probsolve", "moneymng", "creditcardmng", "supervise_2011", "leader_2011", "logical_2011", "helping_2011", "intelligence_2011", "independence_2011", "confidence_2011", "decisiveness_2011", "listening_2011", "teaching_2011", "meetppl_11", "shy_11", "selfcon_11", "perform_11", "lifesat_2011", "ewb1_02", "ewb2_02", "ewb3_02", "swb1_02", "swb2_02", "swb3_02", "swb4_02", "swb5_02", "pwb1_02", "pwb2_02", "pwb3_02", "pwb4_02", "Q23K26A", "Q23K26B", "Q23K26C", "Q23K26D", "Q23K26E", "Q23K28")
-df_filtered_objective_na <-  df_filtered_na[ , !names(df_filtered_na) %in% filter_remove_subjective]
-df_filtered_objective_non_int <- df_filtered_non_int[ , !names(df_filtered_non_int) %in% filter_remove_subjective]
-df_filtered_objective <- as.data.frame(lapply(df_filtered_objective_non_int, as.integer))
+df_objective_na <- df_full_na[ , !names(df_full_na) %in% filter_remove_subjective]
+df_objective_non_int <- df_full_non_int[ , !names(df_full_non_int) %in% filter_remove_subjective]
+df_objective <- as.data.frame(lapply(df_objective_non_int, as.integer))
+df_objective_onehot <- df_objective
+#df_objective_onehot <- data.frame(predict(dummyVars(" ~ .", data = df_objective_onehot), newdata = df_objective_onehot))
+df_objective_onehot <- lapply(df_objective_onehot, as.factor)
+df_objective <- as.data.frame(lapply(df_objective, scale))
 
 #create training / testing data dataframes
 set.seed(1234)
-subsetInterval <- sample(nrow(df_filtered), floor(nrow(df_filtered) * 0.85))  # 85% training + 15% testing
-df_train <- df_filtered[subsetInterval, ]
-df_test <- df_filtered[-subsetInterval, ]
-df_objective_train <- df_filtered_objective[subsetInterval, ]
-df_objective_test <- df_filtered_objective[-subsetInterval, ]
-df_train_na <- df_filtered_na[subsetInterval, ]
-df_test_na <- df_filtered_na[-subsetInterval, ]
-df_objective_train_na <- df_filtered_objective_na[subsetInterval, ]
-df_objective_test_na <- df_filtered_objective_na[-subsetInterval, ]
+subsetInterval <- sample(nrow(df_full), floor(nrow(df_full) * 0.80))  # 80% training + 20% testing
+
+#scaled
+df_full_train <- df_full[subsetInterval, ]
+df_full_test <- df_full[-subsetInterval, ]
+df_objective_train <- df_objective[subsetInterval, ]
+df_objective_test <- df_objective[-subsetInterval, ]
+#unscaled
+df_full_train_onehot <- df_full_onehot[subsetInterval, ]
+df_full_test_onehot <- df_full_onehot[-subsetInterval, ]
+df_objective_train_onehot <- df_objective_onehot[subsetInterval, ]
+df_objective_test_onehot <- df_objective_onehot[-subsetInterval, ]
+df_full_train_na <- df_full_na[subsetInterval, ]
+df_full_test_na <- df_full_na[-subsetInterval, ]
+df_objective_train_na <- df_objective_na[subsetInterval, ]
+df_objective_test_na <- df_objective_na[-subsetInterval, ]
 
 mhstatus_train <- mhstatus[subsetInterval]
 mhstatus_test <- mhstatus[-subsetInterval] 
 
+#common variables
+k_full <- as.integer(sqrt(nrow(df_full)/2))
+k_full_train <- as.integer(sqrt(nrow(df_full_train)/2))
+k_full_test <- as.integer(sqrt(nrow(df_full_test)/2))
+k_objective <- as.integer(sqrt(nrow(df_objective)/2))
+k_objective_train <- as.integer(sqrt(nrow(df_objective_train)/2))
+k_objective_test <- as.integer(sqrt(nrow(df_objective_test)/2))
+k_full_onehot <- as.integer(sqrt(nrow(df_full_onehot)/2))
+k_full_train_onehot <- as.integer(sqrt(nrow(df_full_train_onehot)/2))
+k_full_test_onehot <- as.integer(sqrt(nrow(df_full_test_onehot)/2))
+k_objective_onehot <- as.integer(sqrt(nrow(df_objective_onehot)/2))
+k_objective_train_onehot <- as.integer(sqrt(nrow(df_objective_train_onehot)/2))
+k_objective_test_onehot <- as.integer(sqrt(nrow(df_objective_test_onehot)/2))
 
 ######################################################
 ## below is to set testing data as training data to speed up rendering
@@ -54,9 +89,15 @@ mhstatus_test <- mhstatus[-subsetInterval]
 ######################################################
 currently_developing <- T
 if(currently_developing) {
-  df_train <- df_test
+  df_full_train <- df_full_test
   df_objective_train <- df_objective_test
-  df_train_na <- df_test_na
-  df_objective_train_na <- df_objective_test_na
+  df_full_train_onehot <- df_full_test_onehot
+  df_objective_train_onehot <- df_objective_test_onehot
+
+  df_full <- df_full_test
+  df_objective <- df_objective_test
+  df_full_onehot <- df_full_test_onehot
+  df_objective_onehot <- df_objective_test_onehot
+  df_objective_na <- df_objective_test_na
 }
 ```

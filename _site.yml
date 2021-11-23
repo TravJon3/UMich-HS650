@@ -6,6 +6,12 @@ navbar:
       href: final_project.html
     - text: "Feautre Selection"
       href: final_project_feature_selection.html
-    - text: "Homework 6"
+    - text: "Clustering"
+      href: final_project_clustering.html
+    - text: "Rule Learning"
+      href: final_project_rule_learning.html
+    - text: "Trees"
+      href: final_project_trees.html
+    - text: "HW 6"
       href: hw6.html
 output_dir: "docs"
