@@ -4,14 +4,12 @@ navbar:
   left:
     - text: "Final Project Summary"
       href: final_project.html
-    - text: "Feautre Selection"
+    - text: "Feature Selection"
       href: final_project_feature_selection.html
     - text: "Clustering"
       href: final_project_clustering.html
     - text: "Rule Learning"
       href: final_project_rule_learning.html
-    - text: "Trees"
-      href: final_project_trees.html
     - text: "HW 6"
       href: hw6.html
 output_dir: "docs"

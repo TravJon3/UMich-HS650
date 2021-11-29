@@ -22,40 +22,46 @@ output:
 # Rule Learning
 <p>apriori - nominal/categorical variables with each </p>
 
-```{r Introduction, warning=F, message=F, include=F, child='final_project_common.Rmd'}
+```{r Common, warning=F, message=F, include=F, child='final_project_common.Rmd'}
 ```
 
 ## Apriori Helper Functions and Libraries
 ```{r Header, warning=F, message=F}
 library(arules)
 
+join_descriptions <- function(df, df_stat) {
+  df_new <- df
+  colname <- colnames(df_new)
+  colname <- colname[!colname %in% "PositiveChange"]
+  for(i in 1:length(colname)) {
+    if(is.null(attributes(df_stat[[colname[i]]])$class) == F && attributes(df_stat[[colname[i]]])$class != "factor" && attributes(df_stat[[colname[i]]])$class[3] == "double") {
+      if(is.null(attributes(df_stat[[colname[i]]])$labels) == F && length(attributes(df_stat[[colname[i]]])$labels) > 0) {
+        vect_labels <- attributes(df_stat[[colname[i]]])$labels
+        df_new[colname[i]] <- lapply(df_new[colname[i]], as.character)
+        for(l in 1:length(vect_labels)) {
+          df_new[colname[i]] <- replace(df_new[colname[i]], df_new[colname[i]] == vect_labels[l], trimws(names(vect_labels)[l]))
+        }
+      }
+    }
+  }
+  return(df_new)
+}
 
+tranasctions_to_vector_descriptions <- function(trans) {
+  unsubbed_summary <- names(attr(summary(trans),"itemSummary"))
+  vector_subbed_summary <- gsub("\\=.+$", unsubbed_summary, replacement = "")
+  lapply(vector_subbed_summary, fieldname_to_description)  
+}
 ```
 
 ## Apriori Learning - Full Dataset
 ```{r AprioriFull, warning=F, message=F}
-transactions <- read.transactions("clean-childvarsJune2021.csv", sep=",", rm.duplicates=T)
-summary(transactions)
-inspect(transactions)
+df_full_apriori <- join_descriptions(df_full_na, tbl_dta)
+transactions <- transactions(df_full_apriori)
+tranasctions_to_vector_descriptions(transactions)
 
-# df_objective_train_onehot <- Filter(function(x)(length(unique(x))>1), df_objective_train_onehot)
-# df_objective_test_onehot <- Filter(function(x)(length(unique(x))>1), df_objective_test_onehot)
+itemFrequency(transactions[, 1:5])
 
-
-# df_transactions <- df_objective_unscaled
-# df_transactions <- unique(df_transactions)
-# df_transactions$const <- TRUE
-# TransactionID <- seq(from = 1:nrow(df_objective_unscaled))
-# df_transactions <- cbind(TransactionID, df_objective_unscaled)
-# 
-# df_transactions_prep <- reshape(data = df_transactions, idvar = c("ER33601","ER34001"), timevar = "TransactionID", direction = "wide")
-# matrix_transactions <- as.matrix(df_transactions_prep[ , !names(df_transactions_prep) %in% c("ER33601", "ER34001", "TransactionID")])
-# colnames(matrix_transactions) <- gsub(x=colnames(matrix_transactions), pattern="const\\.", replacement="")
-# matrix_transactions[is.na(matrix_transactions)] <- FALSE
-# matrix_transactions[matrix_transactions == 100] <- FALSE
-# transactions <- as(matrix_transactions, "transactions")
-# summary(transactions)
-# 
 # mat <- as.matrix(transactions@data)
 # # capture the row/column names
 # rowNames <- transactions@itemInfo$labels
@@ -84,6 +90,8 @@ inspect(transactions)
 #   layout(title='Term (X) by Sample (Y) Frequency (Z) Plot',
 #            xaxis = list(title="Term"),
 #            yaxis = list(title="Sample ID")) %>% hide_colorbar()
+
+##for rules
 # myrules <- apriori(transactions)
 # myrules
 # summary(myrules)
@@ -92,5 +100,6 @@ inspect(transactions)
 
 ## Apriori Learning - Objective Dataset
 ```{r AprioriObjective, warning=F, message=F}
+df_objective_apriori <- join_descriptions(df_objective_na, tbl_dta)
 
 ```

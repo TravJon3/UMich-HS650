@@ -19,7 +19,7 @@ output:
 ---
 **final_project.Rmd**.
 
- * Final Project
+ * HW: Final Project
  * Fall 2021, DSPA (HS650)
  * Name: Kevin Wu
  * SID: ####0012 (last 4 digits only)
@@ -37,14 +37,14 @@ output:
 * <b>What are the best predictors?</b>
 
 <p>These are the methods of approaches I have considered to analyze the data</p>
-1. Use feature selection models (Boruta and Stepwise Feature Selection) given the nature of my study.
-2. Use clustering nearest neighbors (kNN, k-Means) using one-hot encoding because via clustering I can determine the trends within the clusters that may be predictive in nature. (and check with SVM.)  --- not sure
-3. I chose not to use apriori techniques because it expects the itemsets to have repetition.
+1. Use feature selection models (Boruta and Stepwise Feature Selection) given the nature of my study ([link](final_project_feature_selection.html)).
+2. Use clustering nearest neighbors (kNN, k-Means) using one-hot encoding because via clustering I can determine the trends within the clusters that may be predictive in nature ([link](final_project_clustering.html)).
+3. I chose not to use apriori techniques because it expects the itemsets to have repetition ([link](final_project_rule_learning.html)).
 4. I chose not to use classification trees or any machine learning algorithms that were obtuse and did not reveal the nature of the model because again the nature of my study.
 5. I chose to minimize the use of linear modeling / regression d/t the data being nominal in nature and one-hot encoding dealing only with binary data, making the modeling trivial and useless.
 
 
-```{r Introduction, warning=F, message=F, include=F, child='final_project_common.Rmd'}
+```{r Common, warning=F, message=F, include=F, child='final_project_common.Rmd'}
 ```
 
 # Dataset Details
@@ -108,7 +108,7 @@ convertDataframeDisplay <- function(df_convert) {
 ```
 ## Filtered Dataframe aka Full Dataset
 ```{r Dataset Details All, warning=F, message=F}
-df_display <- convertDataframeDisplay(df_full_non_int)
+df_display <- convertDataframeDisplay(df_full_display)
 datatable(df_display, options = list(
   pageLength=10,
   lengthMenu=c(10,50,100,150,250,300)
@@ -119,7 +119,7 @@ datatable(df_display, options = list(
 
 ## Filtered Dataframe with Only Objective Data aka Objective Dataset
 ```{r Dataset Details Objective, warning=F, message=F}
-df_objective_display <- convertDataframeDisplay(df_objective_non_int)
+df_objective_display <- convertDataframeDisplay(df_objective_display)
 datatable(df_objective_display, options = list(
   pageLength=10,
   lengthMenu=c(10,50,100,150,250,300)
@@ -139,14 +139,17 @@ plot_ly(x = ~mhstatus, type="histogram") %>%
 
 prop.table(table(mhstatus_train))
 prop.table(table(mhstatus_test))
-prop.table(table(df_full_train$PositiveChange))
-prop.table(table(df_full_test$PositiveChange))
+prop.table(table(df_full_train_scaled$PositiveChange))
+prop.table(table(df_full_test_scaled$PositiveChange))
 ```
 
 ## To Impute or Not to Impute.
 
 We will compare the mean and median for data that has been imputed vs data that have not been imputed.  While the patterns appear similar, the y-axis for both the means and medians are vastly different.  To preserve the integrity of the data, I will not utilize imputation.
 ```{r Imputation, warning=F, message=F, cache=TRUE}
+
+library(vioplot)
+
 plot_summary <- function(df, string_type) {
   sum_mat <- summary(df)
   vec_medians <- sum_mat[3, ]
@@ -171,17 +174,52 @@ plot_summary <- function(df, string_type) {
   return(list(p, q))
 }
 
+plot_violin <- function(df, string_type) {
+  sum_mat <- summary(df)
+  vec_medians <- sum_mat[3, ]
+  vec_means <- sum_mat[4, ]
+  vec_fieldnames <- trimws(colnames(sum_mat))
+  for(i in 1:length(vec_medians)) {
+    vec_medians[i] <- as.numeric(str_replace(vec_medians[i], "Median :", ""))
+    vec_means[i] <-  as.numeric(str_replace(vec_means[i], "Mean   :", ""))
+  }
+  df_new <- data.frame(
+    medians = vec_medians,
+    means = vec_means,
+    fieldnames = vec_fieldnames
+  )
+  
+  
+  p <- plot_ly(type="violin")
+  for (i in 1:ncol(df)) {
+    p <- p %>% add_trace(y = ~df[, colnames(df)[i]], name=colnames(df)[i], box = list(visible = TRUE), meanline = list(visible = TRUE))
+  }
+  p <- p %>% layout(title=paste0("Distribution of Means of Summary for ", string_type), yaxis = list(title = "Count", xaxis = list(title = "Field Names")))
+  p
+}
+
+
 set.seed(1234)
-#df_full_impute_hmisc <- as.data.frame(Hmisc::aregImpute(as.matrix(PositiveChange ~ ., data = df_full_na, x=TRUE)))
-df_full_impute_forest <- as.data.frame(missForest::missForest(as.matrix(df_full_na), maxiter=2)$ximp)
+# df_full_impute_hmisc <- as.data.frame(Hmisc::aregImpute(as.matrix(PositiveChange ~ ., data = df_full_na, x=TRUE)))
+####### df_full_impute_forest <- as.data.frame(missForest::missForest(as.matrix(df_full_na), maxiter=1)$ximp)
+
 # Medians
-#plot_summary(df_full_impute_hmisc, "Full Dataset - Multiple Imputation")[[1]]
-plot_summary(df_full_impute_forest, "Full Dataset - Random Forest")[[1]]
-plot_summary(df_full_na, "Full Dataset - Non Imputed")[[1]]
+# plot_summary(df_full_impute_hmisc, "Full Dataset - Multiple Imputation")[[1]]
+####### plot_summary(df_full_impute_forest, "Full Dataset - Random Forest")[[1]]
+####### plot_summary(df_full_na, "Full Dataset - Non Imputed")[[1]]
+
 # Means
-#plot_summary(df_full_impute_hmisc, "Full Dataset - Multiple Imputation")[[2]]
-plot_summary(df_full_impute_forest, "Full Dataset - Random Forest")[[2]]
-plot_summary(df_full_na, "Full Dataset - Non Imputed")[[2]]
+# plot_summary(df_full_impute_hmisc, "Full Dataset - Multiple Imputation")[[2]]
+####### plot_summary(df_full_impute_forest, "Full Dataset - Random Forest")[[2]]
+####### plot_summary(df_full_na, "Full Dataset - Non Imputed")[[2]]
+
+# test <- lapply(df_full_na, as.numeric)
+# vioplot(PositiveChange ~ ., data=df_full_na, Centre = "line", side = "left")
+# #vioplot(Sepal.Length~Species, data=iris_small, col = "lightblue", plotCentre = "line", side = "right", add = T)
+# title(xlab = "Species", ylab = "Sepal Length")
+# legend("topleft", fill = c("lightblue", "palevioletred"), legend = c("small", "large"), title = "Sepal Width")
+
+
 ```
 # Summary
 ```{r Summary, warning=F, message=F}

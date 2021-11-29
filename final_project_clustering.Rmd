@@ -20,15 +20,24 @@ output:
 **final_project_clustering.Rmd**.
 
 # Clustering Nearest Neighbor
-<p>k-Means, kNN, SVM</p>
+<p>I hope to use clustering to determine the combination of features that contribute to PositiveChange.  However, because clustering deals primarily with interval variables (because of distances that need to be calculated), it is impossible to calculate distances based upon nominal variables with arbitrary values.  For this reason, I have separated out the interval variables from my dataset, and one-hot encoded the nominal variables in the dataset, and combined them.</p>
+<p>With this dataset, I trained and predicted the k using the kNN model starting at the default k value.  Using the optimal k number of clusters to use, I used this new k value to determine the exact features that had determined the PositiveChange.  Using the k-means model and the optimal k-value, the cluster centers became the basis of my analysis.  Calculating the standard deviation of the cluster centers, I was able to categorize these features into the following separate buckets: strong inverse associations, inverse associations, associations, and strong associations.
 
-```{r Introduction, warning=F, message=F, include=F, child='final_project_common.Rmd'}
+```{r Common, warning=F, message=F, include=F, child='final_project_common.Rmd'}
 ```
-## k-Means Helper Functions and Libraries
-```{r HeaderKMeans, warning=F, message=F}
+## Helper Functions and Libraries
+```{r Header, warning=F, message=F}
+# kNN libraries
+library(class)
+library(gmodels)
+library(e1071)
+
+# k-means libraries
 library(cluster)
 library(matrixStats)
 
+
+# k-means functions
 kpp_init <- function(dat, K) {
   x = as.matrix(dat)
   n = nrow(x)
@@ -54,6 +63,7 @@ kpp_init <- function(dat, K) {
 
 plot_silhouette <- function(df, K, bKPP = T) {
   set.seed(1234)
+  print(K)
   if(bKPP)
     clusters <- kmeans(df, kpp_init(df, K), iter.max=10, algorithm='Lloyd')
   else
@@ -61,21 +71,26 @@ plot_silhouette <- function(df, K, bKPP = T) {
   dis <- dist(df)
   sil <- silhouette(clusters$cluster, dis)
   summary(sil)
-  
-  return(list(factoextra::fviz_silhouette(sil, label=T, palette = "jco", ggtheme = theme_classic()), clusters))
+  fviz <- factoextra::fviz_silhouette(sil, label=T, palette = "jco", ggtheme = theme_classic())
+  result <- str_split(fviz$labels$title, pattern = " ")[[1]][8]
+  returned <- list(fviz, clusters, result)
+  return(returned)
 }
 
-plot_tuning <- function(df, n_rows) {
-  mat = matrix(0, nrow = n_rows)
-  for(i in 2:n_rows) {
+plot_tuning <- function(df, K, bKPP = T) {
+  mat = matrix(0, nrow = K)
+  for(i in 2:K) {
     set.seed(1234)
-    clust_kpp = kmeans(df, kpp_init(df, i), iter.max=10, algorithm='Lloyd')
+    if(bKPP)
+      clust_kpp = kmeans(df, kpp_init(df, i), iter.max=10, algorithm='Lloyd')
+    else
+      clust_kpp = kmeans(df, i)
     dis <- dist(df)
     sil = silhouette(clust_kpp$cluster, dis)
     mat[i] = mean(as.matrix(sil)[,3])
   }
   colnames(mat) <- c("Avg_Silhouette_Value")
-  df <- data.frame(k = 2:n_rows, sil = mat[2:n_rows])
+  df <- data.frame(k = 2:K, sil = mat[2:K])
   plot_ly(df, x = ~k, y = ~sil, type = 'scatter', mode = 'lines', name='Silhouette') %>%
     layout(title="Average Silhouette Graph")
 }
@@ -93,73 +108,164 @@ explicate_clusters <- function(clusters) {
   p
 }
 
+matrix_centers_cleaned_up <- function(matrix_centers) {
+  new_centers <- matrix_centers
+  for(c in 1:ncol(matrix_centers)) {
+    name <- colnames(matrix_centers)[c]
+    vect_name <- str_split(name, "\\.", n = 2)
+    description <- fieldname_to_description(vect_name[[1]][1])
+    value_description <- value_fieldname_to_description(vect_name[[1]][2], vect_name[[1]][1])
+    colnames(new_centers)[c] <- paste0(description, " - ", value_description)
+  }
+  return(new_centers)
+}
+
+print_centers_summary <- function(matrix_centers) {
+  s <- sd(matrix_centers)
+  num_clusters <- nrow(matrix_centers)
+  vect_clusters <- vector(mode="character", length = num_clusters)
+  vect_strong_inverse_association <- vector(mode="character", length = num_clusters)
+  vect_inverse_association <- vector(mode="character", length = num_clusters)
+  vect_association <- vector(mode="character", length = num_clusters)
+  vect_strong_association <- vector(mode="character", length = num_clusters)
+  
+  for(i in 1:ncol(matrix_centers)) {
+    for(j in 1:num_clusters) {
+      vect_clusters[j] <- paste0("Cluster ", j)
+      if(matrix_centers[j,i] <= -2 * s)
+        if(vect_strong_inverse_association[j] == "")
+          vect_strong_inverse_association[j] = colnames(matrix_centers)[i]
+        else
+          vect_strong_inverse_association[j] <- paste0(vect_strong_inverse_association[j], " + ", colnames(matrix_centers)[i])
+      else if(matrix_centers[j,i] > -2 * s && matrix_centers[j,i] <= -s)
+        if(vect_inverse_association[j] == "")
+          vect_inverse_association[j] = colnames(matrix_centers)[i]
+        else
+          vect_inverse_association[j] <- paste0(vect_inverse_association[j], " + ", colnames(matrix_centers)[i])
+      else if(matrix_centers[j,i] >= s && matrix_centers[j,i] < 2 *s)
+        if(vect_association[j] == "")
+          vect_association[j] = colnames(matrix_centers)[i]
+        else
+          vect_association[j] <- paste0(vect_association[j], " + ", colnames(matrix_centers)[i])
+      else if (matrix_centers[j,i] >= 2 * s)
+        if(vect_strong_association[j] == "")
+          vect_strong_association[j] = colnames(matrix_centers)[i]
+        else
+          vect_strong_association[j] <- paste0(vect_strong_association)
+      
+    }
+  }
+  df_printout <- data.frame(Cluster = vect_clusters, StrongInverseAssociation = vect_strong_inverse_association, InverseAssociation = vect_inverse_association, Association = vect_association, StrongAssociation = vect_strong_association)
+  kable(df_printout)
+}
+
+print_sensitivity_specificity <- function(ct, K) {
+  ct_TN <- ct$prop.row[1, 1]
+  ct_FP <- ct$prop.row[1, 2]
+  ct_FN <- ct$prop.row[2, 1]
+  ct_TP <- ct$prop.row[2, 2]
+  ct_sensi <- ct_TN/(ct_TN+ct_FP) 
+  ct_speci <- ct_TP/(ct_TP+ct_FN)
+  print(paste0("kNN model k=", K, " Sensitivity=", ct_sensi))
+  print(paste0("kNN model k=", K, " Specificity=", ct_speci))  
+}
+
+
 ```
+
+## kNN - Full Dataset
+```{r kNNFull, warning=F, message=F}
+labels_train_full <- df_full_train_onehot[ , "PositiveChange.Positive.Change"]
+labels_test_full <- df_full_test_onehot[ , "PositiveChange.Positive.Change"]
+df_full_train_onehot_new <- df_full_train_onehot[ , !names(df_full_train_onehot) %in% "PositiveChange.Positive.Change"]
+df_full_test_onehot_new <- df_full_test_onehot[ , !names(df_full_test_onehot) %in% "PositiveChange.Positive.Change"]
+
+new_k_full <- k_full_onehot
+pred_full <- knn(train = df_full_train_onehot_new, test = df_full_test_onehot_new, cl = labels_train_full, k = new_k_full)
+ct_full <- CrossTable(x = labels_test_full, y = pred_full, prop.chisq = F)
+print_sensitivity_specificity(ct_full, new_k_full)
+
+tuning_full = tune.knn(x = df_full_train_onehot_new, y = as.factor(labels_train_full), k = 1:k_full_onehot)
+tuning_full
+new_k_full <- tuning_full$best.model$k
+pred_full <- knn(train = df_full_train_onehot_new, test = df_full_test_onehot_new, cl = labels_train_full, k = new_k_full)
+ct_full <- CrossTable(x = labels_test_full, y = pred_full, prop.chisq = F)
+print_sensitivity_specificity(ct_full, new_k_full)
+```
+
+## kNN - Objective Dataset
+```{r kNNObjective, warning=F, message=F}
+labels_train_objective <- df_objective_train_onehot[ , "PositiveChange.Positive.Change"]
+labels_test_objective <- df_objective_test_onehot[ , "PositiveChange.Positive.Change"]
+df_objective_train_onehot_new <- df_objective_train_onehot[ , !names(df_objective_train_onehot) %in% "PositiveChange.Positive.Change"]
+df_objective_test_onehot_new <- df_objective_test_onehot[ , !names(df_objective_test_onehot) %in% "PositiveChange.Positive.Change"]
+
+new_k_objective <- k_objective_onehot
+pred_objective <- knn(train = df_objective_train_onehot_new, test = df_objective_test_onehot_new, cl = labels_train_objective, k = new_k_objective)
+ct_objective <- CrossTable(x = labels_test_objective, y = pred_objective, prop.chisq = F)
+print_sensitivity_specificity(ct_objective, new_k_objective)
+tuning_objective = tune.knn(x = df_objective_train_onehot_new, y = as.factor(labels_train_objective), k = 1:new_k_objective)
+tuning_objective
+new_k_objective <- tuning_objective$best.model$k
+pred_objective <- knn(train = df_objective_train_onehot_new, test = df_objective_test_onehot_new, cl = labels_train_objective, k = new_k_objective)
+ct_objective <- CrossTable(x = labels_test_objective, y = pred_objective, prop.chisq = F)
+print_sensitivity_specificity(ct_objective, new_k_objective)
+```
+
 
 ## k-Means - Full Dataset
 ```{r kMeansFull, warning=F, message=F}
-# instead of running it at default k=sqrt(n/2) times which is roughly 31 times, these iterations take a really long time.  Having run it once, the largest number of clusters that are distributed are roughly around 11
-new_k_full <- 11
-plot_silhouette(df_full_onehot, new_k_full, bKPP=F)[[1]]
-plot_silhouette(df_full_onehot, new_k_full, bKPP=T)[[1]]
-plot_tuning(df_full_onehot, new_k_full)
-new_k_full <- 4
-returned_list <- plot_silhouette(df_full_onehot, new_k_full, bKPP=F)
-returned_list[[1]]
-clusters_full <- returned_list[[2]]
-clusters_full$centers
-
+# new_k_full <- 4
+if(new_k_full < 2) new_k_full <- 4
+returned_list_F_full <- plot_silhouette(df_full_onehot, K=new_k_full, bKPP=F)
+returned_list_F_full[[1]]
+returned_list_T_full <- plot_silhouette(df_full_onehot, K=new_k_full, bKPP=T)
+returned_list_T_full[[1]]
+ifelse(returned_list_T_full[[3]] >= returned_list_F_full[[3]], bKPP_full <- T, bKPP_full <- F)
+plot_tuning(df_full_onehot, K=k_full_onehot, bKPP=bKPP_full)
+returned_list_full <- plot_silhouette(df_full_onehot, K=new_k_full, bKPP=bKPP_full)
+returned_list_full[[3]]
+returned_list_full[[1]]
+clusters_full <- returned_list_full[[2]]
+new_centers_full <- matrix_centers_cleaned_up(clusters_full$centers)
+new_centers_full
+# StrongInverseAssociation <= -2s
+# InverseAssociation > -2s && <= -s
+# Association >= s && < 2s
+# StrongAssociation >= 2s
+print_centers_summary(new_centers_full)
 
 # explicate_clusters(clusters_full)
 ```
 
 ## k-Means - Objective Dataset
 ```{r kMeansObjective, warning=F, message=F}
-new_k_objective <- 11
-plot_silhouette(df_objective_onehot, new_k_objective, bKPP=F)[[1]]
-plot_silhouette(df_objective_onehot, new_k_objective, bKPP=T)[[1]]
-plot_tuning(df_objective_onehot, new_k_objective)
-new_k_objective <- 3
-returned_list <- plot_silhouette(df_objective_onehot, new_k_objective, bKPP=F)
-returned_list[[1]]
-clusters_full <- returned_list[[2]]
-clusters_full$centers
+# new_k_objective <- 3
+if(new_k_objective < 2) new_k_objective <- 3
+returned_list_F_objective <- plot_silhouette(df_objective_onehot, K=new_k_objective, bKPP=F)
+returned_list_F_objective[[1]]
+returned_list_T_objective <- plot_silhouette(df_objective_onehot, K=new_k_objective, bKPP=T)
+returned_list_T_objective[[1]]
+ifelse(returned_list_T_objective[[3]] >= returned_list_F_objective[[3]], bKPP_objective <- T, bKPP_objective <- F)
+plot_tuning(df_objective_onehot, K=k_objective_onehot, bKPP=bKPP_objective)
+returned_list_objective <- plot_silhouette(df_objective_onehot, K=new_k_objective, bKPP=bKPP_objective)
+returned_list_objective[[3]]
+returned_list_objective[[1]]
+clusters_objective <- returned_list_objective[[2]]
+new_centers_objective <- matrix_centers_cleaned_up(clusters_objective$centers)
+new_centers_objective
+# StrongInverseAssociation <= -2s
+# InverseAssociation > -2s && <= -s
+# Association >= s && < 2s
+# StrongAssociation >= 2s
+print_centers_summary(new_centers_objective)
 
 # explicate_clusters(clusters_objective)
 ```
 
-## kNN Helper Functions and Libraries
-```{r HeaderKNN, warning=F, message=F}
-library(class)
-library(gmodels)
-library(e1071)
-```
 
-## kNN - Full Dataset
-```{r kNNFull, warning=F, message=F}
-labels_train_full <- df_full_test_onehot[ , "PositiveChange.2"]
-labels_test_full <- df_test_onehot[ , "PositiveChange.2"]
-df_full_test_onehot <- df_full_test_onehot[ , !names(df_full_test_onehot) %in% "PositiveChange.2"]
-df_test_onehot <- df_test_onehot[ , !names(df_test_onehot) %in% "PositiveChange.2"]
-
-pred_full <- knn(train = df_full_test_onehot, test = df_test_onehot, cl = labels_train_full, k = new_k_full)
-CrossTable(x = labels_test_full, y = pred_full, prop.chisq = F)
-tuning_full = tune.knn(x = df_full_test_onehot, y = as.factor(labels_train_full), k = 1:new_k_full)
-tuning_full
-```
-
-## kNN - Objective Dataset
-```{r kNNObjective, warning=F, message=F}
-labels_train_objective <- df_objective_train_onehot[ , "PositiveChange.2"]
-labels_test_objective <- df_objective_test_onehot[ , "PositiveChange.2"]
-df_objective_train_onehot <- df_objective_train_onehot[ , !names(df_objective_train_onehot) %in% "PositiveChange.2"]
-df_objective_test_onehot <- df_objective_test_onehot[ , !names(df_objective_test_onehot) %in% "PositiveChange.2"]
-
-pred_objective <- knn(train = df_objective_train_onehot, test = df_objective_test_onehot, cl = labels_train_objective, k = new_k_objective)
-CrossTable(x = labels_test_objective, y = pred_objective, prop.chisq = F)
-tuning_objective = tune.knn(x = df_objective_train_onehot, y = as.factor(labels_train_objective), k = 1:new_k_objective)
-tuning_objective
-```
 
 # Summary
+<p>There are numerous features, in the various buckets and are difficult to parse.  This could be the start of further inquiry (e.g. possibly the cross referenced with the results from feature_selection.</p>
 ```{r Summary, warning=F, message=F}
 ```

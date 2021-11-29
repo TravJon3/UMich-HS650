@@ -10,3 +10,13 @@ lattice
 caret
 mltools
 data.table
+tidyverse
+tibble
+readr
+purrr
+forcats
+knitr
+labelled
+sm
+zoo
+vioplot
