@@ -145,10 +145,39 @@ prop.table(table(df_full_test_scaled$PositiveChange))
 
 ## To Impute or Not to Impute.
 
-We will compare the mean and median for data that has been imputed vs data that have not been imputed.  While the patterns appear similar, the y-axis for both the means and medians are vastly different.  To preserve the integrity of the data, I will not utilize imputation.
+We will compare the mean and median for data that has been imputed vs data that have not been imputed.  While the patterns appear similar, the y-axis for both the means and medians are vastly different.  To preserve the integrity of the data, I will not utilize imputation.  I tried doing a violin plot, however it appears there is little variation between among the data.
 ```{r Imputation, warning=F, message=F, cache=TRUE}
 
 library(vioplot)
+
+plot_violin <- function(df, df_impute) {
+  filter <- c("yaearnings_10", "Q23L30B")
+  df <- df[ , !names(df) %in% filter]
+  df_impute <- df_impute[ , !names(df_impute) %in% filter]
+  df_unimputed_long <- gather(df, feature, measurement)
+  feature_unimputed <- df_unimputed_long$feature
+  feature_label_unimputed <- unlist(lapply(feature_unimputed, fieldname_to_description))
+  measurement_unimputed <- df_unimputed_long$measurement
+#  measurement_unimputed <- unlist(lapply(df_unimputed_long$measurement, function(x) { if(x == "-Inf") x = 0; return(x)}))
+  df_unimputed_plotly <- data.frame(Feature = feature_unimputed, FeatureLabel = feature_label_unimputed, Measurement = measurement_unimputed)
+
+  df_imputed_long <- gather(df, feature, measurement)
+  feature_imputed <- df_imputed_long$feature
+  feature_label_imputed <- unlist(lapply(feature_imputed, fieldname_to_description))
+  measurement_imputed <- df_imputed_long$measurement
+#  measurement_imputed <- unlist(lapply(df_imputed_long$measurement, function(x) { if(x == "-Inf") x = 0; return(x)}))
+  df_imputed_plotly <- data.frame(Feature = feature_imputed, FeatureLabel = feature_label_imputed, Measurement = measurement_imputed)
+
+  p <- plot_ly(type="violin")
+  p <- p %>% add_trace(data = df_unimputed_plotly, x = ~FeatureLabel, y = ~Measurement, legendgroup = "unimputed", scalegroup = "unimputed", name="unimputed", side = "negative", box = list(visible = T), meanline = list(visible = T), color = I("red"))
+  p <- p %>% add_trace(data = df_imputed_plotly, x = ~FeatureLabel, y = ~Measurement, legendgroup = "imputed", scalegroup = "imputed", name="imputed", side = "postive", box = list(visible = T), meanline = list(visible = T), color = I("green"))
+  p <- p %>% layout(
+    xaxis = list(title = "Fieldnames"), yaxis = list(title = "Distribution", zeroline = F)
+  )
+  p
+  return(p)
+}
+
 
 plot_summary <- function(df, string_type) {
   sum_mat <- summary(df)
@@ -174,52 +203,19 @@ plot_summary <- function(df, string_type) {
   return(list(p, q))
 }
 
-plot_violin <- function(df, string_type) {
-  sum_mat <- summary(df)
-  vec_medians <- sum_mat[3, ]
-  vec_means <- sum_mat[4, ]
-  vec_fieldnames <- trimws(colnames(sum_mat))
-  for(i in 1:length(vec_medians)) {
-    vec_medians[i] <- as.numeric(str_replace(vec_medians[i], "Median :", ""))
-    vec_means[i] <-  as.numeric(str_replace(vec_means[i], "Mean   :", ""))
-  }
-  df_new <- data.frame(
-    medians = vec_medians,
-    means = vec_means,
-    fieldnames = vec_fieldnames
-  )
-  
-  
-  p <- plot_ly(type="violin")
-  for (i in 1:ncol(df)) {
-    p <- p %>% add_trace(y = ~df[, colnames(df)[i]], name=colnames(df)[i], box = list(visible = TRUE), meanline = list(visible = TRUE))
-  }
-  p <- p %>% layout(title=paste0("Distribution of Means of Summary for ", string_type), yaxis = list(title = "Count", xaxis = list(title = "Field Names")))
-  p
-}
-
 
 set.seed(1234)
-# df_full_impute_hmisc <- as.data.frame(Hmisc::aregImpute(as.matrix(PositiveChange ~ ., data = df_full_na, x=TRUE)))
-####### df_full_impute_forest <- as.data.frame(missForest::missForest(as.matrix(df_full_na), maxiter=1)$ximp)
-
-# Medians
-# plot_summary(df_full_impute_hmisc, "Full Dataset - Multiple Imputation")[[1]]
-####### plot_summary(df_full_impute_forest, "Full Dataset - Random Forest")[[1]]
-####### plot_summary(df_full_na, "Full Dataset - Non Imputed")[[1]]
+df_full_impute_forest <- as.data.frame(missForest::missForest(as.matrix(df_full_na), maxiter=1)$ximp)
+plot_violin(df_full_na, df_full_impute_forest)
+plotted_summary_imputed <- plot_summary(df_full_impute_forest, "Full Dataset - Random Forest")
+plotted_summary_unimputed <- plot_summary(df_full_na, "Full Dataset - Non Imputed")
 
 # Means
-# plot_summary(df_full_impute_hmisc, "Full Dataset - Multiple Imputation")[[2]]
-####### plot_summary(df_full_impute_forest, "Full Dataset - Random Forest")[[2]]
-####### plot_summary(df_full_na, "Full Dataset - Non Imputed")[[2]]
-
-# test <- lapply(df_full_na, as.numeric)
-# vioplot(PositiveChange ~ ., data=df_full_na, Centre = "line", side = "left")
-# #vioplot(Sepal.Length~Species, data=iris_small, col = "lightblue", plotCentre = "line", side = "right", add = T)
-# title(xlab = "Species", ylab = "Sepal Length")
-# legend("topleft", fill = c("lightblue", "palevioletred"), legend = c("small", "large"), title = "Sepal Width")
-
-
+plotted_summary_imputed[[1]]
+plotted_summary_unimputed[[1]]
+# Medians
+plotted_summary_imputed[[2]]
+plotted_summary_unimputed[[2]]
 ```
 # Summary
 ```{r Summary, warning=F, message=F}

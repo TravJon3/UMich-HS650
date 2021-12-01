@@ -57,10 +57,12 @@ tranasctions_to_vector_descriptions <- function(trans) {
 ## Apriori Learning - Full Dataset
 ```{r AprioriFull, warning=F, message=F}
 df_full_apriori <- join_descriptions(df_full_na, tbl_dta)
-transactions <- transactions(df_full_apriori)
-tranasctions_to_vector_descriptions(transactions)
+transactions_full <- transactions(df_full_apriori)
+summary(transactions_full)
+inspect(transactions_full[1:5,])
+as.matrix(tranasctions_to_vector_descriptions(transactions_full))
 
-itemFrequency(transactions[, 1:5])
+itemFrequency(transactions_full[, 1:10])
 
 # mat <- as.matrix(transactions@data)
 # # capture the row/column names
@@ -92,14 +94,23 @@ itemFrequency(transactions[, 1:5])
 #            yaxis = list(title="Sample ID")) %>% hide_colorbar()
 
 ##for rules
-# myrules <- apriori(transactions)
-# myrules
-# summary(myrules)
-# inspect(sort(myrules, by="lift"))
+myrules_full <- apriori(transactions_full, parameter = list(support = 0.25))
+myrules_full
+summary(myrules_full)
+inspect(head(sort(myrules_full, by="lift"), n = 50))
 ```
 
 ## Apriori Learning - Objective Dataset
 ```{r AprioriObjective, warning=F, message=F}
 df_objective_apriori <- join_descriptions(df_objective_na, tbl_dta)
+transactions_objective <- transactions(df_objective_apriori)
+summary(transactions_objective)
+inspect(transactions_objective[1:5,])
+as.matrix(tranasctions_to_vector_descriptions(transactions_objective))
+itemFrequency(transactions_objective[, 1:10])
 
+myrules_objective <- apriori(transactions_objective, parameter = list(support = 0.25))
+myrules_objective
+summary(myrules_objective)
+inspect(head(sort(myrules_objective, by="lift"), n = 50))
 ```

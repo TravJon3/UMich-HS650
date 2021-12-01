@@ -77,8 +77,12 @@ descriptions_full <- formula_to_vector_descriptions(getConfirmedFormula(boruta_f
 paste(descriptions_full, collapse = " + ")
 #print(boruta_full$finalDecision[boruta_full$finalDecision %in% c("Confirmed", "Tentative")])
 
-df_long <- gather(as.data.frame(boruta_full$ImpHistory), feature, measurement)
-plot_ly(df_long, y = ~measurement, color = ~feature, type = "box") %>%
+df_full_long <- gather(as.data.frame(boruta_full$ImpHistory), feature, measurement)
+feature_full <- df_full_long$feature
+feature_label_full <- unlist(lapply(feature_full, fieldname_to_description))
+measurement_full <- unlist(lapply(df_full_long$measurement, function(x) { if(x == "-Inf") x = 0; return(x)}))
+df_full_plotly <- data.frame(Feature = feature_full, FeatureLabel = feature_label_full, Measurement = measurement_full)
+plot_ly(df_full_plotly, x = ~FeatureLabel, y = ~Measurement, color = ~Feature, marker = list(size = 2), type = "box") %>%
   layout(title="Box-and-whisker Plots Across All Features",
            xaxis = list(title="Features"),
            yaxis = list(title="Importance"),
@@ -96,7 +100,11 @@ paste(descriptions_objective, collapse = " + ")
 #print(boruta_objective$finalDecision[boruta_objective$finalDecision %in% c("Confirmed", "Tentative")])
 
 df_objective_long <- gather(as.data.frame(boruta_objective$ImpHistory), feature, measurement)
-plot_ly(df_objective_long, y = ~measurement, color = ~feature, type = "box") %>%
+feature_objective <- df_objective_long$feature
+feature_label_objective <- unlist(lapply(feature_objective, fieldname_to_description))
+measurement_objective <- unlist(lapply(df_objective_long$measurement, function(x) { if(x == "-Inf") x = 0; return(x)}))
+df_objective_plotly <- data.frame(Feature = feature_objective, FeatureLabel = feature_label_objective, Measurement = measurement_objective)
+plot_ly(df_objective_plotly, x = ~FeatureLabel, y = ~Measurement, color = ~Feature, marker = list(size = 2), type = "box") %>%
   layout(title="Box-and-whisker Plots Across Objective Features",
            xaxis = list(title="Features"),
            yaxis = list(title="Importance"),

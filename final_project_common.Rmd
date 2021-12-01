@@ -31,11 +31,10 @@ df_full <- df_full %>% replace(is.na(.), -1)
 #factorialize mhstatus and rename levels for increased legibility and create a separate vector as mhstatus will be removed
 mhstatus <- factor(df_full$mhstatus, levels=c(0:8, -1), labels = c("Languishing to Languishing", "Languishing to Moderate", "Languishing to Flourishing", "Moderate to Languishing", "Moderate to Moderate", "Moderate to Flourishing", "Flourishing to Languishing", "Flourishing to Flourishing", "Flourishing to Flourishing", "Missing"))
 #remove additional features directly related to PositiveChange
-#remove TA111121 all NA
 #remove TA110835 too many values that are NA
 #additionally remove other fields "not used"
 filter_remove_addon <- c("change", "mhstatus", "flscale_02", "cdsiiresult", "CHLDREL",
-                   "stratum", "cluster", "weight", "ER33601", "ER33602", "ER34001", "ER34002","TA090001", "ER47301", "ER34101", "ER34102", "TA110001", "TA110007", "TA110009", "Q23IWMTH", "Q23IWDAY", "Q23IWYR", "Q24MONTH", "Q24YEAR")
+                   "stratum", "cluster", "weight", "ER33601", "ER33602", "ER34001", "ER34002","TA090001", "ER47301", "ER34101", "ER34102", "TA110001", "TA110007", "TA110009", "TA111121", "Q23IWMTH", "Q23IWDAY", "Q23IWYR", "Q24MONTH", "Q24YEAR")
 
 filter_save_interval <- c("grade_02", "Q23K14A", "Q23K14B", "Q23K14C", "Q23K14D", "Q23K14E", "Q23K14F", "Q23K14G", "Q23K15", "Q23K16", "Q23K17", "Q23K21", "Q23L11A", "Q23L11B", "Q23L11C", "Q23L11D", "Q23L11E", "Q23L11F", "Q23L11G", "Q23L11H", "Q23L11I", "Q23L11J", "Q23L30A", "Q23L30B", "Q23L31", "ewb1_02", "ewb2_02", "ewb3_02", "swb1_02", "swb2_02", "swb3_02", "swb4_02", "swb5_02", "pwb1_02", "pwb2_02", "pwb3_02", "pwb4_02", "BULLY02", "GLBCN02", "SOCINT02", "Q24BMI", "Q24B2", "Q24IWAGE", "WTIND02", "news_2011", "read_2011", "email_2011", "internetsch_2011", "internetshop_2011", "internetgame_2011", "socialnetwork_2011", "tv_2011", "ownactions", "probsolve", "moneymng", "creditcardmng", "supervise_2011", "leader_2011", "logical_2011", "helping_2011", "intelligence_2011", "independence_2011", "confidence_2011", "decisiveness_2011", "listening_2011", "teaching_2011", "meetppl_11", "shy_11", "selfcon_11", "perform_11", "romsat_2011", "children_2011", "closef_2011", "closem_2011", "earnlvg_2011", "payrent_2011", "paybills_2011", "mangmon_2011", "helping_2011", "TA110826", "nervous_2011", "hopeless_2011", "restless_2011", "effort_2011", "sad_2011", "worthless_2011", "TA110893", "sleep11", "snack11", "bingeeat11", "cigct11", "alcfreq_11", "alc45drinks_11", "TA110974", "courtesy_2011", "service_2011", "stupid_2011", "afraid_2011", "dishonest_2011", "superior_2011", "respect_2011", "peerjob_2011", "peercoll_2011", "peerue_2011", "peermarried_2011", "peervotech_2011", "peerprnt_2011", "peerdrunk_2011", "peerdrug_2011", "TA111023", "TA111025", "TA111026", "danger_2011", "property_2011", "fight_2011", "dui_2011", "relig_freq", "ewb1_2011","ewb2_2011", "ewb3_2011", "swb1_2011", "swb2_2011", "swb3_2011", "swb4_2011", "swb5_2011", "pwb1_2011", "pwb2_2011", "pwb3_2011", "pwb4_2011", "pwb5_2011", "pwb6_2011", "finanrespscale", "worryscale_11", "socanxscale_11", "TA111121", "TA111125", "riskybxscale_11", "bmi_2011", "enrollstat_11", "mothered_11", "fathered_11", "yaearnings_10", "ER33606", "TA111060")
 
@@ -50,7 +49,7 @@ df_full_onehot <- data.frame(predict(dummyVars(" ~ .", data = df_full_onehot), n
 df_full_onehot <- cbind(df_full_onehot, df_save_onehot)
 
 #create another df removing emotions that contribute to flourishing.  only keep physical contributing factors to flourishing
-filter_remove_subjective <- c("ewb1_2011", "ewb2_2011", "ewb3_2011", "swb1_2011", "swb2_2011", "swb3_2011", "swb4_2011", "swb5_2011", "pwb1_2011", "pwb2_2011", "pwb3_2011", "pwb4_2011", "pwb5_2011", "pwb6_2011", "nervous_2011", "hopeless_2011", "restless_2011", "effort_2011", "sad_2011", "worthless_2011", "k6sxfreq_2011", "degreefreq_2011", "k6interfere_2011", "ownactions", "probsolve", "moneymng", "creditcardmng", "supervise_2011", "leader_2011", "logical_2011", "helping_2011", "intelligence_2011", "independence_2011", "confidence_2011", "decisiveness_2011", "listening_2011", "teaching_2011", "meetppl_11", "shy_11", "selfcon_11", "perform_11", "lifesat_2011", "ewb1_02", "ewb2_02", "ewb3_02", "swb1_02", "swb2_02", "swb3_02", "swb4_02", "swb5_02", "pwb1_02", "pwb2_02", "pwb3_02", "pwb4_02", "Q23K26A", "Q23K26B", "Q23K26C", "Q23K26D", "Q23K26E", "Q23K28")
+filter_remove_subjective <- c("ewb1_2011", "ewb2_2011", "ewb3_2011", "swb1_2011", "swb2_2011", "swb3_2011", "swb4_2011", "swb5_2011", "pwb1_2011", "pwb2_2011", "pwb3_2011", "pwb4_2011", "pwb5_2011", "pwb6_2011", "nervous_2011", "hopeless_2011", "restless_2011", "effort_2011", "sad_2011", "worthless_2011", "k6sxfreq_2011", "degreefreq_2011", "k6interfere_2011", "ownactions", "probsolve", "moneymng", "creditcardmng", "supervise_2011", "leader_2011", "logical_2011", "helping_2011", "intelligence_2011", "independence_2011", "confidence_2011", "decisiveness_2011", "listening_2011", "teaching_2011", "meetppl_11", "shy_11", "selfcon_11", "perform_11", "lifesat_2011", "ewb1_02", "ewb2_02", "ewb3_02", "swb1_02", "swb2_02", "swb3_02", "swb4_02", "swb5_02", "pwb1_02", "pwb2_02", "pwb3_02", "pwb4_02", "Q23K26A", "Q23K26B", "Q23K26C", "Q23K26D", "Q23K26E", "Q23K28", "TA111121")
 
 df_objective <- df_full[ , !names(df_full) %in% filter_remove_subjective]
 df_objective_na <- df_full_na[ , !names(df_full_na) %in% filter_remove_subjective]
@@ -111,7 +110,7 @@ k_objective_train_onehot <- as.integer(sqrt(nrow(df_objective_train_onehot)/2))
 ## below is to set testing data as training data to speed up rendering
 ## set currently_developing to F when ready to go live.
 ######################################################
-currently_developing <-F
+currently_developing <-T
 if(currently_developing) {
   df_full_train_scaled <- df_full_test_scaled
   df_full_train_na_scaled <- df_full_test_na_scaled
@@ -130,12 +129,6 @@ if(currently_developing) {
 }
 
 #### Functions
-##untested
-vector_fieldname_to_description <- function(vector_fieldname) {
-  vect_labels <- attributes(tbl_dta[vector_fieldname])$labels
-  replace(vector_fieldname, vector_fieldname[vector_fieldname] == vect_labels, names(vect_labels))
-}
-
 
 # fieldname_to_description <- function(fieldname) {
 #   namedvalue <- attributes(tbl_dta[fieldname])$labels
@@ -143,24 +136,28 @@ vector_fieldname_to_description <- function(vector_fieldname) {
 # }
 
 fieldname_to_description <- function(colname) {
-  return(attr(tbl_dta[[colname]], "label"))
+  returnValue = str_to_sentence(attr(tbl_dta[[colname]], "label"))
+  if(length(returnValue) == 0)
+    returnValue = colname
+  return(returnValue)
 }
 
 value_fieldname_to_description <- function(value, colname) {
   values <- unname(val_labels(unique(to_labelled(tbl_dta)[[colname]])))
   value_names <- names(val_labels(unique(to_labelled(tbl_dta)[[colname]])))
+  returnvValue = value
   if(is.na(value))
-    return("")
+    returnvValue = ""
   else {
     for(i in 1:length(values)) {
       if(startsWith(value, ".")) {
-        return(".")
+        returnvValue = "."
       }
       else if(!is.null(values[i]) && !is.na(values[i]) && value == values[i]) {
-        return(value_names[i])
+        returnvValue = str_to_sentence(value_names[i])
       }
     }    
   }
-  return(value)
+  return(returnvValue)
 }
 ```
