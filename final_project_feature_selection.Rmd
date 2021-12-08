@@ -20,8 +20,8 @@ output:
 **final_project_feature_selection.Rmd**.
 
 # Feature Selection Introduction
-<p>I used the Boruta algorithm for its feature selection.  The problem is that the features aren't ordered by any statistical significance.  For this reason, I decided to use the ordinary least squares model to help both confirm the features selected by the Boruta model, but also to determine the more significant features affecting PositiveChange.  I'm hoping to select the common features between the two models, and use the ordering information from the OLS model.
-<p>I've decided against using the RFE model because Boruta is based on the RFE model.</p>
+I used the Boruta algorithm for its feature selection.  The problem is that the features aren't ordered by any statistical significance.  For this reason, I decided to use the ordinary least squares model to help both confirm the features selected by the Boruta model, but also to determine the more significant features affecting PositiveChange.  I'm hoping to select the common features between the two models, and use the ordering information from the OLS model.  
+I've decided against using the RFE model because Boruta is based on the RFE model.  
 
 ```{r Common, warning=F, message=F, include=F, child='final_project_common.Rmd'}
 ```
@@ -30,6 +30,7 @@ output:
 library(Boruta)
 library(mlbench)
 
+# return the OLS stepwise model given the dataframe
 run_stepwise <- function(df_run) {
   set.seed(1234)
   base.mod <- lm(PositiveChange ~ 1, data = df_run)
@@ -39,12 +40,20 @@ run_stepwise <- function(df_run) {
   ols_step <- step(base.mod, scope = list(lower = base.mod, upper = all.mod), direction = 'both', k = 2, trace = F)
 }
 
+# translate the OLS model formula from obscure fieldnames into their more descriptive descriptions
 formula_to_vector_descriptions <- function(formula) {
   vector_untranslated <- trimws(strsplit(as.character(formula[3]), "\\+")[[1]])
   vector_translation <- lapply(vector_untranslated, fieldname_to_description)
   return(vector_translation)
 }
 
+# translate the OLS model summary using the descriptive descriptions instead of their obscure fieldnames
+# sort by p-values descending and add stars based upon statistical significance
+# p-value < 0.001   -> ***
+# p-value < 0.01    -> **
+# p-value < 0.05    -> *
+# p-value < 0.1     -> .
+# else              -> -
 lm_to_summary_model <- function(lmodel) {
   sum_ols <- summary(lmodel)
   df_ols_model <- as.data.frame(as.matrix(lapply(names(lmodel$coefficients), fieldname_to_description)))
@@ -65,6 +74,28 @@ lm_to_summary_model <- function(lmodel) {
   as.data.frame(df_ols_model[order(vect_pvals), ])
 }
 
+# crossvalidate the OLS model
+crossvalidate_ols <- function(df_train, df_test) {
+  yTest <- df_test$PositiveChange
+  XTest <- df_test  [ , !names(df_test) %in% "PositiveChange"]
+  ols_validate <- run_stepwise(df_train)
+  betaHatOLS_step <- ols_validate$coefficients
+  var_step <- colnames(ols_validate$model)[-1]
+  XTestOLS_step <- cbind(rep(1, nrow(XTest)), XTest[,var_step])
+  predOLS_step <- as.matrix(XTestOLS_step)%*%as.matrix(betaHatOLS_step)
+  testMSEOLS_step <- mean((predOLS_step - yTest)^2)
+  # Report MSE OLS Stepwise feature selection
+  testMSEOLS_step
+  pred2 <- predict(ols_validate, as.data.frame(XTest))
+  any(pred2 == predOLS_step)
+}
+
+# TODO: crossvalidate the Boruta model
+crossvalidate_boruta <- function(df_train, df_test) {
+  yTest <- df_test$PositiveChange
+  XTest <- df_test  [ , !names(df_test) %in% "PositiveChange"]
+  boruta_validate <- Boruta(PositiveChange ~ ., df_train)
+}
 ```
 
 ## Boruta - Full Dataset
@@ -112,43 +143,53 @@ plot_ly(df_objective_plotly, x = ~FeatureLabel, y = ~Measurement, color = ~Featu
 ```
 
 ## Stepwise Feature Selection - Full Dataset
+
 ```{r StepwiseFull, warning=F, message=F}
 ols_full <- run_stepwise(df_full_scaled)
 df_ols_model_full_trans <- lm_to_summary_model(ols_full)
-df_ols_model_full_trans
-
-# # get the shortlisted variable
+# get the shortlisted variable
 # ols_confirmed_vars_full <- names(unlist(ols_full[[1]]))
-# # remove the intercept 
+# # remove the intercept
 # ols_confirmed_vars_full <- ols_confirmed_vars_full[!ols_confirmed_vars_full %in% "(Intercept)"]
+# ols_confirmed_vars_full <- unlist(lapply(ols_confirmed_vars_full, fieldname_to_description))
 # print(ols_confirmed_vars_full)
-# # estimate variable importance
-# pred_ols_full <- varImp(ols_full, scale=FALSE)
-# # summarize importance
-# print(pred_ols_full)
+# estimate variable importance
+varImp_ols_full <- varImp(ols_full, scale=FALSE)
+rownames(varImp_ols_full) <- unlist(lapply(rownames(varImp_ols_full), fieldname_to_description))
+# summarize importance
+print(varImp_ols_full)
+# crossvalidate between the training and testing data
+crossvalidate_ols(df_full_train_scaled, df_full_test_scaled)
 ```
 
 ## Stepwise Feature Selection - Objective Dataset
 ```{r StepwiseObjective, warning=F, message=F}
 ols_objective <- run_stepwise(df_objective_scaled)
 df_ols_model_objective_trans <- lm_to_summary_model(ols_objective)
-df_ols_model_objective_trans
-# # get the shortlisted variable
+# get the shortlisted variable
 # ols_confirmed_vars_objective <- names(unlist(ols_objective[[1]]))
-# # remove the intercept 
+# # remove the intercept
 # ols_confirmed_vars_objective <- ols_confirmed_vars_objective[!ols_confirmed_vars_objective %in% "(Intercept)"]
+# ols_confirmed_vars_objective <- unlist(lapply(ols_confirmed_vars_objective, fieldname_to_description))
 # print(ols_confirmed_vars_objective)
-# # estimate variable importance
-# pred_ols_objective <- varImp(ols_objective, scale=FALSE)
-# # summarize importance
-# print(pred_ols_objective)
+# estimate variable importance
+varImp_ols_objective <- varImp(ols_objective, scale=FALSE)
+rownames(varImp_ols_objective) <- unlist(lapply(rownames(varImp_ols_objective), fieldname_to_description))
+# summarize importance
+print(varImp_ols_objective)
+# crossvalidate between the training and testing data
+crossvalidate_ols(df_objective_train_scaled, df_objective_test_scaled)
 ```
 
 # Summary
-As you will see below, the full featured dataset contains more pertinent data that is more than subjective data.  In this situation, it appears including the subjective variables provides more data to the algorithms.
+As you will see below, the full featured dataset contains more data than the "objective" counterparts.  Each dataset provides a different view into the question at hand.
 ```{r Summary, warning=F, message=F}
+# combine the two common features for full dataset
 df_full_feauture_selection_combined <- as.data.frame(df_ols_model_full_trans[is.element(set = df_ols_model_full_trans$Variables, el = as.matrix(descriptions_full)), ])
+
+# combine the two common features for objective dataset
 df_objective_feature_selection_combined <- as.matrix(df_ols_model_objective_trans[is.element(set = df_ols_model_objective_trans$Variables, el = as.matrix(descriptions_objective)), ])
+
 print("Combination of Boruta and OLS Full Datasets ")
 df_full_feauture_selection_combined
 print("Combination of Boruta and OLS Objective Datasets ")

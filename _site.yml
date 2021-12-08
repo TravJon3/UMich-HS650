@@ -10,6 +10,4 @@ navbar:
       href: final_project_clustering.html
     - text: "Rule Learning"
       href: final_project_rule_learning.html
-    - text: "HW 6"
-      href: hw6.html
 output_dir: "docs"

@@ -110,7 +110,7 @@ k_objective_train_onehot <- as.integer(sqrt(nrow(df_objective_train_onehot)/2))
 ## below is to set testing data as training data to speed up rendering
 ## set currently_developing to F when ready to go live.
 ######################################################
-currently_developing <-T
+currently_developing <-F
 if(currently_developing) {
   df_full_train_scaled <- df_full_test_scaled
   df_full_train_na_scaled <- df_full_test_na_scaled
@@ -129,19 +129,19 @@ if(currently_developing) {
 }
 
 #### Functions
-
-# fieldname_to_description <- function(fieldname) {
-#   namedvalue <- attributes(tbl_dta[fieldname])$labels
-#   replace(fieldname, fieldname == namedvalue, trimws(names(namedvalue)))
-# }
-
+# given the obscure fieldname, return its description
 fieldname_to_description <- function(colname) {
-  returnValue = str_to_sentence(attr(tbl_dta[[colname]], "label"))
-  if(length(returnValue) == 0)
-    returnValue = colname
+  if(!is.na(colname) && length(colname) > 0) {
+    returnValue = str_to_sentence(attr(tbl_dta[[colname]], "label"))
+    if(is.na(returnValue) || length(returnValue) == 0)
+      returnValue = colname
+  }
+  else
+    returnValue = ""
   return(returnValue)
 }
 
+# given the nominal value, and the obscure feature name, return the descriptive value
 value_fieldname_to_description <- function(value, colname) {
   values <- unname(val_labels(unique(to_labelled(tbl_dta)[[colname]])))
   value_names <- names(val_labels(unique(to_labelled(tbl_dta)[[colname]])))

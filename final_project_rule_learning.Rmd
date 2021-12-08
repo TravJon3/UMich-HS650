@@ -28,7 +28,9 @@ output:
 ## Apriori Helper Functions and Libraries
 ```{r Header, warning=F, message=F}
 library(arules)
+library(arulesViz)
 
+# translate the obscure descriptions into the descriptive descriptions
 join_descriptions <- function(df, df_stat) {
   df_new <- df
   colname <- colnames(df_new)
@@ -47,70 +49,78 @@ join_descriptions <- function(df, df_stat) {
   return(df_new)
 }
 
-tranasctions_to_vector_descriptions <- function(trans) {
-  unsubbed_summary <- names(attr(summary(trans),"itemSummary"))
-  vector_subbed_summary <- gsub("\\=.+$", unsubbed_summary, replacement = "")
-  lapply(vector_subbed_summary, fieldname_to_description)  
+# translate the transactions with the obscure descriptions into the descriptive descriptions
+tranasctions_join_descriptions <- function(trans) {
+  subbed_trans <- trans
+  vect_label <- attr(subbed_trans, "itemInfo")[["labels"]]
+  for(i in 1:length(vect_label)) {
+    attr(subbed_trans, "itemInfo")[["labels"]][i] <- paste0(string_replace_description(vect_label[i], reg = "\\w+\\="), "|u", i)
+  }
+  attr(subbed_trans, "itemInfo")[["variables"]] <- as.factor(unlist(lapply(attr(subbed_trans, "itemInfo")[["variables"]], fieldname_to_description)))
+  attr(subbed_trans, "itemInfo")[["levels"]] <- unlist(lapply(attr(subbed_trans, "itemInfo")[["levels"]], string_replace_description, reg = "\\w+\\="))
+  return(subbed_trans)
+}
+
+# replace an apriori string / description with the descriptive fieldnames (not the obscure fieldnames)
+string_replace_description <- function(sub, reg) {
+  vect_strings <- unlist(str_split(sub, "="))
+  new_reg <- str_replace(reg, "\\\\=", "$")
+  for(i in 1:length(vect_strings)) {
+    extracted <- str_extract(vect_strings[i], new_reg)
+    if(!is.na(extracted) && length(extracted) > 0)
+      vect_strings[i] <- str_replace(vect_strings[i], extracted, fieldname_to_description(extracted))
+  }
+  # str_extract(sub, reg)
+  # extracted <- gsub("[[:punct:]]+", "", extracted)
+  # sub <- str_replace(sub, extracted, fieldname_to_description(extracted))
+  return(paste(vect_strings, collapse="="))
 }
 ```
 
 ## Apriori Learning - Full Dataset
 ```{r AprioriFull, warning=F, message=F}
+num_rules_full <- 45
 df_full_apriori <- join_descriptions(df_full_na, tbl_dta)
 transactions_full <- transactions(df_full_apriori)
 summary(transactions_full)
-inspect(transactions_full[1:5,])
-as.matrix(tranasctions_to_vector_descriptions(transactions_full))
-
-itemFrequency(transactions_full[, 1:10])
-
-# mat <- as.matrix(transactions@data)
-# # capture the row/column names
-# rowNames <- transactions@itemInfo$labels
-# colNames <- paste0("S", c(1:dim(mat)[2]))
-# rownames(mat) <- rowNames
-# colnames(mat) <- colNames
-# 
-# # convert matrix to DF for processing, order rows based on their average (across subjects/cases/columns), back to matrix for display
-# df <- as.data.frame(1*mat)
-# df$avg <- rowMeans(df)
-# dfOrdered <- df[order(df$avg, decreasing = T), ]
-# matOrdered <- as.matrix(dfOrdered)
-# 
-# # track the ordered row names
-# rowNames <- rownames(dfOrdered)
-# colNames <- colnames(dfOrdered)
-# 
-# # 2D top 20 terms bar plot
-# # To order the transactions based on "avg", instead of alphabetically (mind the "-" sign to order Large to small!)
-# plot_ly(x = reorder(rowNames[c(1:20)], -dfOrdered[1:20, "avg"]), y=dfOrdered[1:20, "avg"], name="Top 20 Meds", type="bar")  %>%
-#   layout(title='Frequency of Medications (Top 20) based on averaging across Cases',
-#            xaxis = list(title="Term"),
-#            yaxis = list(title="Relative Frequency"))
-# # 3D surface plot
-# plot_ly(x = colNames, y = rowNames, z = 2*matOrdered, type = "surface") %>%
-#   layout(title='Term (X) by Sample (Y) Frequency (Z) Plot',
-#            xaxis = list(title="Term"),
-#            yaxis = list(title="Sample ID")) %>% hide_colorbar()
+inspect(transactions_full[1:2,])
+transactions_full_subbed <- tranasctions_join_descriptions(transactions_full)
+#itemFrequency(transactions_full_subbed[,1:5])
 
 ##for rules
-myrules_full <- apriori(transactions_full, parameter = list(support = 0.25))
-myrules_full
+myrules_full <- apriori(transactions_full_subbed, parameter = list(support = 0.25))
+myrules_full_sorted <- sort(myrules_full, by="lift")
+myrules_full_sorted
 summary(myrules_full)
-inspect(head(sort(myrules_full, by="lift"), n = 50))
+inspect(head(myrules_full_sorted, n = num_rules_full))
+plot(myrules_full_sorted, method = "graph", engine = "htmlwidget", control = list(main = list(title="Rules for the Full Dataset")), max = num_rules_full)
+# Runs out of Memory
+#plot(myrules_full, method = "grouped matrix", k = 7, rhs_max = 5, engine = "htmlwidget")
 ```
 
 ## Apriori Learning - Objective Dataset
 ```{r AprioriObjective, warning=F, message=F}
+num_rules_objective <- 45
 df_objective_apriori <- join_descriptions(df_objective_na, tbl_dta)
 transactions_objective <- transactions(df_objective_apriori)
 summary(transactions_objective)
-inspect(transactions_objective[1:5,])
-as.matrix(tranasctions_to_vector_descriptions(transactions_objective))
-itemFrequency(transactions_objective[, 1:10])
+inspect(transactions_objective[1:2,])
+transactions_objective_subbed <- tranasctions_join_descriptions(transactions_objective)
+#itemFrequency(transactions_objective_subbed[,1:5])
 
-myrules_objective <- apriori(transactions_objective, parameter = list(support = 0.25))
-myrules_objective
-summary(myrules_objective)
-inspect(head(sort(myrules_objective, by="lift"), n = 50))
+myrules_objective <- apriori(transactions_objective_subbed, parameter = list(support = 0.25))
+myrules_objective_sorted <- sort(myrules_objective, by="lift")
+myrules_objective_sorted
+summary(myrules_objective_sorted)
+inspect(head(sort(myrules_objective_sorted, by="lift"), n = num_rules_objective))
+plot(sort(myrules_objective_sorted, by="lift"), method = "graph", engine = "htmlwidget", control = list(main = list(title="Rules for the Objective Dataset")), max = num_rules_objective)
+# Runs out of Memory
+# plot(myrules_objective, method = "grouped matrix", k = 7, rhs_max = 7, engine = "htmlwidget")
+```
+
+## Summary
+
+Based upon both the full and objective dataset, it appears that the factor with the biggest impact on PositiveChange is whether the participant is either the head or wife of the household.  The following are the intersection between the two datasets sorted by lift.
+```{r Summary, warning=F, message=F}
+#intersect(inspect(head(myrules_full_sorted, n = num_rules_objective)), inspect(head(myrules_objective_sorted, n = num_rules_objective)))
 ```

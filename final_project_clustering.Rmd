@@ -19,12 +19,20 @@ output:
 ---
 **final_project_clustering.Rmd**.
 
-# Clustering Nearest Neighbor
-<p>I hope to use clustering to determine the combination of features that contribute to PositiveChange.  However, because clustering deals primarily with interval variables (because of distances that need to be calculated), it is impossible to calculate distances based upon nominal variables with arbitrary values.  For this reason, I have separated out the interval variables from my dataset, and one-hot encoded the nominal variables in the dataset, and combined them.</p>
-<p>With this dataset, I trained and predicted the k using the kNN model starting at the default k value.  Using the optimal k number of clusters to use, I used this new k value to determine the exact features that had determined the PositiveChange.  Using the k-means model and the optimal k-value, the cluster centers became the basis of my analysis.  Calculating the standard deviation of the cluster centers, I was able to categorize these features into the following separate buckets: strong inverse associations, inverse associations, associations, and strong associations.
-
 ```{r Common, warning=F, message=F, include=F, child='final_project_common.Rmd'}
 ```
+# Clustering Nearest Neighbor
+I hope to use clustering to determine the combination of features that contribute to PositiveChange.  However, because clustering deals primarily with interval variables (because of distances that need to be calculated), it is impossible to calculate distances based upon nominal variables with arbitrary values.  For this reason, I have separated out the interval variables from my dataset, and one-hot encoded the nominal variables in the dataset, and combined them.  
+With this dataset, I trained and predicted the k using the kNN model starting at the default k-value(Full Dataset: 
+```{r KFull }
+k_full_onehot
+```
+and Objective Dataset: 
+```{r KObj }
+k_objective_onehot
+```
+).  Using the optimal k number of clusters to use, I used this new k value to determine the exact features that had determined the PositiveChange.  Using the k-means model and the optimal k-value, the cluster centers became the basis of my analysis.  Calculating the standard deviation of the cluster centers, I was able to categorize these features into the following separate buckets: strong inverse associations, inverse associations, associations, and strong associations.  
+
 ## Helper Functions and Libraries
 ```{r Header, warning=F, message=F}
 # kNN libraries
@@ -38,6 +46,7 @@ library(matrixStats)
 
 
 # k-means functions
+# run the k++ function instead
 kpp_init <- function(dat, K) {
   x = as.matrix(dat)
   n = nrow(x)
@@ -61,6 +70,7 @@ kpp_init <- function(dat, K) {
   return(centers)
 }
 
+# return a list of the plot, clusters, and whether the k++ function was used
 plot_silhouette <- function(df, K, bKPP = T) {
   set.seed(1234)
   print(K)
@@ -77,6 +87,7 @@ plot_silhouette <- function(df, K, bKPP = T) {
   return(returned)
 }
 
+# plot the kmeans tuning graph to visualize the elbow
 plot_tuning <- function(df, K, bKPP = T) {
   mat = matrix(0, nrow = K)
   for(i in 2:K) {
@@ -95,6 +106,7 @@ plot_tuning <- function(df, K, bKPP = T) {
     layout(title="Average Silhouette Graph")
 }
 
+# UNUSED - explicate all of the clusters in the silhouette - may need fine tuning clusters aren't very easy and plot not very useful
 explicate_clusters <- function(clusters) {
   df <- as.data.frame(t(clusters$centers))
   rowNames <- rownames(df)
@@ -108,18 +120,31 @@ explicate_clusters <- function(clusters) {
   p
 }
 
+# clean up the center colnames to include the translations to unobfuscate the onehot encoding. so the output is more meaningful
 matrix_centers_cleaned_up <- function(matrix_centers) {
   new_centers <- matrix_centers
   for(c in 1:ncol(matrix_centers)) {
     name <- colnames(matrix_centers)[c]
-    vect_name <- str_split(name, "\\.", n = 2)
-    description <- fieldname_to_description(vect_name[[1]][1])
-    value_description <- value_fieldname_to_description(vect_name[[1]][2], vect_name[[1]][1])
-    colnames(new_centers)[c] <- paste0(description, " - ", value_description)
+    vect_name <- unlist(str_split(name, "\\.", n = 2))
+    description <- fieldname_to_description(vect_name[1])
+    # if there is an obscure fieldname value, pass in the value and the obscure description to get the value description otherwise, there is no one-hot encoding of the description.
+    if(length(vect_name) > 1)
+      value_description <- value_fieldname_to_description(vect_name[2], vect_name[1])
+    else
+      value_description <- ""
+    ## Do not include values that are NA or ""
+    if(!is.na(value_description) && trimws(value_description) != "")
+      if(value_description == ".")
+        colnames(new_centers)[c] <- paste0("[", description, " - NA]")
+      else
+        colnames(new_centers)[c] <- paste0("[", description, " - ", value_description, "]")
+    else
+      colnames(new_centers)[c] <- paste0("[", description, "]")
   }
   return(new_centers)
 }
 
+# print a matrix of the centers sorted by their associations
 print_centers_summary <- function(matrix_centers) {
   s <- sd(matrix_centers)
   num_clusters <- nrow(matrix_centers)
@@ -175,97 +200,121 @@ print_sensitivity_specificity <- function(ct, K) {
 
 ## kNN - Full Dataset
 ```{r kNNFull, warning=F, message=F}
+#prepare the dataframes
 labels_train_full <- df_full_train_onehot[ , "PositiveChange.Positive.Change"]
 labels_test_full <- df_full_test_onehot[ , "PositiveChange.Positive.Change"]
 df_full_train_onehot_new <- df_full_train_onehot[ , !names(df_full_train_onehot) %in% "PositiveChange.Positive.Change"]
 df_full_test_onehot_new <- df_full_test_onehot[ , !names(df_full_test_onehot) %in% "PositiveChange.Positive.Change"]
 
+# run the knn with the default k
 new_k_full <- k_full_onehot
 pred_full <- knn(train = df_full_train_onehot_new, test = df_full_test_onehot_new, cl = labels_train_full, k = new_k_full)
 ct_full <- CrossTable(x = labels_test_full, y = pred_full, prop.chisq = F)
 print_sensitivity_specificity(ct_full, new_k_full)
+confusionMatrix(table(pred_full, labels_test_full))
 
+# optimal k
 tuning_full = tune.knn(x = df_full_train_onehot_new, y = as.factor(labels_train_full), k = 1:k_full_onehot)
 tuning_full
 new_k_full <- tuning_full$best.model$k
 pred_full <- knn(train = df_full_train_onehot_new, test = df_full_test_onehot_new, cl = labels_train_full, k = new_k_full)
 ct_full <- CrossTable(x = labels_test_full, y = pred_full, prop.chisq = F)
 print_sensitivity_specificity(ct_full, new_k_full)
+confusionMatrix(table(pred_full, labels_test_full))
 ```
 
 ## kNN - Objective Dataset
 ```{r kNNObjective, warning=F, message=F}
+#prepare the dataframes
 labels_train_objective <- df_objective_train_onehot[ , "PositiveChange.Positive.Change"]
 labels_test_objective <- df_objective_test_onehot[ , "PositiveChange.Positive.Change"]
 df_objective_train_onehot_new <- df_objective_train_onehot[ , !names(df_objective_train_onehot) %in% "PositiveChange.Positive.Change"]
 df_objective_test_onehot_new <- df_objective_test_onehot[ , !names(df_objective_test_onehot) %in% "PositiveChange.Positive.Change"]
 
+# run the knn with the default k
 new_k_objective <- k_objective_onehot
 pred_objective <- knn(train = df_objective_train_onehot_new, test = df_objective_test_onehot_new, cl = labels_train_objective, k = new_k_objective)
 ct_objective <- CrossTable(x = labels_test_objective, y = pred_objective, prop.chisq = F)
 print_sensitivity_specificity(ct_objective, new_k_objective)
+confusionMatrix(table(pred_objective, labels_test_objective))
+
+# running the knn with the optimal k                
 tuning_objective = tune.knn(x = df_objective_train_onehot_new, y = as.factor(labels_train_objective), k = 1:new_k_objective)
 tuning_objective
 new_k_objective <- tuning_objective$best.model$k
 pred_objective <- knn(train = df_objective_train_onehot_new, test = df_objective_test_onehot_new, cl = labels_train_objective, k = new_k_objective)
 ct_objective <- CrossTable(x = labels_test_objective, y = pred_objective, prop.chisq = F)
 print_sensitivity_specificity(ct_objective, new_k_objective)
+confusionMatrix(table(pred_objective, labels_test_objective))
 ```
 
 
 ## k-Means - Full Dataset
 ```{r kMeansFull, warning=F, message=F}
-# new_k_full <- 4
+# new_k_full <- 4 - in case the new k-value is 1
 if(new_k_full < 2) new_k_full <- 4
+# plot the silhouette with regular kmeans call
 returned_list_F_full <- plot_silhouette(df_full_onehot, K=new_k_full, bKPP=F)
 returned_list_F_full[[1]]
+# plot the silhouette with kpp call
 returned_list_T_full <- plot_silhouette(df_full_onehot, K=new_k_full, bKPP=T)
 returned_list_T_full[[1]]
+
+# if the kpp silhouette width >= kmeans width, then use the kpp algorithm
 ifelse(returned_list_T_full[[3]] >= returned_list_F_full[[3]], bKPP_full <- T, bKPP_full <- F)
+# plot the tuning graph to visualize the elbow
 plot_tuning(df_full_onehot, K=k_full_onehot, bKPP=bKPP_full)
+# return and print the 1) average silhouette width, 2) silhouettes, 3) clusters
 returned_list_full <- plot_silhouette(df_full_onehot, K=new_k_full, bKPP=bKPP_full)
 returned_list_full[[3]]
 returned_list_full[[1]]
 clusters_full <- returned_list_full[[2]]
 new_centers_full <- matrix_centers_cleaned_up(clusters_full$centers)
-new_centers_full
+# don't print the raw center data - illegible
+# new_centers_full
+###################################
 # StrongInverseAssociation <= -2s
 # InverseAssociation > -2s && <= -s
 # Association >= s && < 2s
 # StrongAssociation >= 2s
 print_centers_summary(new_centers_full)
-
 # explicate_clusters(clusters_full)
 ```
 
 ## k-Means - Objective Dataset
 ```{r kMeansObjective, warning=F, message=F}
-# new_k_objective <- 3
+# new_k_objective <- 3 - in case the new k-value is 1
 if(new_k_objective < 2) new_k_objective <- 3
+# plot the silhouette with regular kmeans call
 returned_list_F_objective <- plot_silhouette(df_objective_onehot, K=new_k_objective, bKPP=F)
 returned_list_F_objective[[1]]
+# plot the silhouette with the kpp call
 returned_list_T_objective <- plot_silhouette(df_objective_onehot, K=new_k_objective, bKPP=T)
 returned_list_T_objective[[1]]
+# if the kpp silhouette width >= kmeans width, then use the kpp algorithm
 ifelse(returned_list_T_objective[[3]] >= returned_list_F_objective[[3]], bKPP_objective <- T, bKPP_objective <- F)
+# plot the tuning graph to visualize the elbow
 plot_tuning(df_objective_onehot, K=k_objective_onehot, bKPP=bKPP_objective)
+# return and print the 1) average silhouette width, 2) silhouettes, 3) clusters
 returned_list_objective <- plot_silhouette(df_objective_onehot, K=new_k_objective, bKPP=bKPP_objective)
 returned_list_objective[[3]]
 returned_list_objective[[1]]
 clusters_objective <- returned_list_objective[[2]]
 new_centers_objective <- matrix_centers_cleaned_up(clusters_objective$centers)
-new_centers_objective
+# don't print the raw center data - illegible
+# new_centers_objective
+############################
 # StrongInverseAssociation <= -2s
 # InverseAssociation > -2s && <= -s
 # Association >= s && < 2s
 # StrongAssociation >= 2s
 print_centers_summary(new_centers_objective)
-
 # explicate_clusters(clusters_objective)
 ```
 
 
 
 # Summary
-<p>There are numerous features, in the various buckets and are difficult to parse.  This could be the start of further inquiry (e.g. possibly the cross referenced with the results from feature_selection.</p>
+There are numerous features, in the various buckets and are difficult to parse.  This could be the start of further inquiry.  Because the dataset is one-hot encoded, there is a possibility where one feature with multiple values may have different statistical significance, which adds complexity to the analysis.  Perhaps this can be cross referenced with the feature selection output?
 ```{r Summary, warning=F, message=F}
 ```
