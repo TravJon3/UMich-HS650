@@ -1,5 +1,5 @@
 ---
-title: "Final Project"
+title: "Final Project: Exploring Factors Contributing to Positive Changes in Mental Health for Children Transitioning Into Adulthood"
 subtitle: "Clustering"
 author: "Kevin Wu"
 date: "`r format(Sys.time(), '%B %Y')`"
@@ -23,6 +23,7 @@ output:
 ```
 # Clustering Nearest Neighbor
 I hope to use clustering to determine the combination of features that contribute to PositiveChange.  However, because clustering deals primarily with interval variables (because of distances that need to be calculated), it is impossible to calculate distances based upon nominal variables with arbitrary values.  For this reason, I have separated out the interval variables from my dataset, and one-hot encoded the nominal variables in the dataset, and combined them.  
+
 With this dataset, I trained and predicted the k using the kNN model starting at the default k-value(Full Dataset: 
 ```{r KFull }
 k_full_onehot
@@ -181,7 +182,9 @@ print_centers_summary <- function(matrix_centers) {
     }
   }
   df_printout <- data.frame(Cluster = vect_clusters, StrongInverseAssociation = vect_strong_inverse_association, InverseAssociation = vect_inverse_association, Association = vect_association, StrongAssociation = vect_strong_association)
-  kable(df_printout)
+df_printout %>%
+  kbl(escape = F, valign="top") %>%
+  kable_styling()
 }
 
 print_sensitivity_specificity <- function(ct, K) {

@@ -12,7 +12,7 @@
 <meta name="author" content="Kevin Wu" />
 
 
-<title>Final Project</title>
+<title>Final Project: Exploring Factors Contributing to Positive Changes in Mental Health for Children Transitioning Into Adulthood</title>
 
 <script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -35,6 +35,8 @@
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -46,6 +48,109 @@
     </style>
 
 
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -328,6 +433,9 @@ div.tocify {
 <li>
   <a href="final_project_rule_learning.html">Rule Learning</a>
 </li>
+<li>
+  <a href="final_project_trees.html">Trees</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -348,7 +456,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Final Project</h1>
+<h1 class="title toc-ignore">Final Project: Exploring Factors Contributing to Positive Changes in Mental Health for Children Transitioning Into Adulthood</h1>
 <h3 class="subtitle">Trees</h3>
 <h4 class="author">Kevin Wu</h4>
 <h4 class="date">December 2021</h4>
@@ -359,17 +467,1200 @@ div.tocify {
 <p><strong>final_project_trees.Rmd</strong>.</p>
 <div id="classification-trees" class="section level1" number="1">
 <h1 number="1"><span class="header-section-number">1</span> Classification Trees</h1>
-<p>
-</p>
-<div id="classification-trees-helper-functions-and-libraries" class="section level2" number="1.1">
-<h2 number="1.1"><span class="header-section-number">1.1</span> Classification Trees Helper Functions and Libraries</h2>
+<div id="helper-functions-and-libraries" class="section level2" number="1.1">
+<h2 number="1.1"><span class="header-section-number">1.1</span> Helper Functions and Libraries</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(C50)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart.plot)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rattle)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(neuralnet)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kernlab)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># colnames(df_full_train) &lt;- lapply(colnames(df_full_train[, -267]), fieldname_to_description)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># colnames(df_full_test) &lt;- lapply(colnames(df_full_test[, -267]), fieldname_to_description)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>df_full_train_new <span class="ot">&lt;-</span> df_full_train[ , <span class="sc">!</span><span class="fu">names</span>(df_full_train) <span class="sc">%in%</span> <span class="st">&quot;PositiveChange&quot;</span>]</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>df_full_test_new <span class="ot">&lt;-</span> df_full_test[ , <span class="sc">!</span><span class="fu">names</span>(df_full_test) <span class="sc">%in%</span> <span class="st">&quot;PositiveChange&quot;</span>]</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>df_objective_train_new <span class="ot">&lt;-</span> df_objective_train[ , <span class="sc">!</span><span class="fu">names</span>(df_objective_train) <span class="sc">%in%</span> <span class="st">&quot;PositiveChange&quot;</span>]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>df_objective_test_new <span class="ot">&lt;-</span> df_objective_test[ , <span class="sc">!</span><span class="fu">names</span>(df_objective_test) <span class="sc">%in%</span> <span class="st">&quot;PositiveChange&quot;</span>]</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>confusionMatrix_to_vector <span class="ot">&lt;-</span> <span class="cf">function</span>(mat) {</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(mat<span class="sc">$</span>overall[<span class="st">&quot;Accuracy&quot;</span>], <span class="at">digits =</span> <span class="dv">4</span>), </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(mat<span class="sc">$</span>overall[<span class="st">&quot;Kappa&quot;</span>], <span class="at">digits =</span> <span class="dv">4</span>), </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(mat<span class="sc">$</span>byClass[<span class="st">&quot;Sensitivity&quot;</span>], <span class="at">digits =</span> <span class="dv">4</span>), </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(mat<span class="sc">$</span>byClass[<span class="st">&quot;Specificity&quot;</span>], <span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>highlight_column <span class="ot">&lt;-</span> <span class="cf">function</span>(col) {</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cell_spec</span>(col, <span class="at">background =</span> <span class="fu">ifelse</span>(col <span class="sc">==</span> <span class="fu">max</span>(col), <span class="st">&quot;yellow&quot;</span>, <span class="st">&quot;white&quot;</span>))</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
-<div id="classification-trees---full-dataset" class="section level2" number="1.2">
-<h2 number="1.2"><span class="header-section-number">1.2</span> Classification Trees - Full Dataset</h2>
+<div id="neural-net---full-dataset" class="section level2" number="1.2">
+<h2 number="1.2"><span class="header-section-number">1.2</span> Neural Net - Full Dataset</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>net_full <span class="ot">&lt;-</span> <span class="fu">neuralnet</span>(PositiveChange <span class="sc">~</span> ., df_full_train, <span class="at">hidden=</span><span class="dv">10</span>, <span class="at">threshold=</span><span class="fl">0.1</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(net_full, <span class="at">rep=</span><span class="st">&quot;best&quot;</span>)</span></code></pre></div>
+<p><img src="final_project_trees_files/figure-html/NNFull-1.png" width="672" /></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pred_net_full <span class="ot">&lt;-</span> <span class="fu">compute</span>(net_full, df_full_test)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># tbl_net_full &lt;- table(pred_net_full$net.result, df_full_test$PositiveChange)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(pred_net_full<span class="sc">$</span>net.result, <span class="fu">as.numeric</span>(df_full_test<span class="sc">$</span>PositiveChange))</span></code></pre></div>
+<pre><code>##            [,1]
+## [1,]  0.4132693
+## [2,] -0.4133341</code></pre>
 </div>
-<div id="classification-trees---objective-dataset" class="section level2" number="1.3">
-<h2 number="1.3"><span class="header-section-number">1.3</span> Classification Trees - Objective Dataset</h2>
+<div id="neural-net---objective-dataset" class="section level2" number="1.3">
+<h2 number="1.3"><span class="header-section-number">1.3</span> Neural Net - Objective Dataset</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>net_objective <span class="ot">&lt;-</span> <span class="fu">neuralnet</span>(PositiveChange <span class="sc">~</span> ., df_objective_train, <span class="at">hidden=</span><span class="dv">5</span>, <span class="at">threshold=</span><span class="fl">0.1</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(net_objective, <span class="at">rep=</span><span class="st">&quot;best&quot;</span>)</span></code></pre></div>
+<p><img src="final_project_trees_files/figure-html/NNObjective-1.png" width="672" /></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pred_net_objective <span class="ot">&lt;-</span> <span class="fu">compute</span>(net_objective, df_objective_test)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(pred_net_objective<span class="sc">$</span>net.result, <span class="fu">as.numeric</span>(df_objective_test<span class="sc">$</span>PositiveChange))</span></code></pre></div>
+<pre><code>##            [,1]
+## [1,]  0.2068527
+## [2,] -0.2068733</code></pre>
 </div>
+<div id="c5.0---full-dataset" class="section level2" number="1.4">
+<h2 number="1.4"><span class="header-section-number">1.4</span> C5.0 - Full Dataset</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>c50_model_full <span class="ot">&lt;-</span> <span class="fu">C5.0</span>(df_full_train_new, df_full_train<span class="sc">$</span>PositiveChange)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>c50_model_full</span></code></pre></div>
+<pre><code>## 
+## Call:
+## C5.0.default(x = df_full_train_new, y = df_full_train$PositiveChange)
+## 
+## Classification Tree
+## Number of samples: 1572 
+## Number of predictors: 266 
+## 
+## Tree size: 51 
+## 
+## Non-standard options: attempt to group attributes</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(c50_model_full)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## C5.0.default(x = df_full_train_new, y = df_full_train$PositiveChange)
+## 
+## 
+## C5.0 [Release 2.07 GPL Edition]      Fri Dec 10 09:24:08 2021
+## -------------------------------
+## 
+## Class specified by attribute `outcome&#39;
+## 
+## Read 1572 cases (267 attributes) from undefined.data
+## 
+## Decision tree:
+## 
+## pwb6_2011 &lt;= 4:
+## :...swb1_2011 &gt; 4:
+## :   :...helping_2011 &gt; 6: Positive Change (10)
+## :   :   helping_2011 &lt;= 6:
+## :   :   :...race2_2011 &gt; -1: Positive Change (3)
+## :   :       race2_2011 &lt;= -1:
+## :   :       :...pwb4_2011 &lt;= 5:
+## :   :           :...swb5_2011 &lt;= 4: Not Positive Change (32/3)
+## :   :           :   swb5_2011 &gt; 4: Positive Change (5/1)
+## :   :           pwb4_2011 &gt; 5:
+## :   :           :...Q23K26A &lt;= 3: Not Positive Change (2)
+## :   :               Q23K26A &gt; 3: Positive Change (11/1)
+## :   swb1_2011 &lt;= 4:
+## :   :...artact_11 &gt; 0:
+## :       :...barbev &gt; 0: Positive Change (2)
+## :       :   barbev &lt;= 0:
+## :       :   :...ER33605 &gt; 4: Not Positive Change (21/1)
+## :       :       ER33605 &lt;= 4:
+## :       :       :...pwb1_2011 &lt;= 3: Not Positive Change (2)
+## :       :           pwb1_2011 &gt; 3: Positive Change (5)
+## :       artact_11 &lt;= 0:
+## :       :...Q23L11B &gt; 0:
+## :           :...GLBCN02 &lt;= 2.67: Positive Change (4)
+## :           :   GLBCN02 &gt; 2.67:
+## :           :   :...pwb2_02 &gt; 1: Not Positive Change (27)
+## :           :       pwb2_02 &lt;= 1:
+## :           :       :...Q23H6A &lt;= 0: Not Positive Change (2)
+## :           :           Q23H6A &gt; 0: Positive Change (4)
+## :           Q23L11B &lt;= 0:
+## :           :...amphetev &gt; 0:
+## :               :...Q23H6E &lt;= 1: Not Positive Change (12)
+## :               :   Q23H6E &gt; 1:
+## :               :   :...TA111139 &lt;= 3: Not Positive Change (12/2)
+## :               :       TA111139 &gt; 3: Positive Change (3)
+## :               amphetev &lt;= 0:
+## :               :...Q23K14C &lt;= 4: Not Positive Change (363/1)
+## :                   Q23K14C &gt; 4:
+## :                   :...swb1_02 &gt; 2: Not Positive Change (50)
+## :                       swb1_02 &lt;= 2:
+## :                       :...Q23L13 &gt; 1:
+## :                           :...swb1_02 &lt;= 1: Positive Change (6)
+## :                           :   swb1_02 &gt; 1: Not Positive Change (5)
+## :                           Q23L13 &lt;= 1:
+## :                           :...Q23L20 &lt;= 1: Not Positive Change (38/1)
+## :                               Q23L20 &gt; 1:
+## :                               :...Q23K14A &lt;= 6: Positive Change (3)
+## :                                   Q23K14A &gt; 6: Not Positive Change (4)
+## pwb6_2011 &gt; 4:
+## :...pwb2_2011 &gt; 4:
+##     :...pwb4_2011 &lt;= 4:
+##     :   :...swb4_2011 &lt;= 4:
+##     :   :   :...smoke11 &gt; 0: Not Positive Change (7)
+##     :   :   :   smoke11 &lt;= 0:
+##     :   :   :   :...decisiveness_2011 &lt;= 3: Positive Change (5)
+##     :   :   :       decisiveness_2011 &gt; 3: Not Positive Change (52/18)
+##     :   :   swb4_2011 &gt; 4:
+##     :   :   :...Q23L22C &lt;= 4: Positive Change (22)
+##     :   :       Q23L22C &gt; 4:
+##     :   :       :...swb2_2011 &lt;= 4: Not Positive Change (4)
+##     :   :           swb2_2011 &gt; 4: Positive Change (5)
+##     :   pwb4_2011 &gt; 4:
+##     :   :...pwb5_2011 &lt;= 4:
+##     :       :...swb2_2011 &gt; 4: Positive Change (15)
+##     :       :   swb2_2011 &lt;= 4:
+##     :       :   :...Q23L13H &lt;= 1: Not Positive Change (10)
+##     :       :       Q23L13H &gt; 1: Positive Change (4/1)
+##     :       pwb5_2011 &gt; 4:
+##     :       :...swb1_2011 &gt; 4: Positive Change (557)
+##     :           swb1_2011 &lt;= 4:
+##     :           :...pwb1_2011 &lt;= 4:
+##     :               :...swb2_2011 &lt;= 4: Not Positive Change (16/1)
+##     :               :   swb2_2011 &gt; 4: Positive Change (6)
+##     :               pwb1_2011 &gt; 4:
+##     :               :...pwb3_2011 &gt; 4: Positive Change (90/1)
+##     :                   pwb3_2011 &lt;= 4:
+##     :                   :...swb2_2011 &lt;= 1: Not Positive Change (8)
+##     :                       swb2_2011 &gt; 1: Positive Change (14/1)
+##     pwb2_2011 &lt;= 4:
+##     :...swb3_2011 &gt; 4: Positive Change (13/1)
+##         swb3_2011 &lt;= 4:
+##         :...swb2_2011 &gt; 4:
+##             :...worthless_2011 &gt; 0: Not Positive Change (5)
+##             :   worthless_2011 &lt;= 0:
+##             :   :...pwb4_2011 &lt;= 3: Not Positive Change (2)
+##             :       pwb4_2011 &gt; 3:
+##             :       :...TA111139 &lt;= 1: Not Positive Change (2)
+##             :           TA111139 &gt; 1: Positive Change (20)
+##             swb2_2011 &lt;= 4:
+##             :...pwb3_2011 &lt;= 4: Not Positive Change (37/1)
+##                 pwb3_2011 &gt; 4:
+##                 :...swb5_2011 &gt; 4: Positive Change (6/1)
+##                     swb5_2011 &lt;= 4:
+##                     :...anhed2wks_2011 &gt; 0: Positive Change (5/1)
+##                         anhed2wks_2011 &lt;= 0:
+##                         :...Q23K14F &gt; 6: Not Positive Change (18)
+##                             Q23K14F &lt;= 6:
+##                             :...k6sxfreq_2011 &lt;= 1: Positive Change (3)
+##                                 k6sxfreq_2011 &gt; 1:
+##                                 :...nonacadtrng &lt;= 0: Not Positive Change (16/2)
+##                                     nonacadtrng &gt; 0: Positive Change (4/1)
+## 
+## 
+## Evaluation on training data (1572 cases):
+## 
+##      Decision Tree   
+##    ----------------  
+##    Size      Errors  
+## 
+##      51   39( 2.5%)   &lt;&lt;
+## 
+## 
+##     (a)   (b)    &lt;-classified as
+##    ----  ----
+##     816    30    (a): class Positive Change
+##       9   717    (b): class Not Positive Change
+## 
+## 
+##  Attribute usage:
+## 
+##  100.00% pwb6_2011
+##   83.78% swb1_2011
+##   60.18% pwb2_2011
+##   56.55% pwb4_2011
+##   45.80% pwb5_2011
+##   35.81% artact_11
+##   33.91% Q23L11B
+##   31.55% amphetev
+##   29.83% Q23K14C
+##   12.79% pwb3_2011
+##   12.72% swb2_2011
+##    8.97% pwb1_2011
+##    8.33% swb3_2011
+##    6.74% swb1_02
+##    6.04% swb4_2011
+##    5.66% swb5_2011
+##    4.07% smoke11
+##    4.01% helping_2011
+##    3.63% decisiveness_2011
+##    3.56% Q23L13
+##    3.37% race2_2011
+##    2.93% anhed2wks_2011
+##    2.86% Q23L20
+##    2.61% Q23K14F
+##    2.35% GLBCN02
+##    2.35% TA111139
+##    2.10% pwb2_02
+##    1.97% Q23L22C
+##    1.91% barbev
+##    1.84% worthless_2011
+##    1.78% ER33605
+##    1.72% Q23H6E
+##    1.46% k6sxfreq_2011
+##    1.27% nonacadtrng
+##    0.89% Q23L13H
+##    0.83% Q23K26A
+##    0.45% Q23K14A
+##    0.38% Q23H6A
+## 
+## 
+## Time: 0.1 secs</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pred_C50_full <span class="ot">&lt;-</span> <span class="fu">predict</span>(c50_model_full, df_full_test_new) </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>tbl_C50_full <span class="ot">&lt;-</span> <span class="fu">table</span>(pred_C50_full, df_full_test<span class="sc">$</span>PositiveChange)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>conf_C50_full <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(tbl_C50_full)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>conf_C50_full</span></code></pre></div>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##                       
+## pred_C50_full          Positive Change  Not Positive Change
+##   Positive Change                  184                   19
+##    Not Positive Change              16                  175
+##                                           
+##                Accuracy : 0.9112          
+##                  95% CI : (0.8786, 0.9373)
+##     No Information Rate : 0.5076          
+##     P-Value [Acc &gt; NIR] : &lt;2e-16          
+##                                           
+##                   Kappa : 0.8223          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 0.7353          
+##                                           
+##             Sensitivity : 0.9200          
+##             Specificity : 0.9021          
+##          Pos Pred Value : 0.9064          
+##          Neg Pred Value : 0.9162          
+##              Prevalence : 0.5076          
+##          Detection Rate : 0.4670          
+##    Detection Prevalence : 0.5152          
+##       Balanced Accuracy : 0.9110          
+##                                           
+##        &#39;Positive&#39; Class : Positive Change 
+## </code></pre>
+</div>
+<div id="c5.0---objetive-dataset" class="section level2" number="1.5">
+<h2 number="1.5"><span class="header-section-number">1.5</span> C5.0 - Objetive Dataset</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>c50_model_objective <span class="ot">&lt;-</span> <span class="fu">C5.0</span>(df_objective_train_new, df_objective_train<span class="sc">$</span>PositiveChange)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>c50_model_objective</span></code></pre></div>
+<pre><code>## 
+## Call:
+## C5.0.default(x = df_objective_train_new, y = df_objective_train$PositiveChange)
+## 
+## Classification Tree
+## Number of samples: 1572 
+## Number of predictors: 206 
+## 
+## Tree size: 119 
+## 
+## Non-standard options: attempt to group attributes</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(c50_model_objective)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## C5.0.default(x = df_objective_train_new, y = df_objective_train$PositiveChange)
+## 
+## 
+## C5.0 [Release 2.07 GPL Edition]      Fri Dec 10 09:24:09 2021
+## -------------------------------
+## 
+## Class specified by attribute `outcome&#39;
+## 
+## Read 1572 cases (207 attributes) from undefined.data
+## 
+## Decision tree:
+## 
+## employstat311 &lt;= -1:
+## :...Q23L11B &lt;= 0: Not Positive Change (347/6)
+## :   Q23L11B &gt; 0:
+## :   :...Q23J4 &gt; 1: Positive Change (3)
+## :       Q23J4 &lt;= 1:
+## :       :...GLBCN02 &lt;= 2.67: Positive Change (2)
+## :           GLBCN02 &gt; 2.67: Not Positive Change (21/1)
+## employstat311 &gt; -1:
+## :...TA111125 &lt;= 5:
+##     :...Q23J4 &gt; 1:
+##     :   :...asthma &gt; 0: Not Positive Change (4)
+##     :   :   asthma &lt;= 0:
+##     :   :   :...service_2011 &lt;= 1: Positive Change (10)
+##     :   :       service_2011 &gt; 1:
+##     :   :       :...ER32006 &gt; 2: Positive Change (4)
+##     :   :           ER32006 &lt;= 2:
+##     :   :           :...bmi_2011 &gt; 2: Not Positive Change (7)
+##     :   :               bmi_2011 &lt;= 2:
+##     :   :               :...Q23L13H &lt;= 0: Not Positive Change (3)
+##     :   :                   Q23L13H &gt; 0: Positive Change (8/1)
+##     :   Q23J4 &lt;= 1:
+##     :   :...dishonest_2011 &gt; 1:
+##     :       :...enrollstat_11 &gt; 11:
+##     :       :   :...GLBCN02 &lt;= 4.2: Not Positive Change (9)
+##     :       :   :   GLBCN02 &gt; 4.2: Positive Change (8/1)
+##     :       :   enrollstat_11 &lt;= 11:
+##     :       :   :...socanxscale_11 &lt;= 2:
+##     :       :       :...Q23H6H &lt;= 1: Positive Change (29)
+##     :       :       :   Q23H6H &gt; 1:
+##     :       :       :   :...dui_2011 &gt; 1:
+##     :       :       :       :...fallwintres_11 &gt; 2: Positive Change (5)
+##     :       :       :       :   fallwintres_11 &lt;= 2:
+##     :       :       :       :   :...dui_2011 &lt;= 2: Not Positive Change (6)
+##     :       :       :       :       dui_2011 &gt; 2: Positive Change (2)
+##     :       :       :       dui_2011 &lt;= 1:
+##     :       :       :       :...voted_2010 &gt; 0: Positive Change (22)
+##     :       :       :           voted_2010 &lt;= 0: [S1]
+##     :       :       socanxscale_11 &gt; 2:
+##     :       :       :...sterev &gt; 0: Positive Change (9)
+##     :       :           sterev &lt;= 0:
+##     :       :           :...Q23L11I &gt; 1: Positive Change (8)
+##     :       :               Q23L11I &lt;= 1:
+##     :       :               :...relig_freq &lt;= 2:
+##     :       :                   :...hisp2011 &gt; 0: Not Positive Change (7)
+##     :       :                   :   hisp2011 &lt;= 0: [S2]
+##     :       :                   relig_freq &gt; 2:
+##     :       :                   :...highbp &gt; 0:
+##     :       :                       :...Q23L22B &lt;= 1: Not Positive Change (4)
+##     :       :                       :   Q23L22B &gt; 1: Positive Change (2)
+##     :       :                       highbp &lt;= 0:
+##     :       :                       :...race2_2011 &gt; 1: [S3]
+##     :       :                           race2_2011 &lt;= 1:
+##     :       :                           :...alc45drinks_11 &gt; 8: [S4]
+##     :       :                               alc45drinks_11 &lt;= 8: [S5]
+##     :       dishonest_2011 &lt;= 1:
+##     :       :...sleep11 &lt;= 5: Positive Change (33)
+##     :           sleep11 &gt; 5:
+##     :           :...Q23H6F &lt;= 1:
+##     :               :...Q23K8 &gt; 3: Not Positive Change (6/1)
+##     :               :   Q23K8 &lt;= 3:
+##     :               :   :...fight_2011 &lt;= 1: Positive Change (61/10)
+##     :               :       fight_2011 &gt; 1: Not Positive Change (4/1)
+##     :               Q23H6F &gt; 1:
+##     :               :...relig_freq &gt; 5: Positive Change (34)
+##     :                   relig_freq &lt;= 5:
+##     :                   :...volunteer_2011 &gt; 0:
+##     :                       :...TA110891 &lt;= 1: Positive Change (59)
+##     :                       :   TA110891 &gt; 1:
+##     :                       :   :...Q23H1B &gt; 2: Not Positive Change (2)
+##     :                       :       Q23H1B &lt;= 2:
+##     :                       :       :...Q23H5B &gt; 3: Positive Change (18)
+##     :                       :           Q23H5B &lt;= 3: [S6]
+##     :                       volunteer_2011 &lt;= 0:
+##     :                       :...Q23J4 &gt; 0: Positive Change (29/1)
+##     :                           Q23J4 &lt;= 0:
+##     :                           :...Q23K14C &lt;= 1: Positive Change (38/1)
+##     :                               Q23K14C &gt; 1:
+##     :                               :...Q23K19 &gt; 1: [S7]
+##     :                                   Q23K19 &lt;= 1:
+##     :                                   :...ER32006 &gt; 2: Positive Change (13)
+##     :                                       ER32006 &lt;= 2:
+##     :                                       :...highbp &gt; 0: [S8]
+##     :                                           highbp &lt;= 0:
+##     :                                           :...peerue_2011 &gt; 2: [S9]
+##     :                                               peerue_2011 &lt;= 2:
+##     :                                               :...ER32006 &lt;= 1: [S10]
+##     :                                                   ER32006 &gt; 1: [S11]
+##     TA111125 &gt; 5:
+##     :...race1_2011 &gt; 4:
+##         :...afraid_2011 &gt; 1: Not Positive Change (13)
+##         :   afraid_2011 &lt;= 1:
+##         :   :...GLBCN02 &lt;= 3.67: Not Positive Change (5)
+##         :       GLBCN02 &gt; 3.67: Positive Change (5/1)
+##         race1_2011 &lt;= 4:
+##         :...bingeeat11 &gt; 5:
+##             :...TA111060 &lt;= 1: Not Positive Change (4)
+##             :   TA111060 &gt; 1: Positive Change (26/1)
+##             bingeeat11 &lt;= 5:
+##             :...depress2wks_2011 &gt; 0:
+##                 :...peerjob_2011 &gt; 4: Positive Change (7/1)
+##                 :   peerjob_2011 &lt;= 4:
+##                 :   :...fallwintres_11 &gt; 2: Not Positive Change (13)
+##                 :       fallwintres_11 &lt;= 2:
+##                 :       :...Q23H1B &gt; 2: Positive Change (6/1)
+##                 :           Q23H1B &lt;= 2:
+##                 :           :...TA111060 &lt;= 5:
+##                 :               :...Q23L11D &gt; 2: Positive Change (2)
+##                 :               :   Q23L11D &lt;= 2: [S12]
+##                 :               TA111060 &gt; 5:
+##                 :               :...Q23H5E &lt;= 2: Not Positive Change (8)
+##                 :                   Q23H5E &gt; 2: [S13]
+##                 depress2wks_2011 &lt;= 0:
+##                 :...Q23H5C &gt; 0:
+##                     :...internetev_11 &lt;= 0: Not Positive Change (2)
+##                     :   internetev_11 &gt; 0:
+##                     :   :...peercoll_2011 &lt;= 4: Positive Change (28)
+##                     :       peercoll_2011 &gt; 4: Not Positive Change (2)
+##                     Q23H5C &lt;= 0:
+##                     :...worryscale_11 &gt; 6: Not Positive Change (15/2)
+##                         worryscale_11 &lt;= 6:
+##                         :...Q23K21 &gt; 8.7:
+##                             :...ER51743 &gt; 1: Positive Change (9)
+##                             :   ER51743 &lt;= 1:
+##                             :   :...psychdxever &gt; 0: Positive Change (9)
+##                             :       psychdxever &lt;= 0: [S14]
+##                             Q23K21 &lt;= 8.7:
+##                             :...TA110969 &lt;= 0:
+##                                 :...ER33603 &gt; 30: Positive Change (2)
+##                                 :   ER33603 &lt;= 30:
+##                                 :   :...Q23H1A &lt;= 1: Not Positive Change (14)
+##                                 :       Q23H1A &gt; 1: [S15]
+##                                 TA110969 &gt; 0:
+##                                 :...dui_2011 &gt; 2:
+##                                     :...Q23L11D &gt; 0: Positive Change (4/1)
+##                                     :   Q23L11D &lt;= 0: [S16]
+##                                     dui_2011 &lt;= 2:
+##                                     :...Q23H1C &gt; 1: Positive Change (7)
+##                                         Q23H1C &lt;= 1: [S17]
+## 
+## SubTree [S1]
+## 
+## socialnetwork_2011 &lt;= 4: Positive Change (18)
+## socialnetwork_2011 &gt; 4:
+## :...Q23H6K &lt;= 1: Positive Change (5)
+##     Q23H6K &gt; 1:
+##     :...Q23K7 &gt; 1: Not Positive Change (4)
+##         Q23K7 &lt;= 1:
+##         :...smoke11 &lt;= 0: Positive Change (7)
+##             smoke11 &gt; 0: Not Positive Change (2)
+## 
+## SubTree [S2]
+## 
+## dtpillev &lt;= 0: Positive Change (59/27)
+## dtpillev &gt; 0: Not Positive Change (9/1)
+## 
+## SubTree [S3]
+## 
+## Q23K4 &lt;= 1: Not Positive Change (4)
+## Q23K4 &gt; 1: Positive Change (2)
+## 
+## SubTree [S4]
+## 
+## TA111139 &lt;= 2: Positive Change (5)
+## TA111139 &gt; 2: Not Positive Change (7/1)
+## 
+## SubTree [S5]
+## 
+## doc_pstyr &gt; 0: Positive Change (38)
+## doc_pstyr &lt;= 0:
+## :...Q23J1 &gt; 6: Not Positive Change (2)
+##     Q23J1 &lt;= 6:
+##     :...Q23H5E &lt;= 2: Not Positive Change (3/1)
+##         Q23H5E &gt; 2: Positive Change (10)
+## 
+## SubTree [S6]
+## 
+## Q23K8 &lt;= 1: Positive Change (3)
+## Q23K8 &gt; 1: Not Positive Change (3)
+## 
+## SubTree [S7]
+## 
+## relig_pref &gt; 0: Positive Change (41/2)
+## relig_pref &lt;= 0:
+## :...race &lt;= 0: Not Positive Change (2)
+##     race &gt; 0: Positive Change (4)
+## 
+## SubTree [S8]
+## 
+## Q23K5 &lt;= 1: Not Positive Change (5)
+## Q23K5 &gt; 1: Positive Change (2)
+## 
+## SubTree [S9]
+## 
+## Q23K14D &lt;= 5: Positive Change (5/1)
+## Q23K14D &gt; 5: Not Positive Change (6)
+## 
+## SubTree [S10]
+## 
+## Q23K3 &lt;= 1: Positive Change (6/1)
+## Q23K3 &gt; 1: Not Positive Change (5)
+## 
+## SubTree [S11]
+## 
+## peercoll_2011 &lt;= 3:
+## :...Q23H6H &gt; 1: Positive Change (40/1)
+## :   Q23H6H &lt;= 1:
+## :   :...Q23H5B &lt;= 4: Not Positive Change (2)
+## :       Q23H5B &gt; 4: Positive Change (2)
+## peercoll_2011 &gt; 3:
+## :...Q23H6D &lt;= 1:
+##     :...employstat211 &lt;= 6: Not Positive Change (6)
+##     :   employstat211 &gt; 6: Positive Change (3)
+##     Q23H6D &gt; 1:
+##     :...ER34103 &gt; 20: Positive Change (15)
+##         ER34103 &lt;= 20:
+##         :...Q23K4 &lt;= 1: Not Positive Change (6/1)
+##             Q23K4 &gt; 1: Positive Change (6)
+## 
+## SubTree [S12]
+## 
+## SOCINT02 &lt;= 5.4: Not Positive Change (31)
+## SOCINT02 &gt; 5.4: Positive Change (3/1)
+## 
+## SubTree [S13]
+## 
+## summerres_11 &lt;= 1: Not Positive Change (3)
+## summerres_11 &gt; 1:
+## :...earnlvg_2011 &lt;= 2: Not Positive Change (2)
+##     earnlvg_2011 &gt; 2: Positive Change (13/1)
+## 
+## SubTree [S14]
+## 
+## respect_2011 &gt; 3: Positive Change (15/1)
+## respect_2011 &lt;= 3:
+## :...nonacadtrng &gt; 0: Positive Change (4)
+##     nonacadtrng &lt;= 0:
+##     :...BULLY02 &gt; 1.5: Not Positive Change (7)
+##         BULLY02 &lt;= 1.5:
+##         :...TA110969 &lt;= 0: Not Positive Change (6/1)
+##             TA110969 &gt; 0:
+##             :...superior_2011 &gt; 3: Not Positive Change (2)
+##                 superior_2011 &lt;= 3:
+##                 :...TA111139 &lt;= 3: Positive Change (11)
+##                     TA111139 &gt; 3: Not Positive Change (3/1)
+## 
+## SubTree [S15]
+## 
+## Q23L12G &lt;= 1: Positive Change (3)
+## Q23L12G &gt; 1: Not Positive Change (7/1)
+## 
+## SubTree [S16]
+## 
+## Q23L22B &lt;= 5: Not Positive Change (15)
+## Q23L22B &gt; 5: Positive Change (2)
+## 
+## SubTree [S17]
+## 
+## worryscale_11 &lt;= 2: Positive Change (14/1)
+## worryscale_11 &gt; 2:
+## :...Q23H1D &gt; 2: Positive Change (5)
+##     Q23H1D &lt;= 2:
+##     :...ER32006 &lt;= 1: Not Positive Change (7)
+##         ER32006 &gt; 1:
+##         :...fathered_11 &gt; 16:
+##             :...Q23L11C &lt;= 50: Positive Change (11)
+##             :   Q23L11C &gt; 50: Not Positive Change (2)
+##             fathered_11 &lt;= 16:
+##             :...GLBCN02 &lt;= 3.33:
+##                 :...sterev &gt; 0: Not Positive Change (2)
+##                 :   sterev &lt;= 0:
+##                 :   :...cigct11 &gt; 5: Not Positive Change (2)
+##                 :       cigct11 &lt;= 5:
+##                 :       :...closef_2011 &lt;= 4: Not Positive Change (3/1)
+##                 :           closef_2011 &gt; 4: Positive Change (14)
+##                 GLBCN02 &gt; 3.33:
+##                 :...Q23H5H &lt;= 2:
+##                     :...peerprnt_2011 &lt;= 2: Not Positive Change (20)
+##                     :   peerprnt_2011 &gt; 2:
+##                     :   :...closem_2011 &lt;= 6: Not Positive Change (4)
+##                     :       closem_2011 &gt; 6: Positive Change (3)
+##                     Q23H5H &gt; 2:
+##                     :...Q23L22D &gt; 5: Not Positive Change (6)
+##                         Q23L22D &lt;= 5:
+##                         :...Q23K21 &lt;= 6.4: Not Positive Change (4)
+##                             Q23K21 &gt; 6.4:
+##                             :...ER32006 &lt;= 2: Positive Change (10)
+##                                 ER32006 &gt; 2: Not Positive Change (3/1)
+## 
+## 
+## Evaluation on training data (1572 cases):
+## 
+##      Decision Tree   
+##    ----------------  
+##    Size      Errors  
+## 
+##     119   75( 4.8%)   &lt;&lt;
+## 
+## 
+##     (a)   (b)    &lt;-classified as
+##    ----  ----
+##     826    20    (a): class Positive Change
+##      55   671    (b): class Not Positive Change
+## 
+## 
+##  Attribute usage:
+## 
+##  100.00% employstat311
+##   76.27% TA111125
+##   51.34% Q23J4
+##   47.39% dishonest_2011
+##   32.25% relig_freq
+##   29.20% sleep11
+##   27.10% Q23H6F
+##   26.59% race1_2011
+##   25.13% bingeeat11
+##   23.73% Q23L11B
+##   23.22% depress2wks_2011
+##   20.42% volunteer_2011
+##   18.19% enrollstat_11
+##   17.62% Q23H5C
+##   17.11% socanxscale_11
+##   15.59% worryscale_11
+##   14.95% ER32006
+##   14.63% Q23K21
+##   13.30% dui_2011
+##   13.17% Q23K14C
+##   12.09% sterev
+##   11.83% highbp
+##   11.83% TA110969
+##   10.75% Q23K19
+##   10.18% Q23L11I
+##    9.16% Q23H6H
+##    7.70% GLBCN02
+##    7.44% Q23H1C
+##    7.00% peercoll_2011
+##    6.49% peerue_2011
+##    6.11% Q23H1D
+##    5.98% Q23H1B
+##    5.98% fallwintres_11
+##    5.85% TA111060
+##    5.60% peerjob_2011
+##    5.41% TA110891
+##    5.34% fathered_11
+##    4.90% Q23K8
+##    4.77% hisp2011
+##    4.52% race2_2011
+##    4.33% dtpillev
+##    4.20% ER51743
+##    4.13% alc45drinks_11
+##    4.13% fight_2011
+##    3.69% voted_2010
+##    3.63% Q23L11D
+##    3.63% psychdxever
+##    3.37% doc_pstyr
+##    3.18% Q23H5H
+##    3.05% respect_2011
+##    2.99% relig_pref
+##    2.48% Q23H5E
+##    2.29% Q23H6D
+##    2.29% socialnetwork_2011
+##    2.29% asthma
+##    2.16% SOCINT02
+##    2.10% nonacadtrng
+##    2.04% internetev_11
+##    2.04% service_2011
+##    1.84% BULLY02
+##    1.78% Q23H5B
+##    1.72% ER34103
+##    1.72% peerprnt_2011
+##    1.65% ER33603
+##    1.65% TA111139
+##    1.53% Q23H1A
+##    1.46% Q23L22B
+##    1.46% Q23L22D
+##    1.46% afraid_2011
+##    1.21% cigct11
+##    1.15% Q23H6K
+##    1.15% Q23K4
+##    1.15% summerres_11
+##    1.15% bmi_2011
+##    1.08% closef_2011
+##    1.02% superior_2011
+##    0.95% Q23J1
+##    0.95% earnlvg_2011
+##    0.83% Q23K7
+##    0.83% Q23L11C
+##    0.70% Q23K3
+##    0.70% Q23K14D
+##    0.70% Q23L13H
+##    0.64% Q23L12G
+##    0.57% employstat211
+##    0.57% smoke11
+##    0.45% Q23K5
+##    0.45% closem_2011
+##    0.38% race
+## 
+## 
+## Time: 0.2 secs</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pred_C50_objective <span class="ot">&lt;-</span> <span class="fu">predict</span>(c50_model_objective, df_objective_test_new) </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>tbl_C50_objective <span class="ot">&lt;-</span> <span class="fu">table</span>(pred_C50_objective, df_objective_test<span class="sc">$</span>PositiveChange)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>conf_C50_objective <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(tbl_C50_objective)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>conf_C50_objective</span></code></pre></div>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##                       
+## pred_C50_objective     Positive Change  Not Positive Change
+##   Positive Change                  148                   64
+##    Not Positive Change              52                  130
+##                                           
+##                Accuracy : 0.7056          
+##                  95% CI : (0.6579, 0.7502)
+##     No Information Rate : 0.5076          
+##     P-Value [Acc &gt; NIR] : 1.082e-15       
+##                                           
+##                   Kappa : 0.4105          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 0.3071          
+##                                           
+##             Sensitivity : 0.7400          
+##             Specificity : 0.6701          
+##          Pos Pred Value : 0.6981          
+##          Neg Pred Value : 0.7143          
+##              Prevalence : 0.5076          
+##          Detection Rate : 0.3756          
+##    Detection Prevalence : 0.5381          
+##       Balanced Accuracy : 0.7051          
+##                                           
+##        &#39;Positive&#39; Class : Positive Change 
+## </code></pre>
+</div>
+<div id="rpart---full-dataset" class="section level2" number="1.6">
+<h2 number="1.6"><span class="header-section-number">1.6</span> RPart - Full Dataset</h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>rpart_model_full <span class="ot">&lt;-</span> <span class="fu">rpart</span>(PositiveChange <span class="sc">~</span> ., <span class="at">data =</span> df_full_train, <span class="at">cp=</span><span class="fl">0.01</span>) </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>rpart_model_full</span></code></pre></div>
+<pre><code>## n= 1572 
+## 
+## node), split, n, loss, yval, (yprob)
+##       * denotes terminal node
+## 
+##  1) root 1572 726 Positive Change (0.53816794 0.46183206)  
+##    2) pwb4_2011&gt;=4.5 914 145 Positive Change (0.84135667 0.15864333)  
+##      4) swb1_2011&gt;=4.5 666  29 Positive Change (0.95645646 0.04354354) *
+##      5) swb1_2011&lt; 4.5 248 116 Positive Change (0.53225806 0.46774194)  
+##       10) pwb1_2011&gt;=4.5 174  56 Positive Change (0.67816092 0.32183908)  
+##         20) pwb3_2011&gt;=4.5 126  22 Positive Change (0.82539683 0.17460317) *
+##         21) pwb3_2011&lt; 4.5 48  14  Not Positive Change (0.29166667 0.70833333) *
+##       11) pwb1_2011&lt; 4.5 74  14  Not Positive Change (0.18918919 0.81081081) *
+##    3) pwb4_2011&lt; 4.5 658  77  Not Positive Change (0.11702128 0.88297872)  
+##      6) swb2_2011&gt;=4.5 66  29 Positive Change (0.56060606 0.43939394)  
+##       12) pwb1_2011&gt;=4.5 36   6 Positive Change (0.83333333 0.16666667) *
+##       13) pwb1_2011&lt; 4.5 30   7  Not Positive Change (0.23333333 0.76666667) *
+##      7) swb2_2011&lt; 4.5 592  40  Not Positive Change (0.06756757 0.93243243) *</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(rpart_model_full, <span class="at">cex =</span> <span class="dv">1</span>, <span class="at">caption =</span> <span class="st">&quot;Fancy Rpart Plot (Full Dataset)&quot;</span>)</span></code></pre></div>
+<p><img src="final_project_trees_files/figure-html/RPartFull-1.png" width="672" /></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pred_rpart_full <span class="ot">&lt;-</span> <span class="fu">predict</span>(rpart_model_full, df_full_test, <span class="at">type =</span> <span class="st">&#39;class&#39;</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>tbl_rpart_full <span class="ot">&lt;-</span> <span class="fu">table</span>(pred_rpart_full, df_full_test<span class="sc">$</span>PositiveChange)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>conf_rpart_full <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(tbl_rpart_full)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>conf_rpart_full</span></code></pre></div>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##                       
+## pred_rpart_full        Positive Change  Not Positive Change
+##   Positive Change                  180                   18
+##    Not Positive Change              20                  176
+##                                          
+##                Accuracy : 0.9036         
+##                  95% CI : (0.87, 0.9308) 
+##     No Information Rate : 0.5076         
+##     P-Value [Acc &gt; NIR] : &lt;2e-16         
+##                                          
+##                   Kappa : 0.8071         
+##                                          
+##  Mcnemar&#39;s Test P-Value : 0.8711         
+##                                          
+##             Sensitivity : 0.9000         
+##             Specificity : 0.9072         
+##          Pos Pred Value : 0.9091         
+##          Neg Pred Value : 0.8980         
+##              Prevalence : 0.5076         
+##          Detection Rate : 0.4569         
+##    Detection Prevalence : 0.5025         
+##       Balanced Accuracy : 0.9036         
+##                                          
+##        &#39;Positive&#39; Class : Positive Change
+## </code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>rpart_model_pruned_full <span class="ot">&lt;-</span> <span class="fu">prune</span>(rpart_model_full, <span class="at">cp =</span> rpart_model_full<span class="sc">$</span>cptable[<span class="fu">which.min</span>(rpart_model_full<span class="sc">$</span>cptable[,<span class="st">&quot;xerror&quot;</span>]),<span class="st">&quot;CP&quot;</span>])</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(rpart_model_pruned_full, <span class="at">cex =</span> <span class="dv">1</span>, <span class="at">caption =</span> <span class="st">&quot;Fancy Rpart Plot (Full Dataset) Pruned&quot;</span>)</span></code></pre></div>
+<p><img src="final_project_trees_files/figure-html/RPartFull-2.png" width="672" /></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pred_rpart_pruned_full <span class="ot">&lt;-</span> <span class="fu">predict</span>(rpart_model_pruned_full, df_full_test, <span class="at">type =</span> <span class="st">&#39;class&#39;</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>tbl_rpart_pruned_full <span class="ot">&lt;-</span> <span class="fu">table</span>(pred_rpart_pruned_full, df_full_test<span class="sc">$</span>PositiveChange)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>conf_rpart_pruned_full <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(tbl_rpart_pruned_full)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>conf_rpart_pruned_full</span></code></pre></div>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##                       
+## pred_rpart_pruned_full Positive Change  Not Positive Change
+##   Positive Change                  180                   18
+##    Not Positive Change              20                  176
+##                                          
+##                Accuracy : 0.9036         
+##                  95% CI : (0.87, 0.9308) 
+##     No Information Rate : 0.5076         
+##     P-Value [Acc &gt; NIR] : &lt;2e-16         
+##                                          
+##                   Kappa : 0.8071         
+##                                          
+##  Mcnemar&#39;s Test P-Value : 0.8711         
+##                                          
+##             Sensitivity : 0.9000         
+##             Specificity : 0.9072         
+##          Pos Pred Value : 0.9091         
+##          Neg Pred Value : 0.8980         
+##              Prevalence : 0.5076         
+##          Detection Rate : 0.4569         
+##    Detection Prevalence : 0.5025         
+##       Balanced Accuracy : 0.9036         
+##                                          
+##        &#39;Positive&#39; Class : Positive Change
+## </code></pre>
+</div>
+<div id="rpart---objective-dataset" class="section level2" number="1.7">
+<h2 number="1.7"><span class="header-section-number">1.7</span> RPart - Objective Dataset</h2>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>rpart_model_objective <span class="ot">&lt;-</span> <span class="fu">rpart</span>(PositiveChange <span class="sc">~</span> ., <span class="at">data =</span> df_objective_train, <span class="at">cp=</span><span class="fl">0.01</span>) </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>rpart_model_objective</span></code></pre></div>
+<pre><code>## n= 1572 
+## 
+## node), split, n, loss, yval, (yprob)
+##       * denotes terminal node
+## 
+##  1) root 1572 726 Positive Change (0.53816794 0.46183206)  
+##    2) stupid_2011&gt;=0 1198 364 Positive Change (0.69616027 0.30383973)  
+##      4) TA111125&lt; 5.5 780 157 Positive Change (0.79871795 0.20128205) *
+##      5) TA111125&gt;=5.5 418 207 Positive Change (0.50478469 0.49521531)  
+##       10) closef_2011&gt;=5.5 177  67 Positive Change (0.62146893 0.37853107) *
+##       11) closef_2011&lt; 5.5 241 101  Not Positive Change (0.41908714 0.58091286)  
+##         22) internetshop_2011&gt;=1.5 118  55 Positive Change (0.53389831 0.46610169)  
+##           44) Q23L31&gt;=1.5 21   3 Positive Change (0.85714286 0.14285714) *
+##           45) Q23L31&lt; 1.5 97  45  Not Positive Change (0.46391753 0.53608247)  
+##             90) Q23K14F&gt;=6.5 33  10 Positive Change (0.69696970 0.30303030) *
+##             91) Q23K14F&lt; 6.5 64  22  Not Positive Change (0.34375000 0.65625000) *
+##         23) internetshop_2011&lt; 1.5 123  38  Not Positive Change (0.30894309 0.69105691) *
+##    3) stupid_2011&lt; 0 374  12  Not Positive Change (0.03208556 0.96791444) *</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(rpart_model_objective, <span class="at">cex =</span> <span class="dv">1</span>, <span class="at">caption =</span> <span class="st">&quot;Fancy Rpart Plot (Objective Dataset)&quot;</span>)</span></code></pre></div>
+<p><img src="final_project_trees_files/figure-html/RPartObjective-1.png" width="672" /></p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pred_rpart_objective <span class="ot">&lt;-</span> <span class="fu">predict</span>(rpart_model_objective, df_objective_test, <span class="at">type =</span> <span class="st">&#39;class&#39;</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>tbl_rpart_objective <span class="ot">&lt;-</span> <span class="fu">table</span>(pred_rpart_objective, df_objective_test<span class="sc">$</span>PositiveChange)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>conf_rpart_objective <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(tbl_rpart_objective)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>conf_rpart_objective</span></code></pre></div>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##                       
+## pred_rpart_objective   Positive Change  Not Positive Change
+##   Positive Change                  172                   81
+##    Not Positive Change              28                  113
+##                                          
+##                Accuracy : 0.7234         
+##                  95% CI : (0.6763, 0.767)
+##     No Information Rate : 0.5076         
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+##                                          
+##                   Kappa : 0.4443         
+##                                          
+##  Mcnemar&#39;s Test P-Value : 6.336e-07      
+##                                          
+##             Sensitivity : 0.8600         
+##             Specificity : 0.5825         
+##          Pos Pred Value : 0.6798         
+##          Neg Pred Value : 0.8014         
+##              Prevalence : 0.5076         
+##          Detection Rate : 0.4365         
+##    Detection Prevalence : 0.6421         
+##       Balanced Accuracy : 0.7212         
+##                                          
+##        &#39;Positive&#39; Class : Positive Change
+## </code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>rpart_model_pruned_objective <span class="ot">&lt;-</span> <span class="fu">prune</span>(rpart_model_objective, <span class="at">cp =</span> rpart_model_objective<span class="sc">$</span>cptable[<span class="fu">which.min</span>(rpart_model_objective<span class="sc">$</span>cptable[,<span class="st">&quot;xerror&quot;</span>]),<span class="st">&quot;CP&quot;</span>])</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fancyRpartPlot</span>(rpart_model_pruned_objective, <span class="at">cex =</span> <span class="dv">1</span>, <span class="at">caption =</span> <span class="st">&quot;Fancy Rpart Plot (Objective Dataset) Pruned&quot;</span>)</span></code></pre></div>
+<p><img src="final_project_trees_files/figure-html/RPartObjective-2.png" width="672" /></p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pred_rpart_pruned_objective <span class="ot">&lt;-</span> <span class="fu">predict</span>(rpart_model_pruned_objective, df_objective_test, <span class="at">type =</span> <span class="st">&#39;class&#39;</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>tbl_rpart_pruned_objective <span class="ot">&lt;-</span> <span class="fu">table</span>(pred_rpart_pruned_objective, df_objective_test<span class="sc">$</span>PositiveChange)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>conf_rpart_pruned_objective <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(tbl_rpart_pruned_objective)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>conf_rpart_pruned_objective</span></code></pre></div>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##                            
+## pred_rpart_pruned_objective Positive Change  Not Positive Change
+##        Positive Change                  172                   81
+##         Not Positive Change              28                  113
+##                                          
+##                Accuracy : 0.7234         
+##                  95% CI : (0.6763, 0.767)
+##     No Information Rate : 0.5076         
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+##                                          
+##                   Kappa : 0.4443         
+##                                          
+##  Mcnemar&#39;s Test P-Value : 6.336e-07      
+##                                          
+##             Sensitivity : 0.8600         
+##             Specificity : 0.5825         
+##          Pos Pred Value : 0.6798         
+##          Neg Pred Value : 0.8014         
+##              Prevalence : 0.5076         
+##          Detection Rate : 0.4365         
+##    Detection Prevalence : 0.6421         
+##       Balanced Accuracy : 0.7212         
+##                                          
+##        &#39;Positive&#39; Class : Positive Change
+## </code></pre>
+</div>
+<div id="rbf---full-dataset" class="section level2" number="1.8">
+<h2 number="1.8"><span class="header-section-number">1.8</span> RBF - Full Dataset</h2>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rbf_full <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(PositiveChange <span class="sc">~</span> ., <span class="at">data =</span> df_full_train, <span class="at">kernel =</span> <span class="st">&quot;rbfdot&quot;</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>pred_rbf_full <span class="ot">&lt;-</span> <span class="fu">predict</span>(rbf_full, df_full_test)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>tbl_rbf_full <span class="ot">&lt;-</span> <span class="fu">table</span>(pred_rbf_full, df_full_test<span class="sc">$</span>PositiveChange)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>conf_rbf_full <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(tbl_rbf_full)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>conf_rbf_full</span></code></pre></div>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##                       
+## pred_rbf_full          Positive Change  Not Positive Change
+##   Positive Change                  183                   30
+##    Not Positive Change              17                  164
+##                                          
+##                Accuracy : 0.8807         
+##                  95% CI : (0.8445, 0.911)
+##     No Information Rate : 0.5076         
+##     P-Value [Acc &gt; NIR] : &lt; 2e-16        
+##                                          
+##                   Kappa : 0.7611         
+##                                          
+##  Mcnemar&#39;s Test P-Value : 0.08005        
+##                                          
+##             Sensitivity : 0.9150         
+##             Specificity : 0.8454         
+##          Pos Pred Value : 0.8592         
+##          Neg Pred Value : 0.9061         
+##              Prevalence : 0.5076         
+##          Detection Rate : 0.4645         
+##    Detection Prevalence : 0.5406         
+##       Balanced Accuracy : 0.8802         
+##                                          
+##        &#39;Positive&#39; Class : Positive Change
+## </code></pre>
+</div>
+<div id="rbf---objective-dataset" class="section level2" number="1.9">
+<h2 number="1.9"><span class="header-section-number">1.9</span> RBF - Objective Dataset</h2>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>rbf_objective <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(PositiveChange <span class="sc">~</span> ., <span class="at">data =</span> df_objective_train, <span class="at">kernel =</span> <span class="st">&quot;rbfdot&quot;</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>pred_rbf_objective <span class="ot">&lt;-</span> <span class="fu">predict</span>(rbf_objective, df_objective_test)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>tbl_rbf_objective <span class="ot">&lt;-</span> <span class="fu">table</span>(pred_rbf_objective, df_objective_test<span class="sc">$</span>PositiveChange)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>conf_rbf_objective <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(tbl_rbf_objective)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>conf_rbf_objective</span></code></pre></div>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##                       
+## pred_rbf_objective     Positive Change  Not Positive Change
+##   Positive Change                  183                   83
+##    Not Positive Change              17                  111
+##                                           
+##                Accuracy : 0.7462          
+##                  95% CI : (0.7002, 0.7884)
+##     No Information Rate : 0.5076          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.4897          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 8.032e-11       
+##                                           
+##             Sensitivity : 0.9150          
+##             Specificity : 0.5722          
+##          Pos Pred Value : 0.6880          
+##          Neg Pred Value : 0.8672          
+##              Prevalence : 0.5076          
+##          Detection Rate : 0.4645          
+##    Detection Prevalence : 0.6751          
+##       Balanced Accuracy : 0.7436          
+##                                           
+##        &#39;Positive&#39; Class : Positive Change 
+## </code></pre>
+</div>
+</div>
+<div id="classification-trees-summary" class="section level1" number="2">
+<h1 number="2"><span class="header-section-number">2</span> Classification Trees Summary</h1>
+<p>As shown below, the C5.0 model performed the best for the full dataset. However, for the objective dataset, RBF performed better with the C5.0 performance dropping quite significantly. Overall the models performed much better with the full dataset. For some reason, the Neural Net performed quite poorly.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>vect_C50_full <span class="ot">&lt;-</span> <span class="fu">confusionMatrix_to_vector</span>(conf_C50_full)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>vect_rpart_full <span class="ot">&lt;-</span> <span class="fu">confusionMatrix_to_vector</span>(conf_rpart_full)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>vect_rpart_pruned_full <span class="ot">&lt;-</span> <span class="fu">confusionMatrix_to_vector</span>(conf_rpart_pruned_full)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>vect_rbf_full <span class="ot">&lt;-</span> <span class="fu">confusionMatrix_to_vector</span>(conf_rbf_full)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>df_stats_full <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">C50 =</span> vect_C50_full, <span class="at">RPart =</span> vect_rpart_full, <span class="at">RPartPruned =</span> vect_rpart_pruned_full, <span class="at">RBF =</span> vect_rbf_full)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>df_stats_full <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">t</span>(df_stats_full))</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>df_stats_full<span class="sc">$</span>Accuracy <span class="ot">&lt;-</span> <span class="fu">highlight_column</span>(df_stats_full<span class="sc">$</span>Accuracy)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>df_stats_full<span class="sc">$</span>Kappa <span class="ot">&lt;-</span> <span class="fu">highlight_column</span>(df_stats_full<span class="sc">$</span>Kappa)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>df_stats_full<span class="sc">$</span>Sensitivity <span class="ot">&lt;-</span> <span class="fu">highlight_column</span>(df_stats_full<span class="sc">$</span>Sensitivity)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>df_stats_full<span class="sc">$</span>Specificity <span class="ot">&lt;-</span> <span class="fu">highlight_column</span>(df_stats_full<span class="sc">$</span>Specificity)</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>df_stats_full <span class="sc">%&gt;%</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">escape =</span> F) <span class="sc">%&gt;%</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Accuracy
+</th>
+<th style="text-align:left;">
+Kappa
+</th>
+<th style="text-align:left;">
+Sensitivity
+</th>
+<th style="text-align:left;">
+Specificity
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+C50
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: yellow !important;">0.9112</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: yellow !important;">0.8223</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: yellow !important;">0.92</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.9021</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RPart
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.9036</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.8071</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.9</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: yellow !important;">0.9072</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RPartPruned
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.9036</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.8071</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.9</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: yellow !important;">0.9072</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RBF
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.8807</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.7611</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.915</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.8454</span>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>vect_C50_objective <span class="ot">&lt;-</span> <span class="fu">confusionMatrix_to_vector</span>(conf_C50_objective)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>vect_rpart_objective <span class="ot">&lt;-</span> <span class="fu">confusionMatrix_to_vector</span>(conf_rpart_objective)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>vect_rpart_pruned_objective <span class="ot">&lt;-</span> <span class="fu">confusionMatrix_to_vector</span>(conf_rpart_pruned_objective)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>vect_rbf_objective <span class="ot">&lt;-</span> <span class="fu">confusionMatrix_to_vector</span>(conf_rbf_objective)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>df_stats_objective <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">C50 =</span> vect_C50_objective, <span class="at">RPart =</span> vect_rpart_objective, <span class="at">RPartPruned =</span> vect_rpart_pruned_objective, <span class="at">RBF =</span> vect_rbf_objective)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>df_stats_objective <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">t</span>(df_stats_objective))</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>df_stats_objective<span class="sc">$</span>Accuracy <span class="ot">&lt;-</span> <span class="fu">highlight_column</span>(df_stats_objective<span class="sc">$</span>Accuracy)</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>df_stats_objective<span class="sc">$</span>Kappa <span class="ot">&lt;-</span> <span class="fu">highlight_column</span>(df_stats_objective<span class="sc">$</span>Kappa)</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>df_stats_objective<span class="sc">$</span>Sensitivity <span class="ot">&lt;-</span> <span class="fu">highlight_column</span>(df_stats_objective<span class="sc">$</span>Sensitivity)</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>df_stats_objective<span class="sc">$</span>Specificity <span class="ot">&lt;-</span> <span class="fu">highlight_column</span>(df_stats_objective<span class="sc">$</span>Specificity)</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>df_stats_objective <span class="sc">%&gt;%</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">escape =</span> F) <span class="sc">%&gt;%</span></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code></pre></div>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Accuracy
+</th>
+<th style="text-align:left;">
+Kappa
+</th>
+<th style="text-align:left;">
+Sensitivity
+</th>
+<th style="text-align:left;">
+Specificity
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+C50
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.7056</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.4105</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.74</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: yellow !important;">0.6701</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RPart
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.7234</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.4443</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.86</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.5825</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RPartPruned
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.7234</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.4443</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.86</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.5825</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RBF
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: yellow !important;">0.7462</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: yellow !important;">0.4897</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: yellow !important;">0.915</span>
+</td>
+<td style="text-align:left;">
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: white !important;">0.5722</span>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 

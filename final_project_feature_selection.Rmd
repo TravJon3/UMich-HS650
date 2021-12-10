@@ -1,5 +1,5 @@
 ---
-title: "Final Project"
+title: "Final Project: Exploring Factors Contributing to Positive Changes in Mental Health for Children Transitioning Into Adulthood"
 subtitle: "Feature Selection"
 author: "Kevin Wu"
 date: "`r format(Sys.time(), '%B %Y')`"
@@ -21,6 +21,7 @@ output:
 
 # Feature Selection Introduction
 I used the Boruta algorithm for its feature selection.  The problem is that the features aren't ordered by any statistical significance.  For this reason, I decided to use the ordinary least squares model to help both confirm the features selected by the Boruta model, but also to determine the more significant features affecting PositiveChange.  I'm hoping to select the common features between the two models, and use the ordering information from the OLS model.  
+
 I've decided against using the RFE model because Boruta is based on the RFE model.  
 
 ```{r Common, warning=F, message=F, include=F, child='final_project_common.Rmd'}

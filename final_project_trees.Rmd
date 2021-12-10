@@ -1,5 +1,5 @@
 ---
-title: "Final Project"
+title: "Final Project: Exploring Factors Contributing to Positive Changes in Mental Health for Children Transitioning Into Adulthood"
 subtitle: "Trees"
 author: "Kevin Wu"
 date: "`r format(Sys.time(), '%B %Y')`"
@@ -21,25 +21,160 @@ output:
 
 
 # Classification Trees
-<p></p>
-
 ```{r Introduction, warning=F, message=F, include=F, child='final_project_common.Rmd'}
 ```
 
-## Classification Trees Helper Functions and Libraries
+## Helper Functions and Libraries
 ```{r Header, warning=F, message=F}
+library(C50)
+library(rpart.plot)
+library(rattle)
+library(neuralnet)
+library(kernlab)
 
+# colnames(df_full_train) <- lapply(colnames(df_full_train[, -267]), fieldname_to_description)
+# colnames(df_full_test) <- lapply(colnames(df_full_test[, -267]), fieldname_to_description)
+
+df_full_train_new <- df_full_train[ , !names(df_full_train) %in% "PositiveChange"]
+df_full_test_new <- df_full_test[ , !names(df_full_test) %in% "PositiveChange"]
+df_objective_train_new <- df_objective_train[ , !names(df_objective_train) %in% "PositiveChange"]
+df_objective_test_new <- df_objective_test[ , !names(df_objective_test) %in% "PositiveChange"]
+
+confusionMatrix_to_vector <- function(mat) {
+  return(c(
+    round(mat$overall["Accuracy"], digits = 4), 
+    round(mat$overall["Kappa"], digits = 4), 
+    round(mat$byClass["Sensitivity"], digits = 4), 
+    round(mat$byClass["Specificity"], digits = 4)
+  ))
+}
+
+highlight_column <- function(col) {
+  cell_spec(col, background = ifelse(col == max(col), "yellow", "white"))
+}
 
 ```
-
-## Classification Trees - Full Dataset
-```{r OneHotFull, warning=F, message=F}
-
-
+## Neural Net - Full Dataset
+```{r NNFull, warning=F, message=F}
+net_full <- neuralnet(PositiveChange ~ ., df_full_train, hidden=10, threshold=0.1)
+plot(net_full, rep="best")
+pred_net_full <- compute(net_full, df_full_test)
+# tbl_net_full <- table(pred_net_full$net.result, df_full_test$PositiveChange)
+cor(pred_net_full$net.result, as.numeric(df_full_test$PositiveChange))
 ```
 
-## Classification Trees - Objective Dataset
-```{r OneHotObjective, warning=F, message=F}
+## Neural Net - Objective Dataset
+```{r NNObjective, warning=F, message=F}
+net_objective <- neuralnet(PositiveChange ~ ., df_objective_train, hidden=5, threshold=0.1)
+plot(net_objective, rep="best")
+pred_net_objective <- compute(net_objective, df_objective_test)
+cor(pred_net_objective$net.result, as.numeric(df_objective_test$PositiveChange))
+```
 
+## C5.0 - Full Dataset
+```{r C50Full, warning=F, message=F}
+c50_model_full <- C5.0(df_full_train_new, df_full_train$PositiveChange)
+c50_model_full
+summary(c50_model_full)
+pred_C50_full <- predict(c50_model_full, df_full_test_new) 
+tbl_C50_full <- table(pred_C50_full, df_full_test$PositiveChange)
+conf_C50_full <- confusionMatrix(tbl_C50_full)
+conf_C50_full
+```
 
+## C5.0 - Objetive Dataset
+```{r C50Objective, warning=F, message=F}
+c50_model_objective <- C5.0(df_objective_train_new, df_objective_train$PositiveChange)
+c50_model_objective
+summary(c50_model_objective)
+pred_C50_objective <- predict(c50_model_objective, df_objective_test_new) 
+tbl_C50_objective <- table(pred_C50_objective, df_objective_test$PositiveChange)
+conf_C50_objective <- confusionMatrix(tbl_C50_objective)
+conf_C50_objective
+```
+
+## RPart - Full Dataset
+```{r RPartFull, warning=F, message=F}
+rpart_model_full <- rpart(PositiveChange ~ ., data = df_full_train, cp=0.01) 
+rpart_model_full
+fancyRpartPlot(rpart_model_full, cex = 1, caption = "Fancy Rpart Plot (Full Dataset)")
+pred_rpart_full <- predict(rpart_model_full, df_full_test, type = 'class')
+tbl_rpart_full <- table(pred_rpart_full, df_full_test$PositiveChange)
+conf_rpart_full <- confusionMatrix(tbl_rpart_full)
+conf_rpart_full
+
+rpart_model_pruned_full <- prune(rpart_model_full, cp = rpart_model_full$cptable[which.min(rpart_model_full$cptable[,"xerror"]),"CP"])
+fancyRpartPlot(rpart_model_pruned_full, cex = 1, caption = "Fancy Rpart Plot (Full Dataset) Pruned")
+pred_rpart_pruned_full <- predict(rpart_model_pruned_full, df_full_test, type = 'class')
+tbl_rpart_pruned_full <- table(pred_rpart_pruned_full, df_full_test$PositiveChange)
+conf_rpart_pruned_full <- confusionMatrix(tbl_rpart_pruned_full)
+conf_rpart_pruned_full
+```
+
+## RPart - Objective Dataset
+```{r RPartObjective, warning=F, message=F}
+rpart_model_objective <- rpart(PositiveChange ~ ., data = df_objective_train, cp=0.01) 
+rpart_model_objective
+fancyRpartPlot(rpart_model_objective, cex = 1, caption = "Fancy Rpart Plot (Objective Dataset)")
+pred_rpart_objective <- predict(rpart_model_objective, df_objective_test, type = 'class')
+tbl_rpart_objective <- table(pred_rpart_objective, df_objective_test$PositiveChange)
+conf_rpart_objective <- confusionMatrix(tbl_rpart_objective)
+conf_rpart_objective
+
+rpart_model_pruned_objective <- prune(rpart_model_objective, cp = rpart_model_objective$cptable[which.min(rpart_model_objective$cptable[,"xerror"]),"CP"])
+fancyRpartPlot(rpart_model_pruned_objective, cex = 1, caption = "Fancy Rpart Plot (Objective Dataset) Pruned")
+pred_rpart_pruned_objective <- predict(rpart_model_pruned_objective, df_objective_test, type = 'class')
+tbl_rpart_pruned_objective <- table(pred_rpart_pruned_objective, df_objective_test$PositiveChange)
+conf_rpart_pruned_objective <- confusionMatrix(tbl_rpart_pruned_objective)
+conf_rpart_pruned_objective
+```
+
+## RBF - Full Dataset
+```{r RBFFull, warning=F, message=F}
+rbf_full <- ksvm(PositiveChange ~ ., data = df_full_train, kernel = "rbfdot")
+pred_rbf_full <- predict(rbf_full, df_full_test)
+tbl_rbf_full <- table(pred_rbf_full, df_full_test$PositiveChange)
+conf_rbf_full <- confusionMatrix(tbl_rbf_full)
+conf_rbf_full
+```
+
+## RBF - Objective Dataset
+```{r RBFObjective, warning=F, message=F}
+rbf_objective <- ksvm(PositiveChange ~ ., data = df_objective_train, kernel = "rbfdot")
+pred_rbf_objective <- predict(rbf_objective, df_objective_test)
+tbl_rbf_objective <- table(pred_rbf_objective, df_objective_test$PositiveChange)
+conf_rbf_objective <- confusionMatrix(tbl_rbf_objective)
+conf_rbf_objective
+```
+
+# Classification Trees Summary
+As shown below, the C5.0 model performed the best for the full dataset.  However, for the objective dataset, RBF performed better with the C5.0 performance dropping quite significantly.  Overall the models performed much better with the full dataset.  For some reason, the Neural Net performed quite poorly.
+```{r Summary, warning=F, message=F}
+vect_C50_full <- confusionMatrix_to_vector(conf_C50_full)
+vect_rpart_full <- confusionMatrix_to_vector(conf_rpart_full)
+vect_rpart_pruned_full <- confusionMatrix_to_vector(conf_rpart_pruned_full)
+vect_rbf_full <- confusionMatrix_to_vector(conf_rbf_full)
+df_stats_full <- data.frame(C50 = vect_C50_full, RPart = vect_rpart_full, RPartPruned = vect_rpart_pruned_full, RBF = vect_rbf_full)
+df_stats_full <- as.data.frame(t(df_stats_full))
+df_stats_full$Accuracy <- highlight_column(df_stats_full$Accuracy)
+df_stats_full$Kappa <- highlight_column(df_stats_full$Kappa)
+df_stats_full$Sensitivity <- highlight_column(df_stats_full$Sensitivity)
+df_stats_full$Specificity <- highlight_column(df_stats_full$Specificity)
+df_stats_full %>%
+  kbl(escape = F) %>%
+  kable_styling()
+
+vect_C50_objective <- confusionMatrix_to_vector(conf_C50_objective)
+vect_rpart_objective <- confusionMatrix_to_vector(conf_rpart_objective)
+vect_rpart_pruned_objective <- confusionMatrix_to_vector(conf_rpart_pruned_objective)
+vect_rbf_objective <- confusionMatrix_to_vector(conf_rbf_objective)
+df_stats_objective <- data.frame(C50 = vect_C50_objective, RPart = vect_rpart_objective, RPartPruned = vect_rpart_pruned_objective, RBF = vect_rbf_objective)
+df_stats_objective <- as.data.frame(t(df_stats_objective))
+df_stats_objective$Accuracy <- highlight_column(df_stats_objective$Accuracy)
+df_stats_objective$Kappa <- highlight_column(df_stats_objective$Kappa)
+df_stats_objective$Sensitivity <- highlight_column(df_stats_objective$Sensitivity)
+df_stats_objective$Specificity <- highlight_column(df_stats_objective$Specificity)
+df_stats_objective %>%
+  kbl(escape = F) %>%
+  kable_styling()
 ```

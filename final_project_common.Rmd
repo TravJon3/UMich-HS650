@@ -7,7 +7,8 @@ library(tidyverse)
 #library(stringr)
 #library(tidyr)
 #library(dplyr)
-  library(knitr)
+library(knitr)
+library(kableExtra)
 library(labelled)
 library(DT)
 library(plotly)
@@ -18,13 +19,16 @@ library(data.table)
 tbl_dta <- read_dta("http://kevinwurn.github.io/UMich-HS650/final_project_files/clean-childvarsJune2021.dta", encoding = "latin1")
 filter_remove <- c("persid", "ER34001", "ER34101", "date_ciw2002", "mage2002", "age2002", "tasdate2011", "mage2011", "age2011", "eligsecL", "sample", "agecat_11", "parent11", "higheduc", "college", "employed", "sleeprecomm", "nutrit11_1", "nutrit11_2", "bingedrk3", "subusect", "goodhlth_11", "agedx_cat", "k6miss", "k6scale", "spd", "phq2", "ewb1_flr2011", "ewb2_flr2011", "ewb3_flr2011", "avgemot", "sumemot", "swb1_flr2011", "swb2_flr2011", "swb3_flr2011", "swb4_flr2011", "swb5_flr2011", "avgsoc", "sumsoc", "pwb1_flr2011", "pwb2_flr2011", "pwb3_flr2011", "pwb4_flr2011", "pwb5_flr2011", "pwb6_flr2011", "avgpsyc", "sumpsyc", "flrmiss11", "flr_fxing2011", "flourish_2011", "ewb1_lan2011", "ewb2_lan2011", "ewb3_lan2011", "swb1_lan2011", "swb2_lan2011", "swb3_lan2011", "swb4_lan2011", "swb5_lan2011", "pwb1_lan2011", "pwb2_lan2011", "pwb3_lan2011", "pwb4_lan2011", "pwb5_lan2011", "pwb6_lan2011", "lan_fxing2011", "lngsh_bin2011", "mod_bin2011", "posmh_2011", "ewb1_flr2002", "ewb2_flr2002", "ewb3_flr2002", "swb1_flr2002", "swb2_flr2002", "swb3_flr2002", "swb4_flr2002", "swb5_flr2002", "pwb1_flr2002",  "pwb2_flr2002", "pwb3_flr2002", "pwb4_flr2002", "flourishingfull_02", "flr_fxing2002", "flourish_2002", "ewb1_lan2002", "ewb2_lan2002", "ewb3_lan2002", "swb1_lan2002", "swb2_lan2002", "swb3_lan2002", "swb4_lan2002", "swb5_lan2002", "pwb1_lan2002", "pwb2_lan2002", "pwb3_lan2002", "pwb4_lan2002", "lan_fxing2002", "lngsh_bin2002", "mod_bin2002", "posmh_2002")
 df_full <- tbl_dta[ , !names(tbl_dta) %in% filter_remove]
+# create dataframe for display purposes in the project summary page
+df_full_display <- df_full
 #remove columns where their variance is 0 - meaning all values are the same
 df_full <- df_full[,apply(df_full, 2, var, na.rm=TRUE) != 0]
 #factorialize change variable into "PositiveChange"
 df_full$PositiveChange <- df_full$change %in% c(2)
-df_full$PositiveChange <- factor(df_full$PositiveChange, levels=c(F, T), labels = c("Not Positive Change", "Positive Change"))
+df_full$PositiveChange <- factor(df_full$PositiveChange, levels=c(T, F), labels = c("Positive Change", " Not Positive Change"))
 # subset out missing values from mhstatus which is roughly 30% of participants (835) =(
-df_full <- df_full[!is.na(df_full$mhstatus), ]
+# and remove haven attributes
+df_full <- as.data.frame(zap_labels(df_full[!is.na(df_full$mhstatus), ]))
 df_full_na <- df_full
 #change all NA values to -1 to indicate missing
 df_full <- df_full %>% replace(is.na(.), -1)
@@ -40,6 +44,7 @@ filter_save_interval <- c("grade_02", "Q23K14A", "Q23K14B", "Q23K14C", "Q23K14D"
 
 df_full <- df_full[ , !names(df_full) %in% filter_remove_addon]
 df_full_na <- df_full_na[ , !names(df_full_na) %in% filter_remove_addon]
+df_full_display <- df_full_display[ , !names(df_full_display) %in% filter_remove_addon]
 
 df_save_onehot <- df_full[ , names(df_full) %in% filter_save_interval]
 df_save_onehot <- as.data.frame(lapply(df_save_onehot, scale))
@@ -52,32 +57,38 @@ df_full_onehot <- cbind(df_full_onehot, df_save_onehot)
 filter_remove_subjective <- c("ewb1_2011", "ewb2_2011", "ewb3_2011", "swb1_2011", "swb2_2011", "swb3_2011", "swb4_2011", "swb5_2011", "pwb1_2011", "pwb2_2011", "pwb3_2011", "pwb4_2011", "pwb5_2011", "pwb6_2011", "nervous_2011", "hopeless_2011", "restless_2011", "effort_2011", "sad_2011", "worthless_2011", "k6sxfreq_2011", "degreefreq_2011", "k6interfere_2011", "ownactions", "probsolve", "moneymng", "creditcardmng", "supervise_2011", "leader_2011", "logical_2011", "helping_2011", "intelligence_2011", "independence_2011", "confidence_2011", "decisiveness_2011", "listening_2011", "teaching_2011", "meetppl_11", "shy_11", "selfcon_11", "perform_11", "lifesat_2011", "ewb1_02", "ewb2_02", "ewb3_02", "swb1_02", "swb2_02", "swb3_02", "swb4_02", "swb5_02", "pwb1_02", "pwb2_02", "pwb3_02", "pwb4_02", "Q23K26A", "Q23K26B", "Q23K26C", "Q23K26D", "Q23K26E", "Q23K28", "TA111121")
 
 df_objective <- df_full[ , !names(df_full) %in% filter_remove_subjective]
+df_objective_display <- df_full_display[ , !names(df_full_display) %in% filter_remove_subjective]
 df_objective_na <- df_full_na[ , !names(df_full_na) %in% filter_remove_subjective]
 df_objective_onehot <- df_full_onehot[ , !names(df_full_onehot) %in% filter_remove_subjective]
 # df_objective_onehot <- lapply(df_objective_onehot, as.factor)
 # df_objective_onehot <- data.frame(predict(dummyVars(" ~ .", data = df_objective_onehot), newdata = df_objective_onehot)) 
 
-df_full_display <- df_full
-df_objective_display <- df_objective
-
 #scale full and ojbective datasets
-df_full <- as.data.frame(lapply(df_full, as.numeric))
-df_full_scaled <- as.data.frame(lapply(df_full, scale))
-df_objective <- as.data.frame(lapply(df_objective, as.numeric))
-df_objective_scaled <- as.data.frame(lapply(df_objective, scale))
+df_full_scaled <- as.data.frame(lapply(df_full, as.numeric))
+df_full_scaled <- as.data.frame(lapply(df_full_scaled, scale))
+df_objective_scaled <- as.data.frame(lapply(df_objective, as.numeric))
+df_objective_scaled <- as.data.frame(lapply(df_objective_scaled, scale))
 
-df_full_na <- as.data.frame(lapply(df_full_na, as.numeric))
-df_full_na_scaled <- as.data.frame(lapply(df_full_na, scale))
-df_objective_na <- as.data.frame(lapply(df_objective_na, as.numeric))
-df_objective_na_scaled <- as.data.frame(lapply(df_objective_na, scale))
+df_full_na_scaled <- as.data.frame(lapply(df_full_na, as.numeric))
+df_full_na_scaled <- as.data.frame(lapply(df_full_na_scaled, scale))
+df_objective_na_scaled <- as.data.frame(lapply(df_objective_na, as.numeric))
+df_objective_na_scaled <- as.data.frame(lapply(df_objective_na_scaled, scale))
 
 #create training / testing data dataframes
 set.seed(1234)
 subsetInterval <- sample(nrow(df_full_scaled), floor(nrow(df_full_scaled) * 0.80))  # 80% training + 20% testing
 
 #unscaled
+df_full_train <- df_full[subsetInterval, ]
+df_full_test <- df_full[-subsetInterval, ]
+df_full_train_na <- df_full_na[subsetInterval, ]
+df_full_test_na <- df_full_na[-subsetInterval, ]
 df_full_train_onehot <- df_full_onehot[subsetInterval, ]
 df_full_test_onehot <- df_full_onehot[-subsetInterval, ]
+df_objective_train <- df_objective[subsetInterval, ]
+df_objective_test <- df_objective[-subsetInterval, ]
+df_objective_train_na <- df_objective_na[subsetInterval, ]
+df_objective_test_na <- df_objective_na[-subsetInterval, ]
 df_objective_train_onehot <- df_objective_onehot[subsetInterval, ]
 df_objective_test_onehot <- df_objective_onehot[-subsetInterval, ]
 
@@ -106,6 +117,8 @@ k_full_train_onehot <- as.integer(sqrt(nrow(df_full_train_onehot)/2))
 k_objective_onehot <- as.integer(sqrt(nrow(df_objective_onehot)/2))
 k_objective_train_onehot <- as.integer(sqrt(nrow(df_objective_train_onehot)/2))
 
+c50_trials_full <- 3
+c50_trials_objective <- 3
 ######################################################
 ## below is to set testing data as training data to speed up rendering
 ## set currently_developing to F when ready to go live.
@@ -126,6 +139,8 @@ if(currently_developing) {
   df_objective_na_scaled <- df_objective_test_na_scaled
   df_objective_onehot <- df_objective_test_onehot
 
+  c50_trials_full <- 1
+  c50_trials_objective <- 1
 }
 
 #### Functions

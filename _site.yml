@@ -10,4 +10,6 @@ navbar:
       href: final_project_clustering.html
     - text: "Rule Learning"
       href: final_project_rule_learning.html
+    - text: "Trees"
+      href: final_project_trees.html
 output_dir: "docs"

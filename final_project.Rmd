@@ -1,6 +1,6 @@
 ---
-title: "Final Project"
-subtitle: "Summary, Evaluation, and Conclusions"
+title: "Final Project: Exploring Factors Contributing to Positive Changes in Mental Health for Children Transitioning Into Adulthood"
+subtitle: "Introduction, Data Preparation, and Conclusions"
 author: "Kevin Wu"
 date: "`r format(Sys.time(), '%B %Y')`"
 tags: [DSPA, SOCR, MIDAS, Big Data, Predictive Analytics] 
@@ -34,21 +34,30 @@ The Panel Study of Income Dynamics (PSID) began in 1968, studying over 18,000 in
 The following dataset I am analyzing is a filtered version of a [custom dataset](https://www.openicpsr.org/openicpsr/project/143381/version/V1/view) Dr. Ashley Palmer compiled from a [study done by Dr. Corey Keyes in 2006](https://psycnet.apa.org/record/2006-11985-014) using the CDSII data.  
 
 In the dataset, they determined who was languishing, stable, and flourishing based upon answers to questions directly asking about their mental health.  Because of its longitudinal nature, they also identified positive change states.  I've decided the outcome variable of my study is where "change" = 2 (desirable move/state) vs 0 (steady but not ideal move/state) & 1 (undesirable move/state).  
-The question is I'm looking to answer is **What are the best predictors?**
+
+The questions I'm looking to answer are  
+* **What are the best predictors?**
+* **Which model has the best performance?**
 
 These are the methods of approaches I have considered to analyze the data  
-1. Use feature selection models (Boruta and Stepwise Feature Selection) given the nature of my study ([link](final_project_feature_selection.html)).
-2. Use clustering nearest neighbors (kNN, k-Means) using one-hot encoding because via clustering I can determine the trends within the clusters that may be predictive in nature ([link](final_project_clustering.html)).
-3. Apriori techniques to understand the possible relationships between the features ([link](final_project_rule_learning.html)).
+1. Use feature selection models (Boruta and Stepwise Feature Selection) given the nature of my study  ([link](final_project_feature_selection.html)).  
+2. Use clustering nearest neighbors (kNN, k-Means) using one-hot encoding because via clustering I can determine the trends within the clusters that may be predictive in nature ([link](final_project_clustering.html)).  
+3. Apriori techniques to understand the possible relationships between the features ([link](final_project_rule_learning.html)).  
+4. Decision Trees to determine the model that performs the best ([link](final_project_trees.html)).  
 ```{r Common, warning=F, message=F, include=F, child='final_project_common.Rmd'}
 ```
 
 # Dataset Details
 Some features were removed from Dr. Palmer's custom dataset because they were derived from the original CDSII and TAS2011 questions that are used to create the "change" features - the features that I am studying.  
+
 In the effort to factorialize "mhstatus" and "change" I had to either remove the missing values, or account for them.  Since there is no way to determine whether a missing value indicates a languishing status (perhaps due to the incomplete nature of the survey) or an incomplete status, I chose to remove them as my main focus is what features aid in positive changes.  Sadly, this removed 30% or 835 participant surveys.  
+
 However, upon removing the missing data, I have removed the data being skewed toward stable but un-ideal states and states of decline.  For this reason I did not need to do any sort of minority boosting or downsampling the majority sample via SMOTE.  
+
 Some data had some NA and I will determine the appropriateness of imputing the missing values.  Simply removing all observations with NA as a feature leaves us with no data to analyze.  So the question is whether imputation or substituting NA's with a dummy value is appropriate.  
+
 I also created a separate dataset containing only objective data, as through my modeling, I noticed a lot of the subjective indicators were strongly influencing the outcomes.  I wanted to see what was contributing to these subjective indicators, so I created a dataset of only "objective" features.  
+
 [Header File: Defining Datasets](final_project_common.html)
 ```{r Dataset Details, warning=F, message=F}
 #load and convert Stata data into R dataframe frames into environment
@@ -134,13 +143,13 @@ plot_ly(x = ~mhstatus, type="histogram") %>%
 ```{r DDTrainingTest, warning=F, message=F}
 #full dataset
 prop.table(table(df_full$PositiveChange))
-prop.table(table(df_full_train_scaled$PositiveChange))
-prop.table(table(df_full_test_scaled$PositiveChange))
+prop.table(table(df_full_train$PositiveChange))
+prop.table(table(df_full_test$PositiveChange))
 
 #objective dataset
 prop.table(table(df_objective$PositiveChange))
-prop.table(table(df_objective_train_scaled$PositiveChange))
-prop.table(table(df_objective_test_scaled$PositiveChange))
+prop.table(table(df_objective_train$PositiveChange))
+prop.table(table(df_objective_test$PositiveChange))
 ```
 
 ## To Impute or Not to Impute.
@@ -215,7 +224,7 @@ plot_summary <- function(df, string_type) {
 }
 
 set.seed(1234)
-df_full_impute_forest <- as.data.frame(missForest::missForest(as.matrix(df_full_na), maxiter=2)$ximp)
+df_full_impute_forest <- as.data.frame(missForest::missForest(as.matrix(apply(df_full_na, 2, as.numeric)), maxiter=1)$ximp)
 plot_violin(df_full_na, df_full_impute_forest)
 plotted_summary_imputed <- plot_summary(df_full_impute_forest, "Full Dataset - Random Forest")
 plotted_summary_unimputed <- plot_summary(df_full_na, "Full Dataset - Non Imputed")
@@ -227,10 +236,8 @@ plotted_summary_unimputed[[1]]
 plotted_summary_imputed[[2]]
 plotted_summary_unimputed[[2]]
 ```
-# Summary: Next steps
-
-1. Select features most prominant 
-2. Train models based upon selected features
+# Conclusion
+Out of all of models I had tested, the C5.0 model using the full dataset performed the best.  Unfortunately, I was unable to determine the best predictive features for this study.  There were simply too many features in my clustering and aporiori selection techniques.  I may want to try imputing the data to see if that improves the performance.
 
 ## References
 Panel Study of Income Dynamics. (n.d.). Institute of Social Research.  Survey Research Center. [https://psidonline.isr.umich.edu/](https://psidonline.isr.umich.edu/)

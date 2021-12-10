@@ -1,5 +1,5 @@
 ---
-title: "Final Project Fule Learning"
+title: "Final Project: Exploring Factors Contributing to Positive Changes in Mental Health for Children Transitioning Into Adulthood"
 subtitle: "Clustering Nearest Neighbor"
 author: "Kevin Wu"
 date: "`r format(Sys.time(), '%B %Y')`"
@@ -20,8 +20,6 @@ output:
 **final_project_rule_learning.Rmd**.
 
 # Rule Learning
-<p>apriori - nominal/categorical variables with each </p>
-
 ```{r Common, warning=F, message=F, include=F, child='final_project_common.Rmd'}
 ```
 
@@ -82,8 +80,8 @@ string_replace_description <- function(sub, reg) {
 num_rules_full <- 45
 df_full_apriori <- join_descriptions(df_full_na, tbl_dta)
 transactions_full <- transactions(df_full_apriori)
-summary(transactions_full)
-inspect(transactions_full[1:2,])
+# summary(transactions_full)
+# inspect(transactions_full[1:2,])
 transactions_full_subbed <- tranasctions_join_descriptions(transactions_full)
 #itemFrequency(transactions_full_subbed[,1:5])
 
@@ -91,7 +89,7 @@ transactions_full_subbed <- tranasctions_join_descriptions(transactions_full)
 myrules_full <- apriori(transactions_full_subbed, parameter = list(support = 0.25))
 myrules_full_sorted <- sort(myrules_full, by="lift")
 myrules_full_sorted
-summary(myrules_full)
+# summary(myrules_full)
 inspect(head(myrules_full_sorted, n = num_rules_full))
 plot(myrules_full_sorted, method = "graph", engine = "htmlwidget", control = list(main = list(title="Rules for the Full Dataset")), max = num_rules_full)
 # Runs out of Memory
@@ -103,15 +101,15 @@ plot(myrules_full_sorted, method = "graph", engine = "htmlwidget", control = lis
 num_rules_objective <- 45
 df_objective_apriori <- join_descriptions(df_objective_na, tbl_dta)
 transactions_objective <- transactions(df_objective_apriori)
-summary(transactions_objective)
-inspect(transactions_objective[1:2,])
+# summary(transactions_objective)
+# inspect(transactions_objective[1:2,])
 transactions_objective_subbed <- tranasctions_join_descriptions(transactions_objective)
 #itemFrequency(transactions_objective_subbed[,1:5])
 
 myrules_objective <- apriori(transactions_objective_subbed, parameter = list(support = 0.25))
 myrules_objective_sorted <- sort(myrules_objective, by="lift")
 myrules_objective_sorted
-summary(myrules_objective_sorted)
+# summary(myrules_objective_sorted)
 inspect(head(sort(myrules_objective_sorted, by="lift"), n = num_rules_objective))
 plot(sort(myrules_objective_sorted, by="lift"), method = "graph", engine = "htmlwidget", control = list(main = list(title="Rules for the Objective Dataset")), max = num_rules_objective)
 # Runs out of Memory
@@ -120,7 +118,7 @@ plot(sort(myrules_objective_sorted, by="lift"), method = "graph", engine = "html
 
 ## Summary
 
-Based upon both the full and objective dataset, it appears that the factor with the biggest impact on PositiveChange is whether the participant is either the head or wife of the household.  The following are the intersection between the two datasets sorted by lift.
+Based upon both the full and objective dataset, it appears the feature relationships that had the biggest impact on PositiveChange are below.
 ```{r Summary, warning=F, message=F}
-#intersect(inspect(head(myrules_full_sorted, n = num_rules_objective)), inspect(head(myrules_objective_sorted, n = num_rules_objective)))
+intersect(inspect(head(myrules_full_sorted, n = num_rules_objective)), inspect(head(myrules_objective_sorted, n = num_rules_objective)))
 ```
