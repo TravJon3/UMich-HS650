@@ -1,7 +1,7 @@
 ---
 title: "Final Project: Exploring Factors Contributing to Positive Changes in Mental Health for Children Transitioning Into Adulthood"
 subtitle: "Clustering"
-author: "Kevin Wu"
+author: "Travis Jones, III"
 date: "`r format(Sys.time(), '%B %Y')`"
 tags: [DSPA, SOCR, MIDAS, Big Data, Predictive Analytics] 
 output:
